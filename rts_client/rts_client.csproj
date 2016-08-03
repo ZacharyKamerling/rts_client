@@ -35,11 +35,21 @@
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="js\sprite_map.ts" />
-    <TypeScriptCompile Include="js\web_gl_help.ts" />
-    <TypeScriptCompile Include="js\tile_drawer.ts" />
-    <TypeScriptCompile Include="js\main.ts" />
-    <TypeScriptCompile Include="js\unit_drawer.ts" />
+    <TypeScriptCompile Include="js\app\game.ts" />
+    <TypeScriptCompile Include="js\app\missile.ts" />
+    <TypeScriptCompile Include="js\app\unit.ts" />
+    <TypeScriptCompile Include="js\libs\cereal.ts" />
+    <TypeScriptCompile Include="js\libs\chef.ts" />
+    <TypeScriptCompile Include="js\libs\fow_drawer.ts" />
+    <TypeScriptCompile Include="js\libs\interact.ts" />
+    <TypeScriptCompile Include="js\libs\misc.ts" />
+    <TypeScriptCompile Include="js\libs\sprite_map.ts" />
+    <TypeScriptCompile Include="js\libs\web_gl_help.ts" />
+    <TypeScriptCompile Include="js\libs\tile_drawer.ts" />
+    <TypeScriptCompile Include="js\app\main.ts" />
+    <TypeScriptCompile Include="js\libs\unit_drawer.ts" />
+    <TypeScriptCompile Include="js\missiles\basic_missile.ts" />
+    <TypeScriptCompile Include="js\units\basic_unit.ts" />
   </ItemGroup>
   <ItemGroup>
     <None Include="web.Debug.config">
@@ -49,6 +59,7 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
   </PropertyGroup>
