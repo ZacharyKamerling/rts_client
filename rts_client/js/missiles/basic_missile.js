@@ -19,11 +19,8 @@ var BasicMissile = (function (_super) {
     BasicMissile.prototype.render = function (game, layers) {
         layers[3].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_missile" });
     };
-    /*
-    renderExplosion(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
-        
-    }
-    */
+    BasicMissile.prototype.renderExplosion = function (game, layers) {
+    };
     BasicMissile.prototype.speed = function () {
         return Game.TILESIZE * 12.0 / 10.0;
     };

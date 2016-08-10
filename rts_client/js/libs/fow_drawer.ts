@@ -1,40 +1,46 @@
 ﻿class FOWDrawer {
-    private canvas: HTMLCanvasElement;
-    private buffer: WebGLBuffer;
     private program: MetaProgram;
+    private canvas: HTMLCanvasElement;
+    private smallCanvas: HTMLCanvasElement;
+    private buffer: WebGLBuffer;
 
     constructor(canvas: HTMLCanvasElement) {
-        let self = this;
         this.canvas = canvas;
-        let gl = <WebGLRenderingContext>this.canvas.getContext('webgl');
+        this.smallCanvas = document.createElement('canvas');
+        let gl = <WebGLRenderingContext>this.smallCanvas.getContext('webgl');
         this.program = new MetaProgram(gl, createProgram(gl, FOWDrawer.vertexShader, FOWDrawer.fragmentShader));
-
         this.buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
     }
 
     public draw(x: number, y: number, scale: number, circles: { x: number, y: number, r: number }[]) {
-        x = Math.floor(x);
-        y = Math.floor(y);
+        x = Math.floor(x) / 4;
+        y = Math.floor(y) / 4;
+        scale = scale / 4;
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
+        this.smallCanvas.width = this.canvas.offsetWidth / 4;
+        this.smallCanvas.height = this.canvas.offsetHeight / 4;
 
         const FLOATS_PER_UNIT = 30;
         let drawData = new Float32Array(FLOATS_PER_UNIT * circles.length);
-        let xm = Game.TILESIZE / this.canvas.width;
-        let ym = Game.TILESIZE / this.canvas.height;
+        let xm = Game.TILESIZE / this.smallCanvas.width;
+        let ym = Game.TILESIZE / this.smallCanvas.height;
 
         for (let i = 0, n = 0; n < circles.length; n++) {
             let circle = circles[n];
+            // Scale all coords to 1/4th their size (to match small canvas)
             // GL Coords go from -1 to 1
             // If they went from 0 to 1 we wouldn't need to double the radius
-            circle.r = circle.r * 2;
+            circle.r = (circle.r / 4) * 2;
+            circle.x = circle.x / 4;
+            circle.y = circle.y / 4;
 
             // Normalize X & Y
             // ScrnX = ((x - ScrnL) / ScrnW) * 2 - 1
-            let normX = ((circle.x - (x - this.canvas.width / 2)) / this.canvas.width) * 2 - 1;
-            let normY = ((circle.y - (y - this.canvas.height / 2)) / this.canvas.height) * 2 - 1;
+            let normX = ((circle.x - (x - this.smallCanvas.width / 2)) / this.smallCanvas.width) * 2 - 1;
+            let normY = ((circle.y - (y - this.smallCanvas.height / 2)) / this.smallCanvas.height) * 2 - 1;
             
             // Coordinates of each corner on the sprite
             let east = normX + circle.r * xm;
@@ -82,10 +88,10 @@
             i += FLOATS_PER_UNIT;
         }
 
-        let gl = <WebGLRenderingContext>this.canvas.getContext('webgl');
+        let gl = <WebGLRenderingContext>this.smallCanvas.getContext('webgl');
         gl.clearColor(0, 0, 0, 0.75);
         gl.clear(gl.COLOR_BUFFER_BIT);
-        gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+        gl.viewport(0, 0, this.smallCanvas.width, this.smallCanvas.height);
         gl.useProgram(this.program.program);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
@@ -97,9 +103,12 @@
         gl.vertexAttribPointer(this.program.attribute['a_position'], 2, gl.FLOAT, false, 20, 0);
         gl.vertexAttribPointer(this.program.attribute['a_circle_position'], 2, gl.FLOAT, false, 20, 8);
         gl.vertexAttribPointer(this.program.attribute['a_circle_radius'], 1, gl.FLOAT, false, 20, 16);
-        gl.uniform1f(this.program.uniform['scaleY'], this.canvas.width / this.canvas.height);
+        gl.uniform1f(this.program.uniform['scaleY'], this.smallCanvas.width / this.smallCanvas.height);
 
         gl.drawArrays(gl.TRIANGLES, 0, 6 * circles.length);
+
+        let ctx = <CanvasRenderingContext2D>this.canvas.getContext('2d');
+        ctx.drawImage(this.smallCanvas, 0, 0, this.smallCanvas.width, this.smallCanvas.height, 0, 0, this.canvas.width, this.canvas.height);
     }
 
     private static rotateAroundOrigin(cx: number, cy: number, x: number, y: number, ang: number): { x: number, y: number } {

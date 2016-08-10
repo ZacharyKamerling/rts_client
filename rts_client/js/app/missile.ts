@@ -32,6 +32,10 @@
         throw new Error('Missile: render() is abstract');
     }
 
+    renderExplosion(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
+        throw new Error('Missile: renderExplosion() is abstract');
+    }
+
     speed(): number {
         throw new Error('Missile: speed() is abstract');
     }
@@ -40,6 +44,16 @@
         this.facing = Math.atan2(newMisl.y - this.y, newMisl.x - this.x);
         this.x += this.speed() * Math.cos(this.facing) * time;
         this.y += this.speed() * Math.sin(this.facing) * time;
+        let xDifA = this.x - oldMisl.x;
+        let yDifA = this.y - oldMisl.y;
+        let xDifB = oldMisl.x - newMisl.x;
+        let yDifB = oldMisl.y - newMisl.y;
+        let distA = xDifA * xDifA + yDifA * yDifA;
+        let distB = xDifB * xDifB + yDifB * yDifB;
+
+        if (newMisl.exploding && distA > distB) {
+            this.exploding = true;
+        }
     }
 
     static decodeMissile(data: Cereal, frame: number, exploding: boolean): Missile {

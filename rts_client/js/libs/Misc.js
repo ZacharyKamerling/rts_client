@@ -1,11 +1,5 @@
 var Misc;
 (function (Misc) {
-    function convertCanvasToImage(canvas) {
-        var image = new Image();
-        image.src = canvas.toDataURL("image/png");
-        return image;
-    }
-    Misc.convertCanvasToImage = convertCanvasToImage;
     function normalizeAngle(f) {
         while (f > Math.PI * 2.0) {
             f -= Math.PI * 2.0;

@@ -21,6 +21,9 @@ var Missile = (function () {
     Missile.prototype.render = function (game, layers) {
         throw new Error('Missile: render() is abstract');
     };
+    Missile.prototype.renderExplosion = function (game, layers) {
+        throw new Error('Missile: renderExplosion() is abstract');
+    };
     Missile.prototype.speed = function () {
         throw new Error('Missile: speed() is abstract');
     };
@@ -28,6 +31,15 @@ var Missile = (function () {
         this.facing = Math.atan2(newMisl.y - this.y, newMisl.x - this.x);
         this.x += this.speed() * Math.cos(this.facing) * time;
         this.y += this.speed() * Math.sin(this.facing) * time;
+        var xDifA = this.x - oldMisl.x;
+        var yDifA = this.y - oldMisl.y;
+        var xDifB = oldMisl.x - newMisl.x;
+        var yDifB = oldMisl.y - newMisl.y;
+        var distA = xDifA * xDifA + yDifA * yDifA;
+        var distB = xDifB * xDifB + yDifB * yDifB;
+        if (newMisl.exploding && distA > distB) {
+            this.exploding = true;
+        }
     };
     Missile.decodeMissile = function (data, frame, exploding) {
         var mislType = data.getU8();

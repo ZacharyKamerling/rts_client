@@ -17,11 +17,9 @@
         layers[3].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_missile" });
     }
 
-    /*
     renderExplosion(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
         
     }
-    */
 
     speed(): number {
         return Game.TILESIZE * 12.0 / 10.0;

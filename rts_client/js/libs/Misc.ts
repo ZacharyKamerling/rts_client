@@ -1,10 +1,4 @@
 ﻿module Misc {
-    export function convertCanvasToImage(canvas: HTMLCanvasElement) {
-        let image = new Image();
-        image.src = canvas.toDataURL("image/png");
-        return image;
-    }
-
     export function normalizeAngle(f: number): number {
         while (f > Math.PI * 2.0) {
             f -= Math.PI * 2.0;

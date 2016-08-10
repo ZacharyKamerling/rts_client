@@ -52,6 +52,7 @@
     <TypeScriptCompile Include="js\units\basic_unit.ts" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="File System.pubxml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

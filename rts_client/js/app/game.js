@@ -14,11 +14,11 @@ var Game = (function () {
         this.team = 0;
         this.time_since_last_logic_frame = 0;
         this.souls = Array();
-        for (var i = 0; i < 2048; i++) {
+        for (var i = 0; i < 4096; i++) {
             this.souls.push(null);
         }
         this.missile_souls = Array();
-        for (var i = 0; i < 2048 * 2; i++) {
+        for (var i = 0; i < 4096 * 4; i++) {
             this.missile_souls.push(null);
         }
     }
@@ -118,17 +118,17 @@ var Game = (function () {
             if (control instanceof DoingNothing) {
                 if (event instanceof MousePress) {
                     // Move Camera initiate
-                    if (event.btn == MouseButton.Middle && event.down) {
+                    if (event.btn === MouseButton.Middle && event.down) {
                         game.control = new MovingCamera(event.x, event.y, game.camera.x, game.camera.y);
                     }
                     // Select things initiate
-                    if (event.btn == MouseButton.Left && event.down) {
+                    if (event.btn === MouseButton.Left && event.down) {
                         var x = game.camera.x + event.x - parent.offsetWidth / 2;
                         var y = game.camera.y - (event.y - parent.offsetHeight / 2);
                         game.control = new SelectingUnits(x, y, x, y);
                     }
                     // Issue move order
-                    if (event.btn == MouseButton.Right && event.down) {
+                    if (event.btn === MouseButton.Right && event.down) {
                         var selected = new Array();
                         for (var i = 0; i < game.souls.length; i++) {
                             var soul = game.souls[i];
@@ -152,11 +152,13 @@ var Game = (function () {
                         game.connection.send(game.chef.done());
                     }
                 }
+                else if (event instanceof KeyPress) {
+                }
             }
             else if (control instanceof MovingCamera) {
                 // Stop moving camera
                 if (event instanceof MousePress) {
-                    if (event.btn == MouseButton.Middle && !event.down) {
+                    if (event.btn === MouseButton.Middle && !event.down) {
                         game.control = new DoingNothing();
                     }
                 }
@@ -168,7 +170,7 @@ var Game = (function () {
             else if (control instanceof SelectingUnits) {
                 // Select units
                 if (event instanceof MousePress) {
-                    if (event.btn == MouseButton.Left && !event.down) {
+                    if (event.btn === MouseButton.Left && !event.down) {
                         for (var i = 0; i < game.souls.length; i++) {
                             var soul = game.souls[i];
                             if (soul && soul.new && soul.new.team === game.team) {
@@ -236,7 +238,13 @@ var Game = (function () {
         for (var i = 0; i < this.missile_souls.length; i++) {
             var soul = this.missile_souls[i];
             if (soul) {
-                soul.current.render(this, layers);
+                if (soul.current.exploding) {
+                    soul.current.renderExplosion(this, layers);
+                    this.missile_souls[i] = null;
+                }
+                else {
+                    soul.current.render(this, layers);
+                }
             }
         }
         var flattened = new Array();

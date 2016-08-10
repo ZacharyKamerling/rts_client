@@ -17,13 +17,13 @@ class Game {
     constructor() {
         this.souls = Array();
 
-        for (let i = 0; i < 2048; i++) {
+        for (let i = 0; i < 4096; i++) {
             this.souls.push(null);
         }
 
         this.missile_souls = Array();
 
-        for (let i = 0; i < 2048 * 2; i++) {
+        for (let i = 0; i < 4096 * 4; i++) {
             this.missile_souls.push(null);
         }
     }
@@ -144,17 +144,17 @@ class Game {
             if (control instanceof DoingNothing) {
                 if (event instanceof MousePress) {
                     // Move Camera initiate
-                    if (event.btn == MouseButton.Middle && event.down) {
+                    if (event.btn === MouseButton.Middle && event.down) {
                         game.control = new MovingCamera(event.x, event.y, game.camera.x, game.camera.y);
                     }
                     // Select things initiate
-                    if (event.btn == MouseButton.Left && event.down) {
+                    if (event.btn === MouseButton.Left && event.down) {
                         let x = game.camera.x + event.x - parent.offsetWidth / 2;
                         let y = game.camera.y - (event.y - parent.offsetHeight / 2);
                         game.control = new SelectingUnits(x, y, x, y);
                     }
                     // Issue move order
-                    if (event.btn == MouseButton.Right && event.down) {
+                    if (event.btn === MouseButton.Right && event.down) {
                         let selected: number[] = new Array();
 
                         for (let i = 0; i < game.souls.length; i++) {
@@ -172,7 +172,7 @@ class Game {
                         else {
                             game.chef.put8(0);
                         }
-                        
+
                         game.chef.put16(selected.length);
                         game.chef.putF64((game.camera.x + event.x - parent.offsetWidth / 2) / Game.TILESIZE);
                         game.chef.putF64((game.camera.y - (event.y - parent.offsetHeight / 2)) / Game.TILESIZE);
@@ -183,11 +183,15 @@ class Game {
                         game.connection.send(game.chef.done());
                     }
                 }
+                else if (event instanceof KeyPress) {
+                    // TODO
+                    //if (event.key === )
+                }
             }
             else if (control instanceof MovingCamera) {
                 // Stop moving camera
                 if (event instanceof MousePress) {
-                    if (event.btn == MouseButton.Middle && !event.down) {
+                    if (event.btn === MouseButton.Middle && !event.down) {
                         game.control = new DoingNothing();
                     }
                 }
@@ -200,7 +204,7 @@ class Game {
             else if (control instanceof SelectingUnits) {
                 // Select units
                 if (event instanceof MousePress) {
-                    if (event.btn == MouseButton.Left && !event.down) {
+                    if (event.btn === MouseButton.Left && !event.down) {
 
                         for (let i = 0; i < game.souls.length; i++) {
                             let soul = game.souls[i];
@@ -281,7 +285,13 @@ class Game {
             let soul = this.missile_souls[i];
 
             if (soul) {
-                soul.current.render(this, layers);
+                if (soul.current.exploding) {
+                    soul.current.renderExplosion(this, layers);
+                    this.missile_souls[i] = null;
+                }
+                else {
+                    soul.current.render(this, layers);
+                }
             }
         }
 
