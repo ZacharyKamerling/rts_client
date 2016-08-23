@@ -5,8 +5,9 @@ function main() {
     var thingsLoaded = 0;
     var conn = null;
     var game = new Game();
-    var canvas = document.getElementById('drawCanvas');
     var fowCanvas = document.getElementById('fowCanvas');
+    var drawCanvas = document.getElementById('drawCanvas');
+    var ctrlCanvas = document.getElementById('controlCanvas');
     var unitRefs = [
         {
             src: "img/basic_unit.png",
@@ -22,10 +23,11 @@ function main() {
         },
     ];
     var spritemap = new SpriteMap(unitRefs);
-    game.setTileDrawer(new TileDrawer(canvas, 'img/lttp-tiles.png', 'img/lttp-all.png'));
+    game.setTileDrawer(new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png'));
     game.setFOWDrawer(new FOWDrawer(fowCanvas));
+    game.setSelectionDrawer(new SelectionDrawer(drawCanvas));
     spritemap.onload = function (e) {
-        game.setUnitDrawer(new UnitDrawer(canvas, spritemap));
+        game.setUnitDrawer(new UnitDrawer(drawCanvas, spritemap));
     };
     connectBtn.onclick = function () {
         var nameFieldValue = document.getElementById('nameField').value;
@@ -61,7 +63,7 @@ function playGame(game, conn, spriteMap) {
     var content = document.getElementById('content');
     mainMenu.hidden = true;
     content.hidden = false;
-    var canvas = document.getElementById('fowCanvas');
+    var canvas = document.getElementById('controlCanvas');
     game.setChef(new Chef());
     game.setConnection(conn);
     interact(canvas, game.interact_canvas());

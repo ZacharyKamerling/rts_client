@@ -4,11 +4,12 @@
 <head>
     <meta charset="utf-8" />
     <title>RTS</title>
-    <script src="js/libs/web_gl_help.js"></script>
-    <script src="js/libs/tile_drawer.js"></script>
-    <script src="js/libs/sprite_map.js"></script>
-    <script src="js/libs/unit_drawer.js"></script>
-    <script src="js/libs/fow_drawer.js"></script>
+    <script src="js/libs/graphics/web_gl_help.js"></script>
+    <script src="js/libs/graphics/tile_drawer.js"></script>
+    <script src="js/libs/graphics/sprite_map.js"></script>
+    <script src="js/libs/graphics/unit_drawer.js"></script>
+    <script src="js/libs/graphics/fow_drawer.js"></script>
+    <script src="js/libs/graphics/selection_drawer.js"></script>
     <script src="js/libs/interact.js"></script>
     <script src="js/libs/chef.js"></script>
     <script src="js/libs/cereal.js"></script>
@@ -26,7 +27,7 @@
         <br />
         <input type="password" id="passField" placeholder="Password" value="p1" style="width: 200px; margin-bottom: 5px">
         <br />
-        <input type="text" id="addrField" placeholder="IP Address" value="2601:1c2:1500:321b:ddbc:71f1:9b0f:8e41" style="width: 200px; margin-bottom: 5px">
+        <input type="text" id="addrField" placeholder="IP Address" value="2601:1c2:1500:321b::3542" style="width: 200px; margin-bottom: 5px">
         <br />
         <input type="text" id="portField" placeholder="Port Number" value="4444" style="width: 200px; margin-bottom: 5px">
         <br />
@@ -36,6 +37,7 @@
     <div id="content" style="height: 100%; ">
         <canvas style="height: 100%; width: 100%; position: absolute; z-index: 0;" id="drawCanvas"></canvas>
         <canvas style="height: 100%; width: 100%; position: absolute; z-index: 1;" id="fowCanvas" ></canvas>
+        <canvas style="height: 100%; width: 100%; position: absolute; z-index: 2;" id="controlCanvas"></canvas>
     </div>
 
     <script src="js/app/main.js"></script>

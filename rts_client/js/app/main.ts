@@ -6,8 +6,9 @@ function main() {
     let thingsLoaded = 0;
     let conn: WebSocket = null;
     let game: Game = new Game();
-    let canvas = <HTMLCanvasElement>document.getElementById('drawCanvas');
     let fowCanvas = <HTMLCanvasElement>document.getElementById('fowCanvas');
+    let drawCanvas = <HTMLCanvasElement>document.getElementById('drawCanvas');
+    let ctrlCanvas = <HTMLCanvasElement>document.getElementById('controlCanvas');
     let unitRefs = [
         {
             src: "img/basic_unit.png",
@@ -24,11 +25,12 @@ function main() {
     ];
     let spritemap = new SpriteMap(unitRefs);
 
-    game.setTileDrawer(new TileDrawer(canvas, 'img/lttp-tiles.png', 'img/lttp-all.png'));
+    game.setTileDrawer(new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png'));
     game.setFOWDrawer(new FOWDrawer(fowCanvas));
+    game.setSelectionDrawer(new SelectionDrawer(drawCanvas));
 
     spritemap.onload = function (e: Event) {
-        game.setUnitDrawer(new UnitDrawer(canvas, spritemap));
+        game.setUnitDrawer(new UnitDrawer(drawCanvas, spritemap));
     };
 
     connectBtn.onclick = function () {
@@ -71,7 +73,7 @@ function playGame(game: Game, conn: WebSocket, spriteMap: SpriteMap) {
     mainMenu.hidden = true;
     content.hidden = false;
 
-    let canvas = <HTMLCanvasElement>document.getElementById('fowCanvas');
+    let canvas = <HTMLCanvasElement>document.getElementById('controlCanvas');
 
     game.setChef(new Chef());
     game.setConnection(conn);

@@ -40,14 +40,16 @@
     <TypeScriptCompile Include="js\app\unit.ts" />
     <TypeScriptCompile Include="js\libs\cereal.ts" />
     <TypeScriptCompile Include="js\libs\chef.ts" />
-    <TypeScriptCompile Include="js\libs\fow_drawer.ts" />
+    <TypeScriptCompile Include="js\libs\graphics\selection_drawer.ts" />
+    <TypeScriptCompile Include="js\libs\graphics\fow_drawer.ts" />
+    <TypeScriptCompile Include="js\libs\graphics\select_box_drawer.ts" />
     <TypeScriptCompile Include="js\libs\interact.ts" />
     <TypeScriptCompile Include="js\libs\misc.ts" />
-    <TypeScriptCompile Include="js\libs\sprite_map.ts" />
-    <TypeScriptCompile Include="js\libs\web_gl_help.ts" />
-    <TypeScriptCompile Include="js\libs\tile_drawer.ts" />
+    <TypeScriptCompile Include="js\libs\graphics\sprite_map.ts" />
+    <TypeScriptCompile Include="js\libs\graphics\web_gl_help.ts" />
+    <TypeScriptCompile Include="js\libs\graphics\tile_drawer.ts" />
     <TypeScriptCompile Include="js\app\main.ts" />
-    <TypeScriptCompile Include="js\libs\unit_drawer.ts" />
+    <TypeScriptCompile Include="js\libs\graphics\unit_drawer.ts" />
     <TypeScriptCompile Include="js\missiles\basic_missile.ts" />
     <TypeScriptCompile Include="js\units\basic_unit.ts" />
   </ItemGroup>

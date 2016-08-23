@@ -47,4 +47,21 @@
         }
     }
 
+    export function rotateAroundOrigin(cx: number, cy: number, x: number, y: number, ang: number): { x: number, y: number } {
+        // translate point to origin
+        let tempX = x - cx;
+        let tempY = y - cy;
+        let cos = Math.cos(ang);
+        let sin = Math.sin(ang);
+
+        // now apply rotation
+        let rotatedX = tempX * cos - tempY * sin;
+        let rotatedY = tempX * sin + tempY * cos;
+
+        // translate back
+        x = rotatedX + cx;
+        y = rotatedY + cy;
+
+        return { x: x, y: y };
+    }
 }
