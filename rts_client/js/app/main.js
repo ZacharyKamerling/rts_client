@@ -1,5 +1,8 @@
 "use strict";
 function main() {
+    var mainMenu = document.getElementById('mainMenu');
+    var content = document.getElementById('content');
+    var chef = new Chef();
     var connectBtn = document.getElementById('connectBtn');
     var connected = false;
     var thingsLoaded = 0;
@@ -22,10 +25,12 @@ function main() {
             ref: "basic_missile"
         },
     ];
-    var spritemap = new SpriteMap(unitRefs);
+    game.setChef(chef);
     game.setTileDrawer(new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png'));
     game.setFOWDrawer(new FOWDrawer(fowCanvas));
     game.setSelectionDrawer(new SelectionDrawer(drawCanvas));
+    game.setSelectionBoxDrawer(new SelectionBoxDrawer(drawCanvas));
+    var spritemap = new SpriteMap(unitRefs);
     spritemap.onload = function (e) {
         game.setUnitDrawer(new UnitDrawer(drawCanvas, spritemap));
     };
@@ -35,44 +40,57 @@ function main() {
         var addrFieldValue = document.getElementById('addrField').value;
         var portFieldValue = document.getElementById('portField').value;
         console.log('Attempting connection...');
-        conn = new WebSocket('ws://[' + addrFieldValue + ']:' + portFieldValue);
-        var chef = new Chef();
+        if (addrFieldValue === "localhost") {
+            conn = new WebSocket('ws://localhost:' + portFieldValue);
+        }
+        else {
+            conn = new WebSocket('ws://[' + addrFieldValue + ']:' + portFieldValue);
+        }
         conn.binaryType = "arraybuffer";
+        game.setConnection(conn);
+        conn.onclose = function () {
+            console.log('Connection closed.');
+            mainMenu.hidden = false;
+            content.hidden = true;
+            game.connected = false;
+            game.reset();
+        };
+        conn.onmessage = function (event) {
+            game.processPacket(new Cereal(new DataView(event.data)));
+        };
         conn.onopen = function () {
-            conn.onmessage = function (event) {
-                var c = new Cereal(new DataView(event.data));
-                game.processPacket(c);
-            };
-            conn.onclose = function () {
-                var mainMenu = document.getElementById('mainMenu');
-                mainMenu.hidden = false;
-                console.log('Connection closed.');
-                game.disconnected();
-            };
             console.log('Connection open.');
+            mainMenu.hidden = true;
+            content.hidden = false;
             chef.putString(nameFieldValue);
             chef.putString(passFieldValue);
             conn.send(chef.done());
-            playGame(game, conn, spritemap);
+            game.connected = true;
+            playGame(game);
+        };
+        conn.onerror = function () {
+            console.log('Connection Error.');
+            mainMenu.hidden = false;
+            content.hidden = true;
+            game.connected = false;
+            game.reset();
         };
     };
 }
 ;
-function playGame(game, conn, spriteMap) {
+function playGame(game) {
     var mainMenu = document.getElementById('mainMenu');
     var content = document.getElementById('content');
-    mainMenu.hidden = true;
-    content.hidden = false;
     var canvas = document.getElementById('controlCanvas');
-    game.setChef(new Chef());
-    game.setConnection(conn);
     interact(canvas, game.interact_canvas());
     var last_time = Date.now();
     function draw(time_passed) {
-        var time_delta = (time_passed - last_time) / 100;
-        game.draw(time_delta);
-        last_time = time_passed;
-        requestAnimationFrame(draw);
+        if (game.connected) {
+            var time_delta = (time_passed - last_time) / 100;
+            game.draw(time_delta);
+            last_time = time_passed;
+            requestAnimationFrame(draw);
+        }
     }
     draw(last_time);
 }

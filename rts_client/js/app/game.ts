@@ -1,10 +1,13 @@
 ﻿"use strict";
 class Game {
+    public connected: boolean = true;
+    public static TILESIZE = 32;
     private chef: Chef = null;
     private tileDrawer: TileDrawer = null;
     private unitDrawer: UnitDrawer = null;
     private fowDrawer: FOWDrawer = null;
     private selectionDrawer: SelectionDrawer = null;
+    private selectionBoxDrawer: SelectionBoxDrawer = null;
     private control: Control = new DoingNothing();
     private camera: Camera = new Camera(0, 0);
     private connection: WebSocket = null;
@@ -15,7 +18,6 @@ class Game {
     private metal: number = 0;
     private energy: number = 0;
     private timeSinceLastLogicFrame: number = 0;
-    public static TILESIZE = 32;
     private static MAX_UNITS = 4096;
 
     constructor() {
@@ -32,9 +34,15 @@ class Game {
         }
     }
 
-    public disconnected() {
+    public reset() {
+        this.timeSinceLastLogicFrame = 0;
+
         for (let i = 0; i < Game.MAX_UNITS; i++) {
             this.souls[i] = null;
+        }
+
+        for (let i = 0; i < Game.MAX_UNITS * 4; i++) {
+            this.missile_souls[i] = null;
         }
     }
 
@@ -60,6 +68,10 @@ class Game {
 
     public setSelectionDrawer(sd: SelectionDrawer) {
         this.selectionDrawer = sd;
+    }
+
+    public setSelectionBoxDrawer(sbd: SelectionBoxDrawer) {
+        this.selectionBoxDrawer = sbd;
     }
 
     public processPacket(data: Cereal): void {
@@ -219,92 +231,89 @@ class Game {
                 // Select units
                 if (event instanceof MousePress) {
                     if (event.btn === MouseButton.Left && !event.down) {
-                        let minX = Math.min(control.clickX, control.currentX);
-                        let minY = Math.min(control.clickY, control.currentY);
-                        let maxX = Math.max(control.clickX, control.currentX);
-                        let maxY = Math.max(control.clickY, control.currentY);
-
-                        for (let i = 0; i < game.souls.length; i++) {
-                            let soul = game.souls[i];
-
-                            if (soul && soul.new && soul.new.team === game.team) {
-                                let x = soul.current.x;
-                                let y = soul.current.y;
-                                let r = soul.current.getRadius() * Game.TILESIZE;
-                                let rSqrd = r * r;
-                                
-                                let nDif = y - maxY;
-                                let sDif = y - minY;
-                                let eDif = x - maxX;
-                                let wDif = x - minX;
-
-                                if (y >= minY && y <= maxY) {
-                                    if (x + r >= minX && x - r <= maxX) {
-                                        soul.current.is_selected = true;
-                                    }
-                                    else if (!event.shiftDown) {
-                                        soul.current.is_selected = false;
-                                    }
-                                }
-                                else if (x >= minX && x <= maxX) {
-                                    if (y + r >= minY && y - r <= maxY) {
-                                        soul.current.is_selected = true;
-                                    }
-                                    else if (!event.shiftDown) {
-                                        soul.current.is_selected = false;
-                                    }
-                                }
-                                else if (x > maxX) {
-                                    // Northeast
-                                    if (y > maxY && (nDif * nDif + eDif * eDif) <= rSqrd) {
-                                        soul.current.is_selected = true;
-                                    }
-                                    // Southeast
-                                    else if (y < minY && (sDif * sDif + eDif * eDif) <= rSqrd) {
-                                        soul.current.is_selected = true;
-                                    }
-                                    else if (!event.shiftDown) {
-                                        soul.current.is_selected = false;
-                                    }
-                                }
-                                else if (x < minX) {
-                                    // Northwest
-                                    if (y > maxY && (nDif * nDif + wDif * wDif) <= rSqrd) {
-                                        soul.current.is_selected = true;
-                                    }
-                                    // Southwest
-                                    else if (y < minY && (sDif * sDif + wDif * wDif) <= rSqrd) {
-                                        soul.current.is_selected = true;
-                                    }
-                                    else if (!event.shiftDown) {
-                                        soul.current.is_selected = false;
-                                    }
-                                }
-                                else if (!event.shiftDown) {
-                                    soul.current.is_selected = false;
-                                }
-                            }
-
-                            let minBoxX = minX - game.camera.x;
-                            let minBoxY = minY - game.camera.y;
-                            let maxBoxX = maxX - game.camera.x;
-                            let maxBoxY = maxY - game.camera.y;
-                            game.drawSelectionBox(minBoxX, minBoxY, maxBoxX, maxBoxY);
-                        }
-
+                        game.selectUnits(event.shiftDown);
                         game.control = new DoingNothing();
                     }
                 }
                 else if (event instanceof MouseMove) {
                     control.currentX = game.camera.x + event.x - parent.offsetWidth / 2;
                     control.currentY = game.camera.y - (event.y - parent.offsetHeight / 2);
+                    game.selectUnits(event.shiftDown);
                 }
             }
         };
     }
 
-    private drawSelectionBox(minX: number, minY: number, maxX: number, maxY: number) {
-        //let ctx = this.fowDrawer.
+    private selectUnits(shiftDown: boolean) {
+        let control = this.control;
+        if (control instanceof SelectingUnits) {
+            let minX = Math.min(control.clickX, control.currentX);
+            let minY = Math.min(control.clickY, control.currentY);
+            let maxX = Math.max(control.clickX, control.currentX);
+            let maxY = Math.max(control.clickY, control.currentY);
+
+            for (let i = 0; i < this.souls.length; i++) {
+                let soul = this.souls[i];
+
+                if (soul && soul.new && soul.new.team === this.team) {
+                    let x = soul.current.x;
+                    let y = soul.current.y;
+                    let r = soul.current.getRadius() * Game.TILESIZE;
+                    let rSqrd = r * r;
+
+                    let nDif = y - maxY;
+                    let sDif = y - minY;
+                    let eDif = x - maxX;
+                    let wDif = x - minX;
+
+                    if (y >= minY && y <= maxY) {
+                        if (x + r >= minX && x - r <= maxX) {
+                            soul.current.is_selected = true;
+                        }
+                        else if (!shiftDown) {
+                            soul.current.is_selected = false;
+                        }
+                    }
+                    else if (x >= minX && x <= maxX) {
+                        if (y + r >= minY && y - r <= maxY) {
+                            soul.current.is_selected = true;
+                        }
+                        else if (!shiftDown) {
+                            soul.current.is_selected = false;
+                        }
+                    }
+                    else if (x > maxX) {
+                        // Northeast
+                        if (y > maxY && (nDif * nDif + eDif * eDif) <= rSqrd) {
+                            soul.current.is_selected = true;
+                        }
+                        // Southeast
+                        else if (y < minY && (sDif * sDif + eDif * eDif) <= rSqrd) {
+                            soul.current.is_selected = true;
+                        }
+                        else if (!shiftDown) {
+                            soul.current.is_selected = false;
+                        }
+                    }
+                    else if (x < minX) {
+                        // Northwest
+                        if (y > maxY && (nDif * nDif + wDif * wDif) <= rSqrd) {
+                            soul.current.is_selected = true;
+                        }
+                        // Southwest
+                        else if (y < minY && (sDif * sDif + wDif * wDif) <= rSqrd) {
+                            soul.current.is_selected = true;
+                        }
+                        else if (!shiftDown) {
+                            soul.current.is_selected = false;
+                        }
+                    }
+                    else if (!shiftDown) {
+                        soul.current.is_selected = false;
+                    }
+                }
+            }
+        }
     }
 
     public draw(time_passed: number) {
@@ -313,6 +322,7 @@ class Game {
         this.stepMissiles(time_passed);
         this.tileDrawer.draw(this.camera.x, this.camera.y, 1);
         this.drawSelections();
+        this.drawSelectBox();
         this.drawUnitsAndMissiles();
         this.drawFogOfWar();
     }
@@ -332,6 +342,21 @@ class Game {
             if (soul && soul.old) {
                 soul.current.step(time, soul.old, soul.new);
             }
+        }
+    }
+
+    private drawSelectBox() {
+        let control = this.control;
+        if (control instanceof SelectingUnits) {
+            let minX = Math.min(control.clickX, control.currentX);
+            let minY = Math.min(control.clickY, control.currentY);
+            let maxX = Math.max(control.clickX, control.currentX);
+            let maxY = Math.max(control.clickY, control.currentY);
+            let minBoxX = minX - this.camera.x;
+            let minBoxY = minY - this.camera.y;
+            let maxBoxX = maxX - this.camera.x;
+            let maxBoxY = maxY - this.camera.y;
+            this.selectionBoxDrawer.draw(minBoxX, minBoxY, maxBoxX, maxBoxY);
         }
     }
 

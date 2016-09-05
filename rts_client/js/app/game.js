@@ -1,11 +1,13 @@
 "use strict";
 var Game = (function () {
     function Game() {
+        this.connected = true;
         this.chef = null;
         this.tileDrawer = null;
         this.unitDrawer = null;
         this.fowDrawer = null;
         this.selectionDrawer = null;
+        this.selectionBoxDrawer = null;
         this.control = new DoingNothing();
         this.camera = new Camera(0, 0);
         this.connection = null;
@@ -25,9 +27,13 @@ var Game = (function () {
             this.missile_souls.push(null);
         }
     }
-    Game.prototype.disconnected = function () {
+    Game.prototype.reset = function () {
+        this.timeSinceLastLogicFrame = 0;
         for (var i = 0; i < Game.MAX_UNITS; i++) {
             this.souls[i] = null;
+        }
+        for (var i = 0; i < Game.MAX_UNITS * 4; i++) {
+            this.missile_souls[i] = null;
         }
     };
     Game.prototype.setChef = function (chef) {
@@ -47,6 +53,9 @@ var Game = (function () {
     };
     Game.prototype.setSelectionDrawer = function (sd) {
         this.selectionDrawer = sd;
+    };
+    Game.prototype.setSelectionBoxDrawer = function (sbd) {
+        this.selectionBoxDrawer = sbd;
     };
     Game.prototype.processPacket = function (data) {
         var logicFrame = data.getU32();
@@ -183,83 +192,82 @@ var Game = (function () {
                 // Select units
                 if (event instanceof MousePress) {
                     if (event.btn === MouseButton.Left && !event.down) {
-                        var minX = Math.min(control.clickX, control.currentX);
-                        var minY = Math.min(control.clickY, control.currentY);
-                        var maxX = Math.max(control.clickX, control.currentX);
-                        var maxY = Math.max(control.clickY, control.currentY);
-                        for (var i = 0; i < game.souls.length; i++) {
-                            var soul = game.souls[i];
-                            if (soul && soul.new && soul.new.team === game.team) {
-                                var x = soul.current.x;
-                                var y = soul.current.y;
-                                var r = soul.current.getRadius() * Game.TILESIZE;
-                                var rSqrd = r * r;
-                                var nDif = y - maxY;
-                                var sDif = y - minY;
-                                var eDif = x - maxX;
-                                var wDif = x - minX;
-                                if (y >= minY && y <= maxY) {
-                                    if (x + r >= minX && x - r <= maxX) {
-                                        soul.current.is_selected = true;
-                                    }
-                                    else if (!event.shiftDown) {
-                                        soul.current.is_selected = false;
-                                    }
-                                }
-                                else if (x >= minX && x <= maxX) {
-                                    if (y + r >= minY && y - r <= maxY) {
-                                        soul.current.is_selected = true;
-                                    }
-                                    else if (!event.shiftDown) {
-                                        soul.current.is_selected = false;
-                                    }
-                                }
-                                else if (x > maxX) {
-                                    // Northeast
-                                    if (y > maxY && (nDif * nDif + eDif * eDif) <= rSqrd) {
-                                        soul.current.is_selected = true;
-                                    }
-                                    else if (y < minY && (sDif * sDif + eDif * eDif) <= rSqrd) {
-                                        soul.current.is_selected = true;
-                                    }
-                                    else if (!event.shiftDown) {
-                                        soul.current.is_selected = false;
-                                    }
-                                }
-                                else if (x < minX) {
-                                    // Northwest
-                                    if (y > maxY && (nDif * nDif + wDif * wDif) <= rSqrd) {
-                                        soul.current.is_selected = true;
-                                    }
-                                    else if (y < minY && (sDif * sDif + wDif * wDif) <= rSqrd) {
-                                        soul.current.is_selected = true;
-                                    }
-                                    else if (!event.shiftDown) {
-                                        soul.current.is_selected = false;
-                                    }
-                                }
-                                else if (!event.shiftDown) {
-                                    soul.current.is_selected = false;
-                                }
-                            }
-                            var minBoxX = minX - game.camera.x;
-                            var minBoxY = minY - game.camera.y;
-                            var maxBoxX = maxX - game.camera.x;
-                            var maxBoxY = maxY - game.camera.y;
-                            game.drawSelectionBox(minBoxX, minBoxY, maxBoxX, maxBoxY);
-                        }
+                        game.selectUnits(event.shiftDown);
                         game.control = new DoingNothing();
                     }
                 }
                 else if (event instanceof MouseMove) {
                     control.currentX = game.camera.x + event.x - parent.offsetWidth / 2;
                     control.currentY = game.camera.y - (event.y - parent.offsetHeight / 2);
+                    game.selectUnits(event.shiftDown);
                 }
             }
         };
     };
-    Game.prototype.drawSelectionBox = function (minX, minY, maxX, maxY) {
-        //let ctx = this.fowDrawer.
+    Game.prototype.selectUnits = function (shiftDown) {
+        var control = this.control;
+        if (control instanceof SelectingUnits) {
+            var minX = Math.min(control.clickX, control.currentX);
+            var minY = Math.min(control.clickY, control.currentY);
+            var maxX = Math.max(control.clickX, control.currentX);
+            var maxY = Math.max(control.clickY, control.currentY);
+            for (var i = 0; i < this.souls.length; i++) {
+                var soul = this.souls[i];
+                if (soul && soul.new && soul.new.team === this.team) {
+                    var x = soul.current.x;
+                    var y = soul.current.y;
+                    var r = soul.current.getRadius() * Game.TILESIZE;
+                    var rSqrd = r * r;
+                    var nDif = y - maxY;
+                    var sDif = y - minY;
+                    var eDif = x - maxX;
+                    var wDif = x - minX;
+                    if (y >= minY && y <= maxY) {
+                        if (x + r >= minX && x - r <= maxX) {
+                            soul.current.is_selected = true;
+                        }
+                        else if (!shiftDown) {
+                            soul.current.is_selected = false;
+                        }
+                    }
+                    else if (x >= minX && x <= maxX) {
+                        if (y + r >= minY && y - r <= maxY) {
+                            soul.current.is_selected = true;
+                        }
+                        else if (!shiftDown) {
+                            soul.current.is_selected = false;
+                        }
+                    }
+                    else if (x > maxX) {
+                        // Northeast
+                        if (y > maxY && (nDif * nDif + eDif * eDif) <= rSqrd) {
+                            soul.current.is_selected = true;
+                        }
+                        else if (y < minY && (sDif * sDif + eDif * eDif) <= rSqrd) {
+                            soul.current.is_selected = true;
+                        }
+                        else if (!shiftDown) {
+                            soul.current.is_selected = false;
+                        }
+                    }
+                    else if (x < minX) {
+                        // Northwest
+                        if (y > maxY && (nDif * nDif + wDif * wDif) <= rSqrd) {
+                            soul.current.is_selected = true;
+                        }
+                        else if (y < minY && (sDif * sDif + wDif * wDif) <= rSqrd) {
+                            soul.current.is_selected = true;
+                        }
+                        else if (!shiftDown) {
+                            soul.current.is_selected = false;
+                        }
+                    }
+                    else if (!shiftDown) {
+                        soul.current.is_selected = false;
+                    }
+                }
+            }
+        }
     };
     Game.prototype.draw = function (time_passed) {
         this.timeSinceLastLogicFrame += time_passed;
@@ -267,6 +275,7 @@ var Game = (function () {
         this.stepMissiles(time_passed);
         this.tileDrawer.draw(this.camera.x, this.camera.y, 1);
         this.drawSelections();
+        this.drawSelectBox();
         this.drawUnitsAndMissiles();
         this.drawFogOfWar();
     };
@@ -284,6 +293,20 @@ var Game = (function () {
             if (soul && soul.old) {
                 soul.current.step(time, soul.old, soul.new);
             }
+        }
+    };
+    Game.prototype.drawSelectBox = function () {
+        var control = this.control;
+        if (control instanceof SelectingUnits) {
+            var minX = Math.min(control.clickX, control.currentX);
+            var minY = Math.min(control.clickY, control.currentY);
+            var maxX = Math.max(control.clickX, control.currentX);
+            var maxY = Math.max(control.clickY, control.currentY);
+            var minBoxX = minX - this.camera.x;
+            var minBoxY = minY - this.camera.y;
+            var maxBoxX = maxX - this.camera.x;
+            var maxBoxY = maxY - this.camera.y;
+            this.selectionBoxDrawer.draw(minBoxX, minBoxY, maxBoxX, maxBoxY);
         }
     };
     Game.prototype.drawUnitsAndMissiles = function () {
