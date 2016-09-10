@@ -12,7 +12,7 @@ class Game {
     private camera: Camera = new Camera(0, 0);
     private connection: WebSocket = null;
     private souls: { old: Unit, current: Unit, new: Unit }[] = null;
-    private missile_souls: { old: Missile, current: Missile, new: Missile }[] = null;
+    private missileSouls: { old: Missile, current: Missile, new: Missile }[] = null;
     private logicFrame: number = 0;
     private team: number = 0;
     private metal: number = 0;
@@ -27,10 +27,10 @@ class Game {
             this.souls.push(null);
         }
 
-        this.missile_souls = Array();
+        this.missileSouls = Array();
 
         for (let i = 0; i < Game.MAX_UNITS * 4; i++) {
-            this.missile_souls.push(null);
+            this.missileSouls.push(null);
         }
     }
 
@@ -42,7 +42,7 @@ class Game {
         }
 
         for (let i = 0; i < Game.MAX_UNITS * 4; i++) {
-            this.missile_souls[i] = null;
+            this.missileSouls[i] = null;
         }
     }
 
@@ -88,10 +88,10 @@ class Game {
                 }
             }
 
-            for (let i = 0; i < this.missile_souls.length; i++) {
-                let misl_soul = this.missile_souls[i];
+            for (let i = 0; i < this.missileSouls.length; i++) {
+                let misl_soul = this.missileSouls[i];
                 if (misl_soul && (logicFrame - misl_soul.new.frame_created > 1)) {
-                    this.missile_souls[i] = null;
+                    this.missileSouls[i] = null;
                 }
             }
         }
@@ -130,7 +130,7 @@ class Game {
                     let new_misl: Missile = Missile.decodeMissile(data, logicFrame, exploding);
 
                     if (new_misl) {
-                        let soul = this.missile_souls[new_misl.misl_ID];
+                        let soul = this.missileSouls[new_misl.misl_ID];
 
                         if (soul) {
                             soul.old = soul.current.clone();
@@ -138,7 +138,7 @@ class Game {
                         }
                         else {
                             let cur = new_misl.clone();
-                            this.missile_souls[new_misl.misl_ID] = { old: null, current: cur, new: new_misl };
+                            this.missileSouls[new_misl.misl_ID] = { old: null, current: cur, new: new_misl };
                         }
                     }
                     break msg_switch;
@@ -177,7 +177,17 @@ class Game {
                     if (event.btn === MouseButton.Left && event.down) {
                         let x = game.camera.x + event.x - parent.offsetWidth / 2;
                         let y = game.camera.y - (event.y - parent.offsetHeight / 2);
-                        game.control = new SelectingUnits(x, y, x, y);
+                        game.control = new SelectingUnits(x, y, x, y, event.shiftDown);
+
+                        if (!event.shiftDown) {
+                            for (let i = 0; i < game.souls.length; i++) {
+                                let soul = game.souls[i];
+
+                                if (soul) {
+                                    soul.current.isSelected = false;
+                                }
+                            }
+                        }
                     }
                     // Issue move order
                     if (event.btn === MouseButton.Right && event.down) {
@@ -186,7 +196,7 @@ class Game {
                         for (let i = 0; i < game.souls.length; i++) {
                             let soul = game.souls[i];
 
-                            if (soul && soul.current.is_selected) {
+                            if (soul && soul.current.isSelected) {
                                 selected.push(i);
                             }
                         }
@@ -231,20 +241,38 @@ class Game {
                 // Select units
                 if (event instanceof MousePress) {
                     if (event.btn === MouseButton.Left && !event.down) {
-                        game.selectUnits(event.shiftDown);
+                        game.selectUnits();
                         game.control = new DoingNothing();
                     }
                 }
                 else if (event instanceof MouseMove) {
                     control.currentX = game.camera.x + event.x - parent.offsetWidth / 2;
                     control.currentY = game.camera.y - (event.y - parent.offsetHeight / 2);
-                    game.selectUnits(event.shiftDown);
+                    control.shiftDown = event.shiftDown;
                 }
             }
         };
     }
 
-    private selectUnits(shiftDown: boolean) {
+    private selectUnits() {
+        let control = this.control;
+        if (control instanceof SelectingUnits) {
+            for (let i = 0; i < this.souls.length; i++) {
+                let soul = this.souls[i];
+
+                if (soul) {
+                    if (soul.new && soul.new.team === this.team && soul.current.isBeingSelected) {
+                        soul.current.isSelected = true;
+                    }
+                    else if (!control.shiftDown) {
+                        soul.current.isSelected = false;
+                    }
+                }
+            }
+        }
+    }
+
+    private configureUnitsBeingSelected() {
         let control = this.control;
         if (control instanceof SelectingUnits) {
             let minX = Math.min(control.clickX, control.currentX);
@@ -268,48 +296,48 @@ class Game {
 
                     if (y >= minY && y <= maxY) {
                         if (x + r >= minX && x - r <= maxX) {
-                            soul.current.is_selected = true;
+                            soul.current.isBeingSelected = true;
                         }
-                        else if (!shiftDown) {
-                            soul.current.is_selected = false;
+                        else if (!control.shiftDown) {
+                            soul.current.isBeingSelected = false;
                         }
                     }
                     else if (x >= minX && x <= maxX) {
                         if (y + r >= minY && y - r <= maxY) {
-                            soul.current.is_selected = true;
+                            soul.current.isBeingSelected = true;
                         }
-                        else if (!shiftDown) {
-                            soul.current.is_selected = false;
+                        else if (!control.shiftDown) {
+                            soul.current.isBeingSelected = false;
                         }
                     }
                     else if (x > maxX) {
                         // Northeast
                         if (y > maxY && (nDif * nDif + eDif * eDif) <= rSqrd) {
-                            soul.current.is_selected = true;
+                            soul.current.isBeingSelected = true;
                         }
                         // Southeast
                         else if (y < minY && (sDif * sDif + eDif * eDif) <= rSqrd) {
-                            soul.current.is_selected = true;
+                            soul.current.isBeingSelected = true;
                         }
-                        else if (!shiftDown) {
-                            soul.current.is_selected = false;
+                        else if (!control.shiftDown) {
+                            soul.current.isBeingSelected = false;
                         }
                     }
                     else if (x < minX) {
                         // Northwest
                         if (y > maxY && (nDif * nDif + wDif * wDif) <= rSqrd) {
-                            soul.current.is_selected = true;
+                            soul.current.isBeingSelected = true;
                         }
                         // Southwest
                         else if (y < minY && (sDif * sDif + wDif * wDif) <= rSqrd) {
-                            soul.current.is_selected = true;
+                            soul.current.isBeingSelected = true;
                         }
-                        else if (!shiftDown) {
-                            soul.current.is_selected = false;
+                        else if (!control.shiftDown) {
+                            soul.current.isBeingSelected = false;
                         }
                     }
-                    else if (!shiftDown) {
-                        soul.current.is_selected = false;
+                    else if (!control.shiftDown) {
+                        soul.current.isBeingSelected = false;
                     }
                 }
             }
@@ -317,6 +345,7 @@ class Game {
     }
 
     public draw(time_passed: number) {
+        this.configureUnitsBeingSelected();
         this.timeSinceLastLogicFrame += time_passed;
         this.stepUnits(time_passed);
         this.stepMissiles(time_passed);
@@ -337,8 +366,8 @@ class Game {
     }
 
     private stepMissiles(time: number) {
-        for (let i = 0; i < this.missile_souls.length; i++) {
-            var soul = this.missile_souls[i];
+        for (let i = 0; i < this.missileSouls.length; i++) {
+            var soul = this.missileSouls[i];
             if (soul && soul.old) {
                 soul.current.step(time, soul.old, soul.new);
             }
@@ -377,13 +406,13 @@ class Game {
         }
 
         // Render missiles
-        for (let i = 0; i < this.missile_souls.length; i++) {
-            let soul = this.missile_souls[i];
+        for (let i = 0; i < this.missileSouls.length; i++) {
+            let soul = this.missileSouls[i];
 
             if (soul) {
                 if (soul.current.exploding) {
                     soul.current.renderExplosion(this, layers);
-                    this.missile_souls[i] = null;
+                    this.missileSouls[i] = null;
                 }
                 else {
                     soul.current.render(this, layers);
@@ -408,7 +437,7 @@ class Game {
         for (let i = 0; i < this.souls.length; i++) {
             let soul = this.souls[i];
 
-            if (soul && soul.current.is_selected) {
+            if (soul && (soul.current.isSelected || soul.current.isBeingSelected)) {
                 selections.push({ x: soul.current.x, y: soul.current.y, r: soul.current.getRadius() });
             }
         }
@@ -442,12 +471,14 @@ class SelectingUnits implements Control {
     clickY: number;
     currentX: number;
     currentY: number;
+    shiftDown: boolean;
 
-    constructor(mx: number, my: number, cx: number, cy: number) {
+    constructor(mx: number, my: number, cx: number, cy: number, sd: boolean) {
         this.clickX = mx;
         this.clickY = my;
         this.currentX = cx;
         this.currentY = cy;
+        this.shiftDown = sd;
     }
 }
 

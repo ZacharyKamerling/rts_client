@@ -22,7 +22,8 @@ var Unit = (function () {
         unit.health = this.health;
         unit.progress = this.progress;
         unit.frame_created = this.frame_created;
-        unit.is_selected = this.is_selected;
+        unit.isSelected = this.isSelected;
+        unit.isBeingSelected = this.isBeingSelected;
     };
     Unit.prototype.clone = function () {
         throw new Error('Unit: clone() is abstract');

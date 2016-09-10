@@ -8,7 +8,8 @@
     health: number;
     progress: number;
     frame_created: number;
-    is_selected: boolean;
+    isSelected: boolean;
+    isBeingSelected: boolean;
 
     constructor(c: Cereal, frame: number) {
         if (c) {
@@ -34,7 +35,8 @@
         unit.health = this.health;
         unit.progress = this.progress;
         unit.frame_created = this.frame_created;
-        unit.is_selected = this.is_selected;
+        unit.isSelected = this.isSelected;
+        unit.isBeingSelected = this.isBeingSelected;
     }
 
     clone(): Unit {
