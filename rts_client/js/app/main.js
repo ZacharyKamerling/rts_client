@@ -10,7 +10,7 @@ function main() {
     var game = new Game();
     var fowCanvas = document.getElementById('fowCanvas');
     var drawCanvas = document.getElementById('drawCanvas');
-    var ctrlCanvas = document.getElementById('controlCanvas');
+    var ctrlDiv = document.getElementById('controlDiv');
     var unitRefs = [
         {
             src: "img/basic_unit.png",
@@ -81,18 +81,15 @@ function main() {
 function playGame(game) {
     var mainMenu = document.getElementById('mainMenu');
     var content = document.getElementById('content');
-    var canvas = document.getElementById('controlCanvas');
-    interact(canvas, game.interact_canvas());
-    var last_time = Date.now();
-    function draw(time_passed) {
+    var ctrlDiv = document.getElementById('controlDiv');
+    interact(ctrlDiv, game.interact());
+    function draw() {
         if (game.connected) {
-            var time_delta = (time_passed - last_time) / 100;
-            game.draw(time_delta);
-            last_time = time_passed;
+            game.draw();
             requestAnimationFrame(draw);
         }
     }
-    draw(last_time);
+    draw();
 }
 main();
 //# sourceMappingURL=main.js.map

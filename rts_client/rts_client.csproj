@@ -40,6 +40,7 @@
     <TypeScriptCompile Include="js\app\unit.ts" />
     <TypeScriptCompile Include="js\libs\cereal.ts" />
     <TypeScriptCompile Include="js\libs\chef.ts" />
+    <TypeScriptCompile Include="js\libs\graphics\command_panel.ts" />
     <TypeScriptCompile Include="js\libs\graphics\selection_drawer.ts" />
     <TypeScriptCompile Include="js\libs\graphics\fow_drawer.ts" />
     <TypeScriptCompile Include="js\libs\graphics\select_box_drawer.ts" />

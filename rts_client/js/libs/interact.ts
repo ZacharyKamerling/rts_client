@@ -100,24 +100,29 @@ function interact(parent: HTMLElement, handler: (parent: HTMLElement, input: Inp
         pauseEvent(e);
     });
 
-    parent.addEventListener("keydown", function (e) {
+    window.addEventListener("keydown", function (e) {
+        if (e.keyCode === 122) {
+            return true;
+        }
         let input = new KeyPress();
         input.shiftDown = e.shiftKey;
         input.ctrlDown = e.ctrlKey;
         input.altDown = e.altKey;
         input.key = e.keyCode;
         input.down = true;
+
         handler(parent, input);
         pauseEvent(e);
     });
 
-    parent.addEventListener("keyup", function (e) {
+    window.addEventListener("keyup", function (e) {
         let input = new KeyPress();
         input.shiftDown = e.shiftKey;
         input.ctrlDown = e.ctrlKey;
         input.altDown = e.altKey;
         input.key = e.keyCode;
         input.down = false;
+
         handler(parent, input);
         pauseEvent(e);
     });

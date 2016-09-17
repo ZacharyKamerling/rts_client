@@ -6,6 +6,7 @@ class Game {
     private tileDrawer: TileDrawer = null;
     private unitDrawer: UnitDrawer = null;
     private fowDrawer: FOWDrawer = null;
+    private commandPanel: CommandPanel = null;
     private selectionDrawer: SelectionDrawer = null;
     private selectionBoxDrawer: SelectionBoxDrawer = null;
     private control: Control = new DoingNothing();
@@ -14,10 +15,12 @@ class Game {
     private souls: { old: Unit, current: Unit, new: Unit }[] = null;
     private missileSouls: { old: Missile, current: Missile, new: Missile }[] = null;
     private logicFrame: number = 0;
+    private lastDrawTime: number = 0;
+    private lastLogicFrameTime: number = 0;
     private team: number = 0;
     private metal: number = 0;
     private energy: number = 0;
-    private timeSinceLastLogicFrame: number = 0;
+    private fps = 10;
     private static MAX_UNITS = 4096;
 
     constructor() {
@@ -35,7 +38,6 @@ class Game {
     }
 
     public reset() {
-        this.timeSinceLastLogicFrame = 0;
 
         for (let i = 0; i < Game.MAX_UNITS; i++) {
             this.souls[i] = null;
@@ -75,39 +77,39 @@ class Game {
     }
 
     public processPacket(data: Cereal): void {
+        let currentTime = Date.now();
         let logicFrame = data.getU32();
 
-        if (logicFrame >= this.logicFrame) {
+        if (logicFrame > this.logicFrame) {
             this.logicFrame = logicFrame;
-            this.timeSinceLastLogicFrame = 0;
+            this.lastLogicFrameTime = currentTime;
 
             for (let i = 0; i < this.souls.length; i++) {
                 let soul = this.souls[i];
-                if (soul && (logicFrame - soul.new.frame_created > 1)) {
+                if (soul && (logicFrame - soul.new.frameCreated > 2)) {
                     this.souls[i] = null;
                 }
             }
 
             for (let i = 0; i < this.missileSouls.length; i++) {
                 let misl_soul = this.missileSouls[i];
-                if (misl_soul && (logicFrame - misl_soul.new.frame_created > 1)) {
+                if (misl_soul && (logicFrame - misl_soul.new.frameCreated > 2)) {
                     this.missileSouls[i] = null;
                 }
             }
         }
-        else {
+        else if (logicFrame < this.logicFrame) {
             return;
         }
 
         while (!data.empty()) {
             let msg_type = data.getU8();
 
-
             msg_switch:
             switch (msg_type) {
                 // Unit
                 case 0:
-                    let new_unit: Unit = Unit.decodeUnit(data, logicFrame);
+                    let new_unit: Unit = Unit.decodeUnit(data, currentTime, logicFrame);
 
                     // If unit_soul exists, update it with new_unit
                     if (new_unit) {
@@ -115,6 +117,7 @@ class Game {
 
                         if (soul) {
                             soul.old = soul.current.clone();
+                            soul.old.timeCreated = soul.new.timeCreated;
                             soul.new = new_unit;
                         }
                         else {
@@ -127,7 +130,7 @@ class Game {
                 case 1:
                 case 2:
                     let exploding = msg_type === 2;
-                    let new_misl: Missile = Missile.decodeMissile(data, logicFrame, exploding);
+                    let new_misl: Missile = Missile.decodeMissile(data, currentTime, logicFrame, exploding);
 
                     if (new_misl) {
                         let soul = this.missileSouls[new_misl.misl_ID];
@@ -161,7 +164,7 @@ class Game {
         }
     }
 
-    public interact_canvas(): ((parent: HTMLElement, e: InputEvent) => void) {
+    public interact(): ((parent: HTMLElement, e: InputEvent) => void) {
         let game = this;
 
         return function (parent, event) {
@@ -174,7 +177,7 @@ class Game {
                         game.control = new MovingCamera(event.x, event.y, game.camera.x, game.camera.y);
                     }
                     // Select things initiate
-                    if (event.btn === MouseButton.Left && event.down) {
+                    else if (event.btn === MouseButton.Left && event.down) {
                         let x = game.camera.x + event.x - parent.offsetWidth / 2;
                         let y = game.camera.y - (event.y - parent.offsetHeight / 2);
                         game.control = new SelectingUnits(x, y, x, y, event.shiftDown);
@@ -190,38 +193,20 @@ class Game {
                         }
                     }
                     // Issue move order
-                    if (event.btn === MouseButton.Right && event.down) {
-                        let selected: number[] = new Array();
-
-                        for (let i = 0; i < game.souls.length; i++) {
-                            let soul = game.souls[i];
-
-                            if (soul && soul.current.isSelected) {
-                                selected.push(i);
-                            }
-                        }
-
-                        game.chef.put8(0);
-                        if (event.shiftDown) {
-                            game.chef.put8(1);
-                        }
-                        else {
-                            game.chef.put8(0);
-                        }
-
-                        game.chef.put16(selected.length);
-                        game.chef.putF64((game.camera.x + event.x - parent.offsetWidth / 2) / Game.TILESIZE);
-                        game.chef.putF64((game.camera.y - (event.y - parent.offsetHeight / 2)) / Game.TILESIZE);
-
-                        for (let i = 0; i < selected.length; i++) {
-                            game.chef.put16(selected[i]);
-                        }
-                        game.connection.send(game.chef.done());
+                    else if (event.btn === MouseButton.Right && event.down) {
+                        game.issueMoveOrder(parent, event);
                     }
                 }
                 else if (event instanceof KeyPress) {
-                    // TODO
-                    //if (event.key === )
+                    const A = 65;
+                    const B = 66;
+                    if (event.down) {
+                        if (event.key === A) {
+                            game.control = new IssuingAttackMove();
+                            parent.style.cursor = "crosshair";
+                            
+                        }
+                    }
                 }
             }
             else if (control instanceof MovingCamera) {
@@ -251,7 +236,74 @@ class Game {
                     control.shiftDown = event.shiftDown;
                 }
             }
+            else if (control instanceof IssuingAttackMove) {
+                if (event instanceof MousePress) {
+                    if (event.btn === MouseButton.Left && event.down) {
+                        game.issueAttackMoveOrder(parent, event);
+                    }
+                    game.control = new DoingNothing();
+                    parent.style.cursor = "default";
+                }
+            }
         };
+    }
+
+    private issueMoveOrder(parent: HTMLElement, event: MousePress) {
+        let selected: number[] = new Array();
+
+        for (let i = 0; i < this.souls.length; i++) {
+            let soul = this.souls[i];
+
+            if (soul && soul.current.isSelected) {
+                selected.push(i);
+            }
+        }
+
+        this.chef.put8(0);
+        if (event.shiftDown) {
+            this.chef.put8(1);
+        }
+        else {
+            this.chef.put8(0);
+        }
+
+        this.chef.put16(selected.length);
+        this.chef.putF64((this.camera.x + (event.x - parent.offsetWidth / 2)) / Game.TILESIZE);
+        this.chef.putF64((this.camera.y - (event.y - parent.offsetHeight / 2)) / Game.TILESIZE);
+
+        for (let i = 0; i < selected.length; i++) {
+            this.chef.put16(selected[i]);
+        }
+        this.connection.send(this.chef.done());
+    }
+
+    private issueAttackMoveOrder(parent: HTMLElement, event: MousePress) {
+        let selected: number[] = new Array();
+
+        for (let i = 0; i < this.souls.length; i++) {
+            let soul = this.souls[i];
+
+            if (soul && soul.current.isSelected) {
+                selected.push(i);
+            }
+        }
+
+        this.chef.put8(3);
+        if (event.shiftDown) {
+            this.chef.put8(1);
+        }
+        else {
+            this.chef.put8(0);
+        }
+
+        this.chef.put16(selected.length);
+        this.chef.putF64((this.camera.x + (event.x - parent.offsetWidth / 2)) / Game.TILESIZE);
+        this.chef.putF64((this.camera.y - (event.y - parent.offsetHeight / 2)) / Game.TILESIZE);
+
+        for (let i = 0; i < selected.length; i++) {
+            this.chef.put16(selected[i]);
+        }
+        this.connection.send(this.chef.done());
     }
 
     private selectUnits() {
@@ -261,13 +313,22 @@ class Game {
                 let soul = this.souls[i];
 
                 if (soul) {
-                    if (soul.new && soul.new.team === this.team && soul.current.isBeingSelected) {
+                    if (soul.current.team === this.team && soul.current.isBeingSelected) {
                         soul.current.isSelected = true;
                     }
                     else if (!control.shiftDown) {
                         soul.current.isSelected = false;
                     }
                 }
+            }
+        }
+
+        let seen = {};
+        for (let i = 0; i < this.souls.length; i++) {
+            let soul = this.souls[i];
+
+            if (soul.current.isSelected) {
+
             }
         }
     }
@@ -344,32 +405,35 @@ class Game {
         }
     }
 
-    public draw(time_passed: number) {
+    public draw() {
+        let currentTime = Date.now();
+        let timeDelta = (currentTime - this.lastDrawTime) * this.fps / 1000;
         this.configureUnitsBeingSelected();
-        this.timeSinceLastLogicFrame += time_passed;
-        this.stepUnits(time_passed);
-        this.stepMissiles(time_passed);
+        this.stepUnits(timeDelta);
+        this.stepMissiles(timeDelta);
         this.tileDrawer.draw(this.camera.x, this.camera.y, 1);
         this.drawSelections();
         this.drawSelectBox();
         this.drawUnitsAndMissiles();
         this.drawFogOfWar();
+        this.lastDrawTime = currentTime;
     }
 
-    private stepUnits(time: number) {
+    private stepUnits(timeDelta: number) {
         for (let i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul && soul.current && soul.new && soul.old) {
-                soul.current.step(time, soul.old, soul.new);
+                //let tcDelta = (this.lastLogicFrameTime - soul.old.timeCreated) * this.fps / 1000;
+                soul.current.step(timeDelta, soul.old, soul.new);
             }
         }
     }
 
-    private stepMissiles(time: number) {
+    private stepMissiles(timeDelta: number) {
         for (let i = 0; i < this.missileSouls.length; i++) {
             var soul = this.missileSouls[i];
             if (soul && soul.old) {
-                soul.current.step(time, soul.old, soul.new);
+                soul.current.step(this.fps, timeDelta, soul.old, soul.new);
             }
         }
     }
@@ -465,6 +529,8 @@ class Game {
 interface Control { }
 
 class DoingNothing implements Control { }
+
+class IssuingAttackMove implements Control { }
 
 class SelectingUnits implements Control {
     clickX: number;

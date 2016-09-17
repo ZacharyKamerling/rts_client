@@ -23,25 +23,20 @@ var Misc;
     // Angle to turn, angle to turn towards, amount to turn
     function turnTowards(a, b, turn) {
         var dist = angularDistance(a, b);
-        if (turn > dist) {
-            return b;
-        }
-        else {
-            if (a > b) {
-                if (a - b > Math.PI) {
-                    return normalizeAngle(a + turn);
-                }
-                else {
-                    return normalizeAngle(a - turn);
-                }
+        if (a > b) {
+            if (a - b > Math.PI) {
+                return normalizeAngle(a + turn);
             }
             else {
-                if (b - a > Math.PI) {
-                    return normalizeAngle(a - turn);
-                }
-                else {
-                    return normalizeAngle(a + turn);
-                }
+                return normalizeAngle(a - turn);
+            }
+        }
+        else {
+            if (b - a > Math.PI) {
+                return normalizeAngle(a - turn);
+            }
+            else {
+                return normalizeAngle(a + turn);
             }
         }
     }

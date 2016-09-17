@@ -6,6 +6,7 @@ var Game = (function () {
         this.tileDrawer = null;
         this.unitDrawer = null;
         this.fowDrawer = null;
+        this.commandPanel = null;
         this.selectionDrawer = null;
         this.selectionBoxDrawer = null;
         this.control = new DoingNothing();
@@ -14,10 +15,12 @@ var Game = (function () {
         this.souls = null;
         this.missileSouls = null;
         this.logicFrame = 0;
+        this.lastDrawTime = 0;
+        this.lastLogicFrameTime = 0;
         this.team = 0;
         this.metal = 0;
         this.energy = 0;
-        this.timeSinceLastLogicFrame = 0;
+        this.fps = 10;
         this.souls = Array();
         for (var i = 0; i < Game.MAX_UNITS; i++) {
             this.souls.push(null);
@@ -28,7 +31,6 @@ var Game = (function () {
         }
     }
     Game.prototype.reset = function () {
-        this.timeSinceLastLogicFrame = 0;
         for (var i = 0; i < Game.MAX_UNITS; i++) {
             this.souls[i] = null;
         }
@@ -58,24 +60,25 @@ var Game = (function () {
         this.selectionBoxDrawer = sbd;
     };
     Game.prototype.processPacket = function (data) {
+        var currentTime = Date.now();
         var logicFrame = data.getU32();
-        if (logicFrame >= this.logicFrame) {
+        if (logicFrame > this.logicFrame) {
             this.logicFrame = logicFrame;
-            this.timeSinceLastLogicFrame = 0;
+            this.lastLogicFrameTime = currentTime;
             for (var i = 0; i < this.souls.length; i++) {
                 var soul = this.souls[i];
-                if (soul && (logicFrame - soul.new.frame_created > 1)) {
+                if (soul && (logicFrame - soul.new.frameCreated > 2)) {
                     this.souls[i] = null;
                 }
             }
             for (var i = 0; i < this.missileSouls.length; i++) {
                 var misl_soul = this.missileSouls[i];
-                if (misl_soul && (logicFrame - misl_soul.new.frame_created > 1)) {
+                if (misl_soul && (logicFrame - misl_soul.new.frameCreated > 2)) {
                     this.missileSouls[i] = null;
                 }
             }
         }
-        else {
+        else if (logicFrame < this.logicFrame) {
             return;
         }
         while (!data.empty()) {
@@ -83,12 +86,13 @@ var Game = (function () {
             msg_switch: switch (msg_type) {
                 // Unit
                 case 0:
-                    var new_unit = Unit.decodeUnit(data, logicFrame);
+                    var new_unit = Unit.decodeUnit(data, currentTime, logicFrame);
                     // If unit_soul exists, update it with new_unit
                     if (new_unit) {
                         var soul = this.souls[new_unit.unit_ID];
                         if (soul) {
                             soul.old = soul.current.clone();
+                            soul.old.timeCreated = soul.new.timeCreated;
                             soul.new = new_unit;
                         }
                         else {
@@ -101,7 +105,7 @@ var Game = (function () {
                 case 1:
                 case 2:
                     var exploding = msg_type === 2;
-                    var new_misl = Missile.decodeMissile(data, logicFrame, exploding);
+                    var new_misl = Missile.decodeMissile(data, currentTime, logicFrame, exploding);
                     if (new_misl) {
                         var soul = this.missileSouls[new_misl.misl_ID];
                         if (soul) {
@@ -132,7 +136,7 @@ var Game = (function () {
             }
         }
     };
-    Game.prototype.interact_canvas = function () {
+    Game.prototype.interact = function () {
         var game = this;
         return function (parent, event) {
             var control = game.control;
@@ -142,8 +146,7 @@ var Game = (function () {
                     if (event.btn === MouseButton.Middle && event.down) {
                         game.control = new MovingCamera(event.x, event.y, game.camera.x, game.camera.y);
                     }
-                    // Select things initiate
-                    if (event.btn === MouseButton.Left && event.down) {
+                    else if (event.btn === MouseButton.Left && event.down) {
                         var x = game.camera.x + event.x - parent.offsetWidth / 2;
                         var y = game.camera.y - (event.y - parent.offsetHeight / 2);
                         game.control = new SelectingUnits(x, y, x, y, event.shiftDown);
@@ -156,32 +159,19 @@ var Game = (function () {
                             }
                         }
                     }
-                    // Issue move order
-                    if (event.btn === MouseButton.Right && event.down) {
-                        var selected = new Array();
-                        for (var i = 0; i < game.souls.length; i++) {
-                            var soul = game.souls[i];
-                            if (soul && soul.current.isSelected) {
-                                selected.push(i);
-                            }
-                        }
-                        game.chef.put8(0);
-                        if (event.shiftDown) {
-                            game.chef.put8(1);
-                        }
-                        else {
-                            game.chef.put8(0);
-                        }
-                        game.chef.put16(selected.length);
-                        game.chef.putF64((game.camera.x + event.x - parent.offsetWidth / 2) / Game.TILESIZE);
-                        game.chef.putF64((game.camera.y - (event.y - parent.offsetHeight / 2)) / Game.TILESIZE);
-                        for (var i = 0; i < selected.length; i++) {
-                            game.chef.put16(selected[i]);
-                        }
-                        game.connection.send(game.chef.done());
+                    else if (event.btn === MouseButton.Right && event.down) {
+                        game.issueMoveOrder(parent, event);
                     }
                 }
                 else if (event instanceof KeyPress) {
+                    var A = 65;
+                    var B = 66;
+                    if (event.down) {
+                        if (event.key === A) {
+                            game.control = new IssuingAttackMove();
+                            parent.style.cursor = "crosshair";
+                        }
+                    }
                 }
             }
             else if (control instanceof MovingCamera) {
@@ -210,7 +200,62 @@ var Game = (function () {
                     control.shiftDown = event.shiftDown;
                 }
             }
+            else if (control instanceof IssuingAttackMove) {
+                if (event instanceof MousePress) {
+                    if (event.btn === MouseButton.Left && event.down) {
+                        game.issueAttackMoveOrder(parent, event);
+                    }
+                    game.control = new DoingNothing();
+                    parent.style.cursor = "default";
+                }
+            }
         };
+    };
+    Game.prototype.issueMoveOrder = function (parent, event) {
+        var selected = new Array();
+        for (var i = 0; i < this.souls.length; i++) {
+            var soul = this.souls[i];
+            if (soul && soul.current.isSelected) {
+                selected.push(i);
+            }
+        }
+        this.chef.put8(0);
+        if (event.shiftDown) {
+            this.chef.put8(1);
+        }
+        else {
+            this.chef.put8(0);
+        }
+        this.chef.put16(selected.length);
+        this.chef.putF64((this.camera.x + (event.x - parent.offsetWidth / 2)) / Game.TILESIZE);
+        this.chef.putF64((this.camera.y - (event.y - parent.offsetHeight / 2)) / Game.TILESIZE);
+        for (var i = 0; i < selected.length; i++) {
+            this.chef.put16(selected[i]);
+        }
+        this.connection.send(this.chef.done());
+    };
+    Game.prototype.issueAttackMoveOrder = function (parent, event) {
+        var selected = new Array();
+        for (var i = 0; i < this.souls.length; i++) {
+            var soul = this.souls[i];
+            if (soul && soul.current.isSelected) {
+                selected.push(i);
+            }
+        }
+        this.chef.put8(3);
+        if (event.shiftDown) {
+            this.chef.put8(1);
+        }
+        else {
+            this.chef.put8(0);
+        }
+        this.chef.put16(selected.length);
+        this.chef.putF64((this.camera.x + (event.x - parent.offsetWidth / 2)) / Game.TILESIZE);
+        this.chef.putF64((this.camera.y - (event.y - parent.offsetHeight / 2)) / Game.TILESIZE);
+        for (var i = 0; i < selected.length; i++) {
+            this.chef.put16(selected[i]);
+        }
+        this.connection.send(this.chef.done());
     };
     Game.prototype.selectUnits = function () {
         var control = this.control;
@@ -218,13 +263,19 @@ var Game = (function () {
             for (var i = 0; i < this.souls.length; i++) {
                 var soul = this.souls[i];
                 if (soul) {
-                    if (soul.new && soul.new.team === this.team && soul.current.isBeingSelected) {
+                    if (soul.current.team === this.team && soul.current.isBeingSelected) {
                         soul.current.isSelected = true;
                     }
                     else if (!control.shiftDown) {
                         soul.current.isSelected = false;
                     }
                 }
+            }
+        }
+        var seen = {};
+        for (var i = 0; i < this.souls.length; i++) {
+            var soul = this.souls[i];
+            if (soul.current.isSelected) {
             }
         }
     };
@@ -293,30 +344,33 @@ var Game = (function () {
             }
         }
     };
-    Game.prototype.draw = function (time_passed) {
+    Game.prototype.draw = function () {
+        var currentTime = Date.now();
+        var timeDelta = (currentTime - this.lastDrawTime) * this.fps / 1000;
         this.configureUnitsBeingSelected();
-        this.timeSinceLastLogicFrame += time_passed;
-        this.stepUnits(time_passed);
-        this.stepMissiles(time_passed);
+        this.stepUnits(timeDelta);
+        this.stepMissiles(timeDelta);
         this.tileDrawer.draw(this.camera.x, this.camera.y, 1);
         this.drawSelections();
         this.drawSelectBox();
         this.drawUnitsAndMissiles();
         this.drawFogOfWar();
+        this.lastDrawTime = currentTime;
     };
-    Game.prototype.stepUnits = function (time) {
+    Game.prototype.stepUnits = function (timeDelta) {
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul && soul.current && soul.new && soul.old) {
-                soul.current.step(time, soul.old, soul.new);
+                //let tcDelta = (this.lastLogicFrameTime - soul.old.timeCreated) * this.fps / 1000;
+                soul.current.step(timeDelta, soul.old, soul.new);
             }
         }
     };
-    Game.prototype.stepMissiles = function (time) {
+    Game.prototype.stepMissiles = function (timeDelta) {
         for (var i = 0; i < this.missileSouls.length; i++) {
             var soul = this.missileSouls[i];
             if (soul && soul.old) {
-                soul.current.step(time, soul.old, soul.new);
+                soul.current.step(this.fps, timeDelta, soul.old, soul.new);
             }
         }
     };
@@ -398,6 +452,11 @@ var DoingNothing = (function () {
     function DoingNothing() {
     }
     return DoingNothing;
+})();
+var IssuingAttackMove = (function () {
+    function IssuingAttackMove() {
+    }
+    return IssuingAttackMove;
 })();
 var SelectingUnits = (function () {
     function SelectingUnits(mx, my, cx, cy, sd) {

@@ -1,6 +1,6 @@
 ﻿class BasicMissile extends Missile{
-    constructor(c: Cereal, frame: number, exploding: boolean) {
-        super(c, frame, exploding);
+    constructor(c: Cereal, time:number, frame: number, exploding: boolean) {
+        super(c, time, frame, exploding);
     }
 
     copycat(misl: BasicMissile) {
@@ -8,7 +8,7 @@
     }
 
     clone(): BasicMissile {
-        var u = new BasicMissile(null, 0, false);
+        var u = new BasicMissile(null, this.timeCreated, this.frameCreated, false);
         this.copycat(u);
         return u;
     }

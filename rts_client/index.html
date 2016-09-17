@@ -38,9 +38,20 @@
     <div id="content" style="height: 100%; ">
         <canvas style="height: 100%; width: 100%; position: absolute; z-index: 0;" id="drawCanvas"></canvas>
         <canvas style="height: 100%; width: 100%; position: absolute; z-index: 1;" id="fowCanvas" ></canvas>
-        <canvas style="height: 100%; width: 100%; position: absolute; z-index: 2;" id="controlCanvas"></canvas>
+        <div    style="height: 100%; width: 100%; position: absolute; z-index: 2;" id="controlDiv">
+            
+        </div>
+        <ul style="list-style-type:none; padding: 0; position: absolute; pointer-events: none; z-index: 3" id="commandDiv">
+            <li><input type="image" name="btn1" src="img/fighter1.png" style="pointer-events: initial" /></li>
+            <li><input type="image" name="btn2" src="img/bomber1.png" style="pointer-events: initial" /></li>
+        </ul>
     </div>
 
     <script src="js/app/main.js"></script>
+    <style>
+        input:focus, textarea:focus {
+            outline: none;
+        }
+    </style>
 </body>
 </html>

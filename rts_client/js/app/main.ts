@@ -11,7 +11,7 @@ function main() {
     let game: Game = new Game();
     let fowCanvas = <HTMLCanvasElement>document.getElementById('fowCanvas');
     let drawCanvas = <HTMLCanvasElement>document.getElementById('drawCanvas');
-    let ctrlCanvas = <HTMLCanvasElement>document.getElementById('controlCanvas');
+    let ctrlDiv = <HTMLCanvasElement>document.getElementById('controlDiv');
     let unitRefs = [
         {
             src: "img/basic_unit.png",
@@ -90,21 +90,16 @@ function main() {
 function playGame(game: Game) {
     let mainMenu = document.getElementById('mainMenu');
     let content = document.getElementById('content');
-    let canvas = <HTMLCanvasElement>document.getElementById('controlCanvas');
-    interact(canvas, game.interact_canvas());
+    let ctrlDiv = <HTMLCanvasElement>document.getElementById('controlDiv');
+    interact(ctrlDiv, game.interact());
 
-    let last_time = Date.now();
-
-    function draw(time_passed: number) {
+    function draw() {
         if (game.connected) {
-            let time_delta = (time_passed - last_time) / 100;
-            game.draw(time_delta);
-            last_time = time_passed;
+            game.draw();
             requestAnimationFrame(draw);
         }
     }
 
-    draw(last_time);
+    draw();
 }
-
 main();

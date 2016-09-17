@@ -1,7 +1,8 @@
 var Missile = (function () {
-    function Missile(c, frame, exploding) {
+    function Missile(c, time, frame, exploding) {
         if (c) {
-            this.frame_created = frame;
+            this.frameCreated = frame;
+            this.timeCreated = time;
             this.exploding = exploding;
             this.misl_ID = c.getU16();
             this.x = c.getU16() / (64 / Game.TILESIZE);
@@ -16,7 +17,8 @@ var Missile = (function () {
         misl.x = this.x;
         misl.y = this.y;
         misl.exploding = this.exploding;
-        misl.frame_created = this.frame_created;
+        misl.frameCreated = this.frameCreated;
+        misl.timeCreated = this.timeCreated;
     };
     Missile.prototype.render = function (game, layers) {
         throw new Error('Missile: render() is abstract');
@@ -27,10 +29,10 @@ var Missile = (function () {
     Missile.prototype.speed = function () {
         throw new Error('Missile: speed() is abstract');
     };
-    Missile.prototype.step = function (time, oldMisl, newMisl) {
+    Missile.prototype.step = function (fps, timeDelta, oldMisl, newMisl) {
         this.facing = Math.atan2(newMisl.y - this.y, newMisl.x - this.x);
-        this.x += this.speed() * Math.cos(this.facing) * time;
-        this.y += this.speed() * Math.sin(this.facing) * time;
+        this.x += this.speed() * Math.cos(this.facing) * timeDelta;
+        this.y += this.speed() * Math.sin(this.facing) * timeDelta;
         var xDifA = this.x - oldMisl.x;
         var yDifA = this.y - oldMisl.y;
         var xDifB = oldMisl.x - newMisl.x;
@@ -41,11 +43,11 @@ var Missile = (function () {
             this.exploding = true;
         }
     };
-    Missile.decodeMissile = function (data, frame, exploding) {
+    Missile.decodeMissile = function (data, time, frame, exploding) {
         var mislType = data.getU8();
         switch (mislType) {
             case 0:
-                return new BasicMissile(data, frame, exploding);
+                return new BasicMissile(data, time, frame, exploding);
             default:
                 console.log("No missile of type " + mislType + " exists.");
                 return null;

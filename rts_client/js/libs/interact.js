@@ -98,7 +98,10 @@ function interact(parent, handler) {
         handler(parent, input);
         pauseEvent(e);
     });
-    parent.addEventListener("keydown", function (e) {
+    window.addEventListener("keydown", function (e) {
+        if (e.keyCode === 122) {
+            return true;
+        }
         var input = new KeyPress();
         input.shiftDown = e.shiftKey;
         input.ctrlDown = e.ctrlKey;
@@ -108,7 +111,7 @@ function interact(parent, handler) {
         handler(parent, input);
         pauseEvent(e);
     });
-    parent.addEventListener("keyup", function (e) {
+    window.addEventListener("keyup", function (e) {
         var input = new KeyPress();
         input.shiftDown = e.shiftKey;
         input.ctrlDown = e.ctrlKey;

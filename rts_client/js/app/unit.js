@@ -1,7 +1,8 @@
 var Unit = (function () {
-    function Unit(c, frame) {
+    function Unit(c, time, frame) {
         if (c) {
-            this.frame_created = frame;
+            this.frameCreated = frame;
+            this.timeCreated = time;
             this.unit_ID = c.getU16();
             this.x = c.getU16() / (64 / Game.TILESIZE);
             this.y = c.getU16() / (64 / Game.TILESIZE);
@@ -21,7 +22,8 @@ var Unit = (function () {
         unit.facing = this.facing;
         unit.health = this.health;
         unit.progress = this.progress;
-        unit.frame_created = this.frame_created;
+        unit.frameCreated = this.frameCreated;
+        unit.timeCreated = this.timeCreated;
         unit.isSelected = this.isSelected;
         unit.isBeingSelected = this.isBeingSelected;
     };
@@ -37,21 +39,27 @@ var Unit = (function () {
     Unit.prototype.render = function (game, layers) {
         throw new Error('Unit: render() is abstract');
     };
-    Unit.prototype.step = function (time, oldUnit, newUnit) {
+    Unit.prototype.commands = function (cmds) {
+        throw new Error('Unit: commands() is abstract');
+    };
+    Unit.prototype.buildables = function (blds) {
+        throw new Error('Unit: buildables() is abstract');
+    };
+    Unit.prototype.step = function (timeDelta, oldUnit, newUnit) {
         var f1 = oldUnit.facing;
         var f2 = newUnit.facing;
-        var turn = Misc.angularDistance(f1, f2) * time;
+        var turn = Misc.angularDistance(f1, f2) * timeDelta;
         this.facing = Misc.turnTowards(this.facing, f2, turn);
-        this.x = this.x + (newUnit.x - oldUnit.x) * time;
-        this.y = this.y + (newUnit.y - oldUnit.y) * time;
-        this.health = this.health + (newUnit.health - oldUnit.health) * time;
-        this.progress = this.progress + (newUnit.progress - oldUnit.progress) * time;
+        this.x = this.x + (newUnit.x - oldUnit.x) * timeDelta;
+        this.y = this.y + (newUnit.y - oldUnit.y) * timeDelta;
+        this.health = this.health + (newUnit.health - oldUnit.health) * timeDelta;
+        this.progress = this.progress + (newUnit.progress - oldUnit.progress) * timeDelta;
     };
-    Unit.decodeUnit = function (data, frame) {
+    Unit.decodeUnit = function (data, time, frame) {
         var unitType = data.getU8();
         switch (unitType) {
             case 0:
-                return new BasicUnit(data, frame);
+                return new BasicUnit(data, time, frame);
             default:
                 console.log("No unit of type " + unitType + " exists.");
                 return null;
