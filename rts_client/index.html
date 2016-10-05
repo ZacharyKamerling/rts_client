@@ -11,6 +11,7 @@
     <script src="js/libs/graphics/fow_drawer.js"></script>
     <script src="js/libs/graphics/selection_drawer.js"></script>
     <script src="js/libs/graphics/select_box_drawer.js"></script>
+    <script src="js/libs/graphics/command_panel.js"></script>
     <script src="js/libs/interact.js"></script>
     <script src="js/libs/chef.js"></script>
     <script src="js/libs/cereal.js"></script>
@@ -41,10 +42,8 @@
         <div    style="height: 100%; width: 100%; position: absolute; z-index: 2;" id="controlDiv">
             
         </div>
-        <ul style="list-style-type:none; padding: 0; position: absolute; pointer-events: none; z-index: 3" id="commandDiv">
-            <li><input type="image" name="btn1" src="img/fighter1.png" style="pointer-events: initial" /></li>
-            <li><input type="image" name="btn2" src="img/bomber1.png" style="pointer-events: initial" /></li>
-        </ul>
+        <div style="list-style-type:none; padding: 0; position: fixed; bottom: 0; pointer-events: none; z-index: 3" id="commandDiv">
+        </div>
     </div>
 
     <script src="js/app/main.js"></script>

@@ -11,6 +11,7 @@ function main() {
     var fowCanvas = document.getElementById('fowCanvas');
     var drawCanvas = document.getElementById('drawCanvas');
     var ctrlDiv = document.getElementById('controlDiv');
+    var cmdDiv = document.getElementById('commandDiv');
     var unitRefs = [
         {
             src: "img/basic_unit.png",
@@ -25,11 +26,16 @@ function main() {
             ref: "basic_missile"
         },
     ];
+    var cmds = {};
+    cmds["attack"] = { src: "img/fighter1.png", tooltip: "Attack" };
+    cmds["move"] = { src: "img/bomber1.png", tooltip: "Move" };
+    cmds["build"] = { src: "img/wall0.png", tooltip: "Build" };
     game.setChef(chef);
     game.setTileDrawer(new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png'));
     game.setFOWDrawer(new FOWDrawer(fowCanvas));
     game.setSelectionDrawer(new SelectionDrawer(drawCanvas));
     game.setSelectionBoxDrawer(new SelectionBoxDrawer(drawCanvas));
+    game.setCommandPanel(new CommandPanel(cmdDiv, cmds, game.commandHandler));
     var spritemap = new SpriteMap(unitRefs);
     spritemap.onload = function (e) {
         game.setUnitDrawer(new UnitDrawer(drawCanvas, spritemap));

@@ -37,9 +37,9 @@ var BasicUnit = (function (_super) {
         this.wpn_facing = Misc.turnTowards(this.wpn_facing, f2, Misc.angularDistance(f1, f2) * timeDelta);
     };
     BasicUnit.prototype.commands = function (cmds) {
-        cmds['move'] = { name: 'move', src: 'img/move_button.png' };
-        cmds['attack'] = { name: 'attack', src: 'img/attack_button.png' };
-        cmds['build'] = { name: 'build', src: 'img/build_button.png' };
+        cmds['move'] = null;
+        cmds['attack'] = null;
+        cmds['build'] = null;
     };
     BasicUnit.prototype.buildables = function (blds) { };
     BasicUnit.prototype.render = function (game, layers) {

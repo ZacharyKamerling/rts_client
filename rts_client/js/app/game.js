@@ -59,6 +59,12 @@ var Game = (function () {
     Game.prototype.setSelectionBoxDrawer = function (sbd) {
         this.selectionBoxDrawer = sbd;
     };
+    Game.prototype.setCommandPanel = function (cp) {
+        this.commandPanel = cp;
+    };
+    Game.prototype.commandHandler = function (name) {
+        this.control = new DoingNothing();
+    };
     Game.prototype.processPacket = function (data) {
         var currentTime = Date.now();
         var logicFrame = data.getU32();
@@ -272,12 +278,31 @@ var Game = (function () {
                 }
             }
         }
-        var seen = {};
+        // Configure command card
+        var cmdSet = {};
+        var bldSet = {};
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
-            if (soul.current.isSelected) {
+            if (soul && soul.current.isSelected) {
+                soul.current.buildables(bldSet);
+                soul.current.commands(cmdSet);
             }
         }
+        var cmds = [];
+        for (var cmd in cmdSet) {
+            if (cmdSet.hasOwnProperty(cmd)) {
+                cmds.push(cmd);
+            }
+        }
+        var blds = [];
+        for (var bld in bldSet) {
+            if (bldSet.hasOwnProperty(bld)) {
+                blds.push(bld);
+            }
+        }
+        cmds.sort();
+        blds.sort();
+        this.commandPanel.renderCommands(cmds.concat(blds));
     };
     Game.prototype.configureUnitsBeingSelected = function () {
         var control = this.control;

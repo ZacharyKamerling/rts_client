@@ -1,10 +1,10 @@
 var CommandPanel = (function () {
-    function CommandPanel(parent, handler) {
+    function CommandPanel(parent, commands, handler) {
         this.parent = parent;
+        this.commands = commands;
         this.handler = handler;
     }
     CommandPanel.prototype.renderCommands = function (cmds) {
-        cmds = CommandPanel.uniq(cmds);
         while (this.parent.firstChild) {
             this.parent.removeChild(this.parent.firstChild);
         }
@@ -12,17 +12,17 @@ var CommandPanel = (function () {
             var self_1 = this;
             var cmd = cmds[i];
             var btn = document.createElement("input");
-            btn.name = cmd.name;
+            btn.name = cmd;
             btn.type = "image";
-            btn.src = cmd.src;
+            btn.src = this.commands[cmd].src;
             btn.onclick = function (name, handler) {
                 return function () {
                     handler(name);
                 };
             }(btn.name, self_1.handler);
-            var li = document.createElement("li");
-            li.appendChild(btn);
-            this.parent.appendChild(li);
+            //let li = document.createElement("li");
+            //li.appendChild(btn);
+            this.parent.appendChild(btn);
         }
     };
     return CommandPanel;

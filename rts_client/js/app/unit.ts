@@ -58,11 +58,11 @@
         throw new Error('Unit: render() is abstract');
     }
 
-    commands(cmds: { [index: string]: { name: string, src: string } }) {
+    commands(cmds: { [index: string]: void }) {
         throw new Error('Unit: commands() is abstract');
     }
 
-    buildables(blds: { [index: string]: { name: string, src: string } }) {
+    buildables(blds: { [index: string]: void }) {
         throw new Error('Unit: buildables() is abstract');
     }
 

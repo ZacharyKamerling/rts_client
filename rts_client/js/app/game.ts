@@ -76,6 +76,14 @@ class Game {
         this.selectionBoxDrawer = sbd;
     }
 
+    public setCommandPanel(cp: CommandPanel) {
+        this.commandPanel = cp;
+    }
+
+    public commandHandler(name: string) {
+        this.control = new DoingNothing();
+    }
+
     public processPacket(data: Cereal): void {
         let currentTime = Date.now();
         let logicFrame = data.getU32();
@@ -323,14 +331,36 @@ class Game {
             }
         }
 
-        let seen = {};
+        // Configure command card
+        let cmdSet: { [index: string]: void } = {};
+        let bldSet: { [index: string]: void } = {};
         for (let i = 0; i < this.souls.length; i++) {
             let soul = this.souls[i];
 
-            if (soul.current.isSelected) {
-
+            if (soul && soul.current.isSelected) {
+                soul.current.buildables(bldSet);
+                soul.current.commands(cmdSet);
             }
         }
+
+        let cmds: string[] = [];
+        for (let cmd in cmdSet) {
+            if (cmdSet.hasOwnProperty(cmd)) {
+                cmds.push(cmd);
+            }
+        }
+
+        let blds: string[] = [];
+        for (let bld in bldSet) {
+            if (bldSet.hasOwnProperty(bld)) {
+                blds.push(bld);
+            }
+        }
+
+        cmds.sort();
+        blds.sort();
+
+        this.commandPanel.renderCommands(cmds.concat(blds));
     }
 
     private configureUnitsBeingSelected() {

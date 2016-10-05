@@ -24,7 +24,7 @@
             img.onload = function () {
                 return function (event: Event) {
                     count++;
-                    if (count == stuff.length) {
+                    if (count === stuff.length) {
                         for (let n = 0; n < stuff.length; n++) {
                             let w = imgs[n].width;
                             let h = imgs[n].width;

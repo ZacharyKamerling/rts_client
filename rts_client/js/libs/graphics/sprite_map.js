@@ -18,7 +18,7 @@ var SpriteMap = (function () {
             img.onload = function () {
                 return function (event) {
                     count++;
-                    if (count == stuff.length) {
+                    if (count === stuff.length) {
                         for (var n = 0; n < stuff.length; n++) {
                             var w = imgs[n].width;
                             var h = imgs[n].width;

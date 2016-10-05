@@ -11,7 +11,9 @@ function main() {
     let game: Game = new Game();
     let fowCanvas = <HTMLCanvasElement>document.getElementById('fowCanvas');
     let drawCanvas = <HTMLCanvasElement>document.getElementById('drawCanvas');
-    let ctrlDiv = <HTMLCanvasElement>document.getElementById('controlDiv');
+    let ctrlDiv = <HTMLElement>document.getElementById('controlDiv');
+    let cmdDiv = <HTMLElement>document.getElementById('commandDiv');
+
     let unitRefs = [
         {
             src: "img/basic_unit.png",
@@ -26,12 +28,18 @@ function main() {
             ref: "basic_missile"
         },
     ];
+
+    let cmds: { [index: string]: { src: string, tooltip: string } } = {};
+    cmds["attack"] = { src: "img/fighter1.png", tooltip: "Attack" };
+    cmds["move"] = { src: "img/bomber1.png", tooltip: "Move" };
+    cmds["build"] = { src: "img/wall0.png", tooltip: "Build" };
     
     game.setChef(chef);
     game.setTileDrawer(new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png'));
     game.setFOWDrawer(new FOWDrawer(fowCanvas));
     game.setSelectionDrawer(new SelectionDrawer(drawCanvas));
     game.setSelectionBoxDrawer(new SelectionBoxDrawer(drawCanvas));
+    game.setCommandPanel(new CommandPanel(cmdDiv, cmds, game.commandHandler));
 
     let spritemap = new SpriteMap(unitRefs);
     spritemap.onload = function (e: Event) {

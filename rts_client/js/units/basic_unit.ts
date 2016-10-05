@@ -39,13 +39,13 @@
         this.wpn_facing = Misc.turnTowards(this.wpn_facing, f2, Misc.angularDistance(f1, f2) * timeDelta);
     }
 
-    commands(cmds: { [index: string]: { name: string, src: string } }) {
-        cmds['move'] = { name: 'move', src: 'img/move_button.png' };
-        cmds['attack'] = { name: 'attack', src: 'img/attack_button.png' };
-        cmds['build'] = { name: 'build', src: 'img/build_button.png' };
+    commands(cmds: { [index: string]: void }) {
+        cmds['move'] = null;
+        cmds['attack'] = null;
+        cmds['build'] = null;
     }
 
-    buildables(blds: { [index: string]: { name: string, src: string } }) {}
+    buildables(blds: { [index: string]: void }) {}
 
     render(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
         layers[1].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_unit" });
