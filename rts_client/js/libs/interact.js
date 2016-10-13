@@ -99,7 +99,7 @@ function interact(parent, handler) {
         pauseEvent(e);
     });
     window.addEventListener("keydown", function (e) {
-        if (e.keyCode === 122) {
+        if (e.keyCode === 122 || e.keyCode === 123) {
             return true;
         }
         var input = new KeyPress();

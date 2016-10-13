@@ -1,7 +1,8 @@
 ﻿"use strict";
 class Game {
-    public connected: boolean = true;
+    private static MAX_UNITS = 4096;
     public static TILESIZE = 32;
+    public connected: boolean = true;
     private chef: Chef = null;
     private tileDrawer: TileDrawer = null;
     private unitDrawer: UnitDrawer = null;
@@ -21,7 +22,6 @@ class Game {
     private metal: number = 0;
     private energy: number = 0;
     private fps = 10;
-    private static MAX_UNITS = 4096;
 
     constructor() {
         this.souls = Array();
@@ -80,8 +80,21 @@ class Game {
         this.commandPanel = cp;
     }
 
-    public commandHandler(name: string) {
-        this.control = new DoingNothing();
+    public commandPanelHandler(): (name: string) => void {
+        let game = this;
+        return function (name: string) {
+            switch (name) {
+                case "move":
+                    game.control = new IssuingMove();
+                    break;
+                case "attack":
+                    game.control = new IssuingAttackMove();
+                    break;
+                default:
+                    game.control = new DoingNothing();
+                    break;
+            }
+        };
     }
 
     public processPacket(data: Cereal): void {
@@ -207,12 +220,14 @@ class Game {
                 }
                 else if (event instanceof KeyPress) {
                     const A = 65;
-                    const B = 66;
+                    const M = 77;
+
                     if (event.down) {
                         if (event.key === A) {
                             game.control = new IssuingAttackMove();
-                            parent.style.cursor = "crosshair";
-                            
+                        }
+                        else if (event.key === M) {
+                            game.control = new IssuingMove();
                         }
                     }
                 }
@@ -250,7 +265,14 @@ class Game {
                         game.issueAttackMoveOrder(parent, event);
                     }
                     game.control = new DoingNothing();
-                    parent.style.cursor = "default";
+                }
+            }
+            else if (control instanceof IssuingMove) {
+                if (event instanceof MousePress) {
+                    if (event.btn === MouseButton.Left && event.down) {
+                        game.issueMoveOrder(parent, event);
+                    }
+                    game.control = new DoingNothing();
                 }
             }
         };
@@ -559,8 +581,8 @@ class Game {
 interface Control { }
 
 class DoingNothing implements Control { }
-
 class IssuingAttackMove implements Control { }
+class IssuingMove implements Control { }
 
 class SelectingUnits implements Control {
     clickX: number;

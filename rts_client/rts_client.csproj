@@ -22,12 +22,15 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="img\attack.png" />
     <Content Include="img\basic_missile.png" />
     <Content Include="img\basic_unit.png" />
     <Content Include="img\basic_wpn.png" />
     <Content Include="img\bomber1.png" />
+    <Content Include="img\build.png" />
     <Content Include="img\dirt0.png" />
     <Content Include="img\fighter1.png" />
+    <Content Include="img\move.png" />
     <Content Include="img\spelunky-tiles.png" />
     <Content Include="img\spelunky0.png" />
     <Content Include="img\wall0.png" />

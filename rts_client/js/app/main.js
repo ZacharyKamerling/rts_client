@@ -27,15 +27,15 @@ function main() {
         },
     ];
     var cmds = {};
-    cmds["attack"] = { src: "img/fighter1.png", tooltip: "Attack" };
-    cmds["move"] = { src: "img/bomber1.png", tooltip: "Move" };
-    cmds["build"] = { src: "img/wall0.png", tooltip: "Build" };
+    cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
+    cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
+    cmds["build"] = { src: "img/build.png", tooltip: "[B] Build" };
     game.setChef(chef);
     game.setTileDrawer(new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png'));
     game.setFOWDrawer(new FOWDrawer(fowCanvas));
     game.setSelectionDrawer(new SelectionDrawer(drawCanvas));
     game.setSelectionBoxDrawer(new SelectionBoxDrawer(drawCanvas));
-    game.setCommandPanel(new CommandPanel(cmdDiv, cmds, game.commandHandler));
+    game.setCommandPanel(new CommandPanel(cmdDiv, cmds, game.commandPanelHandler()));
     var spritemap = new SpriteMap(unitRefs);
     spritemap.onload = function (e) {
         game.setUnitDrawer(new UnitDrawer(drawCanvas, spritemap));

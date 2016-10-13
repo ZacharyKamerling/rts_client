@@ -20,9 +20,12 @@
             let btn = document.createElement("input");
             btn.name = cmd;
             btn.type = "image";
+            btn.title = this.commands[cmd].tooltip;
             btn.src = this.commands[cmd].src;
             btn.onclick = function (name: string, handler: (name: string) => void) {
-                return function () {
+                return function (event: MouseEvent) {
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
                     handler(name);
                 };
             }(btn.name, self.handler);

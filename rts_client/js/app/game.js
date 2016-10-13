@@ -62,8 +62,21 @@ var Game = (function () {
     Game.prototype.setCommandPanel = function (cp) {
         this.commandPanel = cp;
     };
-    Game.prototype.commandHandler = function (name) {
-        this.control = new DoingNothing();
+    Game.prototype.commandPanelHandler = function () {
+        var game = this;
+        return function (name) {
+            switch (name) {
+                case "move":
+                    game.control = new IssuingMove();
+                    break;
+                case "attack":
+                    game.control = new IssuingAttackMove();
+                    break;
+                default:
+                    game.control = new DoingNothing();
+                    break;
+            }
+        };
     };
     Game.prototype.processPacket = function (data) {
         var currentTime = Date.now();
@@ -171,11 +184,13 @@ var Game = (function () {
                 }
                 else if (event instanceof KeyPress) {
                     var A = 65;
-                    var B = 66;
+                    var M = 77;
                     if (event.down) {
                         if (event.key === A) {
                             game.control = new IssuingAttackMove();
-                            parent.style.cursor = "crosshair";
+                        }
+                        else if (event.key === M) {
+                            game.control = new IssuingMove();
                         }
                     }
                 }
@@ -212,7 +227,14 @@ var Game = (function () {
                         game.issueAttackMoveOrder(parent, event);
                     }
                     game.control = new DoingNothing();
-                    parent.style.cursor = "default";
+                }
+            }
+            else if (control instanceof IssuingMove) {
+                if (event instanceof MousePress) {
+                    if (event.btn === MouseButton.Left && event.down) {
+                        game.issueMoveOrder(parent, event);
+                    }
+                    game.control = new DoingNothing();
                 }
             }
         };
@@ -469,8 +491,8 @@ var Game = (function () {
         }
         this.fowDrawer.draw(this.camera.x, this.camera.y, 1, circles);
     };
-    Game.TILESIZE = 32;
     Game.MAX_UNITS = 4096;
+    Game.TILESIZE = 32;
     return Game;
 })();
 var DoingNothing = (function () {
@@ -482,6 +504,11 @@ var IssuingAttackMove = (function () {
     function IssuingAttackMove() {
     }
     return IssuingAttackMove;
+})();
+var IssuingMove = (function () {
+    function IssuingMove() {
+    }
+    return IssuingMove;
 })();
 var SelectingUnits = (function () {
     function SelectingUnits(mx, my, cx, cy, sd) {

@@ -101,7 +101,7 @@ function interact(parent: HTMLElement, handler: (parent: HTMLElement, input: Inp
     });
 
     window.addEventListener("keydown", function (e) {
-        if (e.keyCode === 122) {
+        if (e.keyCode === 122 || e.keyCode === 123) {
             return true;
         }
         let input = new KeyPress();

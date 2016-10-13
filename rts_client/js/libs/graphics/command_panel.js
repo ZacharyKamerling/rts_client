@@ -14,9 +14,12 @@ var CommandPanel = (function () {
             var btn = document.createElement("input");
             btn.name = cmd;
             btn.type = "image";
+            btn.title = this.commands[cmd].tooltip;
             btn.src = this.commands[cmd].src;
             btn.onclick = function (name, handler) {
-                return function () {
+                return function (event) {
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
                     handler(name);
                 };
             }(btn.name, self_1.handler);
