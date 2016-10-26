@@ -13,6 +13,17 @@ function main() {
     let drawCanvas = <HTMLCanvasElement>document.getElementById('drawCanvas');
     let ctrlDiv = <HTMLElement>document.getElementById('controlDiv');
     let cmdDiv = <HTMLElement>document.getElementById('commandDiv');
+    let cmds: { [index: string]: { src: string, tooltip: string } } = {};
+    cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
+    cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
+    cmds["build"] = { src: "img/build.png", tooltip: "[B] Build" };
+    
+    game.chef = chef;
+    game.tileDrawer = new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png');
+    game.fowDrawer = new FOWDrawer(fowCanvas);
+    game.selectionDrawer = new SelectionDrawer(drawCanvas);
+    game.selectionBoxDrawer = new SelectionBoxDrawer(drawCanvas);
+    game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
 
     let unitRefs = [
         {
@@ -27,23 +38,15 @@ function main() {
             src: "img/basic_missile.png",
             ref: "basic_missile"
         },
+        {
+            src: "img/basic_structure.png",
+            ref: "basic_structure"
+        },
     ];
-
-    let cmds: { [index: string]: { src: string, tooltip: string } } = {};
-    cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
-    cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
-    cmds["build"] = { src: "img/build.png", tooltip: "[B] Build" };
-    
-    game.setChef(chef);
-    game.setTileDrawer(new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png'));
-    game.setFOWDrawer(new FOWDrawer(fowCanvas));
-    game.setSelectionDrawer(new SelectionDrawer(drawCanvas));
-    game.setSelectionBoxDrawer(new SelectionBoxDrawer(drawCanvas));
-    game.setCommandPanel(new CommandPanel(cmdDiv, cmds, game.commandPanelHandler()));
 
     let spritemap = new SpriteMap(unitRefs);
     spritemap.onload = function (e: Event) {
-        game.setUnitDrawer(new UnitDrawer(drawCanvas, spritemap));
+        game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
     };
 
     connectBtn.onclick = function () {
@@ -60,7 +63,7 @@ function main() {
             conn = new WebSocket('ws://[' + addrFieldValue + ']:' + portFieldValue);
         }
         conn.binaryType = "arraybuffer";
-        game.setConnection(conn);
+        game.connection = conn;
 
         conn.onclose = function () {
             console.log('Connection closed.');
@@ -71,7 +74,7 @@ function main() {
         }
 
         conn.onmessage = function (event) {
-            game.processPacket(new Cereal(new DataView(event.data)));
+            Decoding.processPacket(game, new Cereal(new DataView(event.data)));
         }
 
         conn.onopen = function () {
@@ -99,7 +102,7 @@ function playGame(game: Game) {
     let mainMenu = document.getElementById('mainMenu');
     let content = document.getElementById('content');
     let ctrlDiv = <HTMLCanvasElement>document.getElementById('controlDiv');
-    interact(ctrlDiv, game.interact());
+    interact(ctrlDiv, Interaction.Core.interact(game));
 
     function draw() {
         if (game.connected) {

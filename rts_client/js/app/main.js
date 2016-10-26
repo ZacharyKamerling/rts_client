@@ -12,6 +12,16 @@ function main() {
     var drawCanvas = document.getElementById('drawCanvas');
     var ctrlDiv = document.getElementById('controlDiv');
     var cmdDiv = document.getElementById('commandDiv');
+    var cmds = {};
+    cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
+    cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
+    cmds["build"] = { src: "img/build.png", tooltip: "[B] Build" };
+    game.chef = chef;
+    game.tileDrawer = new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png');
+    game.fowDrawer = new FOWDrawer(fowCanvas);
+    game.selectionDrawer = new SelectionDrawer(drawCanvas);
+    game.selectionBoxDrawer = new SelectionBoxDrawer(drawCanvas);
+    game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
     var unitRefs = [
         {
             src: "img/basic_unit.png",
@@ -25,20 +35,14 @@ function main() {
             src: "img/basic_missile.png",
             ref: "basic_missile"
         },
+        {
+            src: "img/basic_structure.png",
+            ref: "basic_structure"
+        },
     ];
-    var cmds = {};
-    cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
-    cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
-    cmds["build"] = { src: "img/build.png", tooltip: "[B] Build" };
-    game.setChef(chef);
-    game.setTileDrawer(new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png'));
-    game.setFOWDrawer(new FOWDrawer(fowCanvas));
-    game.setSelectionDrawer(new SelectionDrawer(drawCanvas));
-    game.setSelectionBoxDrawer(new SelectionBoxDrawer(drawCanvas));
-    game.setCommandPanel(new CommandPanel(cmdDiv, cmds, game.commandPanelHandler()));
     var spritemap = new SpriteMap(unitRefs);
     spritemap.onload = function (e) {
-        game.setUnitDrawer(new UnitDrawer(drawCanvas, spritemap));
+        game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
     };
     connectBtn.onclick = function () {
         var nameFieldValue = document.getElementById('nameField').value;
@@ -53,7 +57,7 @@ function main() {
             conn = new WebSocket('ws://[' + addrFieldValue + ']:' + portFieldValue);
         }
         conn.binaryType = "arraybuffer";
-        game.setConnection(conn);
+        game.connection = conn;
         conn.onclose = function () {
             console.log('Connection closed.');
             mainMenu.hidden = false;
@@ -62,7 +66,7 @@ function main() {
             game.reset();
         };
         conn.onmessage = function (event) {
-            game.processPacket(new Cereal(new DataView(event.data)));
+            Decoding.processPacket(game, new Cereal(new DataView(event.data)));
         };
         conn.onopen = function () {
             console.log('Connection open.');
@@ -88,7 +92,7 @@ function playGame(game) {
     var mainMenu = document.getElementById('mainMenu');
     var content = document.getElementById('content');
     var ctrlDiv = document.getElementById('controlDiv');
-    interact(ctrlDiv, game.interact());
+    interact(ctrlDiv, Interaction.Core.interact(game));
     function draw() {
         if (game.connected) {
             game.draw();

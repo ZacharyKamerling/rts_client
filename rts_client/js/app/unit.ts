@@ -82,6 +82,8 @@
         switch (unitType) {
             case 0:
                 return new BasicUnit(data, time, frame);
+            case 1:
+                return new BasicStructure(data, time, frame);
             default:
                 console.log("No unit of type " + unitType + " exists.");
                 return null;

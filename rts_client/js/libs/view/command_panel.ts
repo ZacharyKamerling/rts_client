@@ -29,8 +29,6 @@
                     handler(name);
                 };
             }(btn.name, self.handler);
-            //let li = document.createElement("li");
-            //li.appendChild(btn);
             this.parent.appendChild(btn);
         }
     }

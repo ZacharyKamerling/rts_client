@@ -23,8 +23,6 @@ var CommandPanel = (function () {
                     handler(name);
                 };
             }(btn.name, self_1.handler);
-            //let li = document.createElement("li");
-            //li.appendChild(btn);
             this.parent.appendChild(btn);
         }
     };
