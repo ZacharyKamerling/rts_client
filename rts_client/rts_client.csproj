@@ -58,6 +58,7 @@
     <TypeScriptCompile Include="js\libs\interact.ts" />
     <TypeScriptCompile Include="js\libs\misc.ts" />
     <TypeScriptCompile Include="js\libs\view\sprite_map.ts" />
+    <TypeScriptCompile Include="js\libs\view\status_bar_drawer.ts" />
     <TypeScriptCompile Include="js\libs\view\web_gl_help.ts" />
     <TypeScriptCompile Include="js\libs\view\tile_drawer.ts" />
     <TypeScriptCompile Include="js\app\main.ts" />

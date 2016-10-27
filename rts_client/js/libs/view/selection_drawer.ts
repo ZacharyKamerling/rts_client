@@ -12,21 +12,22 @@
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
     }
 
-    public draw(x: number, y: number, scale: number, circles: { x: number, y: number, radius: number, r: number, g: number, b: number }[]) {
+    public draw(x: number, y: number, scale: number, circles: { x: number, y: number, radius: number, r: number, g: number, b: number, a: number }[]) {
         x = Math.floor(x);
         y = Math.floor(y);
         scale = scale / 4;
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
-
-        const FLOATS_PER_UNIT = 48;
-        let drawData = new Float32Array(FLOATS_PER_UNIT * circles.length);
         let xm = Game.TILESIZE / this.canvas.width;
         let ym = Game.TILESIZE / this.canvas.height;
 
-        for (let i = 0, n = 0; n < circles.length; n++) {
+        const BYTES_PER_VERTEX = 24;
+        var drawData = new ArrayBuffer(6 * BYTES_PER_VERTEX * circles.length);
+        var floatView = new Float32Array(drawData);
+        var uint8View = new Uint8Array(drawData);
+
+        for (let n = 0; n < circles.length; n++) {
             let circle = circles[n];
-            // Scale all coords to 1/4th their size (to match small canvas)
             // GL Coords go from -1 to 1
             // If they went from 0 to 1 we wouldn't need to double the radius
             circle.radius = circle.radius * 2;
@@ -44,59 +45,80 @@
             let radius = circle.radius * xm;
 
             // Fill array with scaled vertices
-            drawData[i++] = west;
-            drawData[i++] = south;
-            drawData[i++] = normX;
-            drawData[i++] = normY;
-            drawData[i++] = radius;
-            drawData[i++] = circle.r;
-            drawData[i++] = circle.g;
-            drawData[i++] = circle.b;
+            let vertFloatOff = n * 6 * BYTES_PER_VERTEX / 4;
+            let vertUInt8Off = n * 6 * BYTES_PER_VERTEX + 20;
 
-            drawData[i++] = east;
-            drawData[i++] = south;
-            drawData[i++] = normX;
-            drawData[i++] = normY;
-            drawData[i++] = radius;
-            drawData[i++] = circle.r;
-            drawData[i++] = circle.g;
-            drawData[i++] = circle.b;
+            let floatOff = vertFloatOff + BYTES_PER_VERTEX / 4 * 0;
+            let colorOff = vertUInt8Off + BYTES_PER_VERTEX * 0;
+            floatView[floatOff + 0] = west;
+            floatView[floatOff + 1] = south;
+            floatView[floatOff + 2] = normX;
+            floatView[floatOff + 3] = normY;
+            floatView[floatOff + 4] = radius;
+            uint8View[colorOff + 0] = circle.r;
+            uint8View[colorOff + 1] = circle.g;
+            uint8View[colorOff + 2] = circle.b;
+            uint8View[colorOff + 3] = circle.a;
 
-            drawData[i++] = east;
-            drawData[i++] = north;
-            drawData[i++] = normX;
-            drawData[i++] = normY;
-            drawData[i++] = radius;
-            drawData[i++] = circle.r;
-            drawData[i++] = circle.g;
-            drawData[i++] = circle.b;
+            floatOff = vertFloatOff + BYTES_PER_VERTEX / 4 * 1;
+            colorOff = vertUInt8Off + BYTES_PER_VERTEX * 1;
+            floatView[floatOff + 0] = east;
+            floatView[floatOff + 1] = south;
+            floatView[floatOff + 2] = normX;
+            floatView[floatOff + 3] = normY;
+            floatView[floatOff + 4] = radius;
+            uint8View[colorOff + 0] = circle.r;
+            uint8View[colorOff + 1] = circle.g;
+            uint8View[colorOff + 2] = circle.b;
+            uint8View[colorOff + 3] = circle.a;
 
-            drawData[i++] = west;
-            drawData[i++] = south;
-            drawData[i++] = normX;
-            drawData[i++] = normY;
-            drawData[i++] = radius;
-            drawData[i++] = circle.r;
-            drawData[i++] = circle.g;
-            drawData[i++] = circle.b;
+            floatOff = vertFloatOff + BYTES_PER_VERTEX / 4 * 2;
+            colorOff = vertUInt8Off + BYTES_PER_VERTEX * 2;
+            floatView[floatOff + 0] = east;
+            floatView[floatOff + 1] = north;
+            floatView[floatOff + 2] = normX;
+            floatView[floatOff + 3] = normY;
+            floatView[floatOff + 4] = radius;
+            uint8View[colorOff + 0] = circle.r;
+            uint8View[colorOff + 1] = circle.g;
+            uint8View[colorOff + 2] = circle.b;
+            uint8View[colorOff + 3] = circle.a;
 
-            drawData[i++] = east;
-            drawData[i++] = north;
-            drawData[i++] = normX;
-            drawData[i++] = normY;
-            drawData[i++] = radius;
-            drawData[i++] = circle.r;
-            drawData[i++] = circle.g;
-            drawData[i++] = circle.b;
+            floatOff = vertFloatOff + BYTES_PER_VERTEX / 4 * 3;
+            colorOff = vertUInt8Off + BYTES_PER_VERTEX * 3;
+            floatView[floatOff + 0] = west;
+            floatView[floatOff + 1] = south;
+            floatView[floatOff + 2] = normX;
+            floatView[floatOff + 3] = normY;
+            floatView[floatOff + 4] = radius;
+            uint8View[colorOff + 0] = circle.r;
+            uint8View[colorOff + 1] = circle.g;
+            uint8View[colorOff + 2] = circle.b;
+            uint8View[colorOff + 3] = circle.a;
 
-            drawData[i++] = west;
-            drawData[i++] = north;
-            drawData[i++] = normX;
-            drawData[i++] = normY;
-            drawData[i++] = radius;
-            drawData[i++] = circle.r;
-            drawData[i++] = circle.g;
-            drawData[i++] = circle.b;
+            floatOff = vertFloatOff + BYTES_PER_VERTEX / 4 * 4;
+            colorOff = vertUInt8Off + BYTES_PER_VERTEX * 4;
+            floatView[floatOff + 0] = east;
+            floatView[floatOff + 1] = north;
+            floatView[floatOff + 2] = normX;
+            floatView[floatOff + 3] = normY;
+            floatView[floatOff + 4] = radius;
+            uint8View[colorOff + 0] = circle.r;
+            uint8View[colorOff + 1] = circle.g;
+            uint8View[colorOff + 2] = circle.b;
+            uint8View[colorOff + 3] = circle.a;
+
+            floatOff = vertFloatOff + BYTES_PER_VERTEX / 4 * 5;
+            colorOff = vertUInt8Off + BYTES_PER_VERTEX * 5;
+            floatView[floatOff + 0] = west;
+            floatView[floatOff + 1] = north;
+            floatView[floatOff + 2] = normX;
+            floatView[floatOff + 3] = normY;
+            floatView[floatOff + 4] = radius;
+            uint8View[colorOff + 0] = circle.r;
+            uint8View[colorOff + 1] = circle.g;
+            uint8View[colorOff + 2] = circle.b;
+            uint8View[colorOff + 3] = circle.a;
         }
 
         let gl = <WebGLRenderingContext>this.canvas.getContext('webgl');
@@ -110,10 +132,10 @@
         gl.enableVertexAttribArray(this.program.attribute['a_circle_position']);
         gl.enableVertexAttribArray(this.program.attribute['a_circle_radius']);
         gl.enableVertexAttribArray(this.program.attribute['a_circle_color']);
-        gl.vertexAttribPointer(this.program.attribute['a_position'], 2, gl.FLOAT, false, 32, 0);
-        gl.vertexAttribPointer(this.program.attribute['a_circle_position'], 2, gl.FLOAT, false, 32, 8);
-        gl.vertexAttribPointer(this.program.attribute['a_circle_radius'], 1, gl.FLOAT, false, 32, 16);
-        gl.vertexAttribPointer(this.program.attribute['a_circle_color'], 3, gl.FLOAT, false, 32, 20);
+        gl.vertexAttribPointer(this.program.attribute['a_position'], 2, gl.FLOAT, false, BYTES_PER_VERTEX, 0);
+        gl.vertexAttribPointer(this.program.attribute['a_circle_position'], 2, gl.FLOAT, false, BYTES_PER_VERTEX, 8);
+        gl.vertexAttribPointer(this.program.attribute['a_circle_radius'], 1, gl.FLOAT, false, BYTES_PER_VERTEX, 16);
+        gl.vertexAttribPointer(this.program.attribute['a_circle_color'], 4, gl.UNSIGNED_BYTE, true, BYTES_PER_VERTEX, 20);
         gl.uniform1f(this.program.uniform['scaleY'], this.canvas.width / this.canvas.height);
         gl.uniform1f(this.program.uniform['scale'], 2 / this.canvas.width);
 
@@ -126,12 +148,12 @@
         "attribute vec2 a_position;",
         "attribute vec2 a_circle_position;",
         "attribute float a_circle_radius;",
-        "attribute vec3 a_circle_color;",
+        "attribute vec4 a_circle_color;",
 
         "varying vec2 v_circle_position;",
         "varying vec2 v_frag_position;",
         "varying float v_circle_radius;",
-        "varying vec3 v_circle_color;",
+        "varying vec4 v_circle_color;",
 
         "uniform float scaleY;",
 
@@ -150,7 +172,7 @@
         "varying vec2 v_circle_position;",
         "varying vec2 v_frag_position;",
         "varying float v_circle_radius;",
-        "varying vec3 v_circle_color;",
+        "varying vec4 v_circle_color;",
 
         "uniform float scaleY;",
         "uniform float scale;",
@@ -160,7 +182,7 @@
         "    float yDif = (v_frag_position.y - v_circle_position.y) / scaleY;",
         "    float dist = xDif * xDif + yDif * yDif;",
         "    if (dist <= (v_circle_radius * v_circle_radius) && dist >= ((v_circle_radius - scale) * (v_circle_radius - scale))) {",
-        "        gl_FragColor = vec4(v_circle_color, 1);",
+        "        gl_FragColor = vec4(v_circle_color);",
         "    } else {",
         "        discard;",
         "    }",

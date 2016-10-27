@@ -69,13 +69,13 @@ var Interaction;
         function configUnitSelections(game) {
             var control = game.control;
             if (control instanceof Interaction.SelectingUnits.CurrentAction) {
-                configureUnitsBeingSelected(game, control.shiftDown, control.clickX, control.clickY, control.currentX, control.currentY);
+                configureUnitsBeingSelected(game, control.clickX, control.clickY, control.currentX, control.currentY);
             }
             if (control instanceof Interaction.Core.DoingNothing) {
             }
         }
         SelectingUnits.configUnitSelections = configUnitSelections;
-        function configureUnitsBeingSelected(game, shiftDown, x1, y1, x2, y2) {
+        function configureUnitsBeingSelected(game, x1, y1, x2, y2) {
             var minX = Math.min(x1, x2);
             var minY = Math.min(y1, y2);
             var maxX = Math.max(x1, x2);
@@ -95,7 +95,7 @@ var Interaction;
                         if (x + r >= minX && x - r <= maxX) {
                             soul.current.isBeingSelected = true;
                         }
-                        else if (!shiftDown) {
+                        else {
                             soul.current.isBeingSelected = false;
                         }
                     }
@@ -103,7 +103,7 @@ var Interaction;
                         if (y + r >= minY && y - r <= maxY) {
                             soul.current.isBeingSelected = true;
                         }
-                        else if (!shiftDown) {
+                        else {
                             soul.current.isBeingSelected = false;
                         }
                     }
@@ -115,7 +115,7 @@ var Interaction;
                         else if (y < minY && (sDif * sDif + eDif * eDif) <= rSqrd) {
                             soul.current.isBeingSelected = true;
                         }
-                        else if (!shiftDown) {
+                        else {
                             soul.current.isBeingSelected = false;
                         }
                     }
@@ -127,11 +127,11 @@ var Interaction;
                         else if (y < minY && (sDif * sDif + wDif * wDif) <= rSqrd) {
                             soul.current.isBeingSelected = true;
                         }
-                        else if (!shiftDown) {
+                        else {
                             soul.current.isBeingSelected = false;
                         }
                     }
-                    else if (!shiftDown) {
+                    else {
                         soul.current.isBeingSelected = false;
                     }
                 }

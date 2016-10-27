@@ -81,14 +81,14 @@
     export function configUnitSelections(game: Game) {
         let control = game.control;
         if (control instanceof Interaction.SelectingUnits.CurrentAction) {
-            configureUnitsBeingSelected(game, control.shiftDown, control.clickX, control.clickY, control.currentX, control.currentY);
+            configureUnitsBeingSelected(game, control.clickX, control.clickY, control.currentX, control.currentY);
         }
         if (control instanceof Interaction.Core.DoingNothing) {
 
         }
     }
 
-    function configureUnitsBeingSelected(game: Game, shiftDown: boolean, x1: number, y1: number, x2: number, y2: number) {
+    function configureUnitsBeingSelected(game: Game, x1: number, y1: number, x2: number, y2: number) {
         let minX = Math.min(x1, x2);
         let minY = Math.min(y1, y2);
         let maxX = Math.max(x1, x2);
@@ -112,7 +112,7 @@
                     if (x + r >= minX && x - r <= maxX) {
                         soul.current.isBeingSelected = true;
                     }
-                    else if (!shiftDown) {
+                    else {
                         soul.current.isBeingSelected = false;
                     }
                 }
@@ -120,7 +120,7 @@
                     if (y + r >= minY && y - r <= maxY) {
                         soul.current.isBeingSelected = true;
                     }
-                    else if (!shiftDown) {
+                    else {
                         soul.current.isBeingSelected = false;
                     }
                 }
@@ -133,7 +133,7 @@
                     else if (y < minY && (sDif * sDif + eDif * eDif) <= rSqrd) {
                         soul.current.isBeingSelected = true;
                     }
-                    else if (!shiftDown) {
+                    else {
                         soul.current.isBeingSelected = false;
                     }
                 }
@@ -146,11 +146,11 @@
                     else if (y < minY && (sDif * sDif + wDif * wDif) <= rSqrd) {
                         soul.current.isBeingSelected = true;
                     }
-                    else if (!shiftDown) {
+                    else {
                         soul.current.isBeingSelected = false;
                     }
                 }
-                else if (!shiftDown) {
+                else {
                     soul.current.isBeingSelected = false;
                 }
             }

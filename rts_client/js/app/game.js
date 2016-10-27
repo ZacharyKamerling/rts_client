@@ -139,10 +139,11 @@ var Game = (function () {
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul && (soul.current.isSelected || soul.current.isBeingSelected)) {
-                var r = Math.min(1, (1 - soul.current.health) * 2);
-                var g = Math.min(1, soul.current.health * 2);
-                var b = 0;
-                selections.push({ x: soul.current.x, y: soul.current.y, radius: soul.current.getRadius(), r: r, g: g, b: b });
+                var r = 255 * Math.min(1, (1 - soul.current.health) * 2);
+                var g = 255 * Math.min(1, (1 - soul.current.health) * 2);
+                var b = 255 * Math.min(1, soul.current.health * 2);
+                var a = 255;
+                selections.push({ x: soul.current.x, y: soul.current.y, radius: soul.current.getRadius(), r: r, g: g, b: b, a: a });
             }
         }
         this.selectionDrawer.draw(this.camera.x, this.camera.y, 1, selections);

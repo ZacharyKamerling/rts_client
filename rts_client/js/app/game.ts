@@ -161,16 +161,17 @@ class Game {
     }
 
     private drawSelections() {
-        let selections: { x: number; y: number; radius: number; r: number; g: number; b: number }[] = new Array();
+        let selections: { x: number; y: number; radius: number; r: number; g: number; b: number; a: number }[] = new Array();
         // Render units
         for (let i = 0; i < this.souls.length; i++) {
             let soul = this.souls[i];
 
             if (soul && (soul.current.isSelected || soul.current.isBeingSelected)) {
-                let r = Math.min(1, (1 - soul.current.health) * 2);
-                let g = Math.min(1, soul.current.health * 2);
-                let b = 0;
-                selections.push({ x: soul.current.x, y: soul.current.y, radius: soul.current.getRadius(), r: r, g: g, b: b});
+                let r = 255 * Math.min(1, (1 - soul.current.health) * 2);
+                let g = 255 * Math.min(1, (1 - soul.current.health) * 2);
+                let b = 255 * Math.min(1, soul.current.health * 2);
+                let a = 255;
+                selections.push({ x: soul.current.x, y: soul.current.y, radius: soul.current.getRadius(), r: r, g: g, b: b, a: a});
             }
         }
 
