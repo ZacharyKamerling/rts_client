@@ -119,5 +119,5 @@ var FOWDrawer = (function () {
         "}",
     ].join("\n");
     return FOWDrawer;
-})();
+}());
 //# sourceMappingURL=fow_drawer.js.map

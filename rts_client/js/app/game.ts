@@ -10,6 +10,7 @@ class Game {
     public commandPanel: CommandPanel = null;
     public selectionDrawer: SelectionDrawer = null;
     public selectionBoxDrawer: SelectionBoxDrawer = null;
+    public statusBarDrawer: StatusBarDrawer = null;
     public control: Interaction.Core.Control = new Interaction.Core.DoingNothing();
     public camera: Camera = new Camera(0, 0);
     public connection: WebSocket = null;
@@ -80,6 +81,7 @@ class Game {
         this.drawSelections();
         this.drawSelectBox();
         this.drawUnitsAndMissiles();
+        this.drawStatusBars();
         this.drawFogOfWar();
         this.lastDrawTime = currentTime;
     }
@@ -167,15 +169,42 @@ class Game {
             let soul = this.souls[i];
 
             if (soul && (soul.current.isSelected || soul.current.isBeingSelected)) {
-                let r = 255 * Math.min(1, (1 - soul.current.health) * 2);
-                let g = 255 * Math.min(1, (1 - soul.current.health) * 2);
-                let b = 255 * Math.min(1, soul.current.health * 2);
+                let x = soul.current.x;
+                let y = soul.current.y;
+                let radius = soul.current.getRadius();
+                let r = 0;
+                let g = 255;
+                let b = 200;
                 let a = 255;
-                selections.push({ x: soul.current.x, y: soul.current.y, radius: soul.current.getRadius(), r: r, g: g, b: b, a: a});
+                selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
             }
         }
 
         this.selectionDrawer.draw(this.camera.x, this.camera.y, 1, selections);
+    }
+
+    private drawStatusBars() {
+        let bars: { x: number; y: number; w: number; h: number, v: number, r: number; g: number; b: number; a: number }[] = new Array();
+        // Render units
+        for (let i = 0; i < this.souls.length; i++) {
+            let soul = this.souls[i];
+
+            if (soul && soul.current && soul.current.health < 1) {
+                let x = soul.current.x;
+                let y = soul.current.y + soul.current.getRadius() * Game.TILESIZE;
+                let w = soul.current.getRadius() * Game.TILESIZE;
+                let h = 2;
+                let v = soul.current.health;
+                let radius = soul.current.getRadius();
+                let r = 255 * (1 - soul.current.health);
+                let g = 255 * (1 - soul.current.health);
+                let b = 255 * soul.current.health;
+                let a = 255;
+                bars.push({ x: x, y: y, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
+            }
+        }
+
+        this.statusBarDrawer.draw(this.camera.x, this.camera.y, 1, bars);
     }
 
     private drawFogOfWar() {

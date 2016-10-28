@@ -6,7 +6,7 @@ var Interaction;
             function DoingNothing() {
             }
             return DoingNothing;
-        })();
+        }());
         Core.DoingNothing = DoingNothing;
         function interact(game) {
             return function (parent, event) {

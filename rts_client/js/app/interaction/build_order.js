@@ -13,7 +13,7 @@ var Interaction;
                 return this.inputEvent;
             };
             return BeingIssued;
-        })();
+        }());
         BuildOrder.BeingIssued = BeingIssued;
         function issue(game, parent, event, build_type) {
             var selected = Interaction.SelectingUnits.selectedUnitIDs(game);

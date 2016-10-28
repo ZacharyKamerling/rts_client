@@ -13,8 +13,8 @@ var SelectionDrawer = (function () {
         scale = scale / 4;
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
-        var xm = Game.TILESIZE / this.canvas.width;
-        var ym = Game.TILESIZE / this.canvas.height;
+        var xm = 1 / this.canvas.width;
+        var ym = 1 / this.canvas.height;
         var BYTES_PER_VERTEX = 24;
         var drawData = new ArrayBuffer(6 * BYTES_PER_VERTEX * circles.length);
         var floatView = new Float32Array(drawData);
@@ -153,12 +153,12 @@ var SelectionDrawer = (function () {
         "    float yDif = (v_frag_position.y - v_circle_position.y) / scaleY;",
         "    float dist = xDif * xDif + yDif * yDif;",
         "    if (dist <= (v_circle_radius * v_circle_radius) && dist >= ((v_circle_radius - scale) * (v_circle_radius - scale))) {",
-        "        gl_FragColor = vec4(v_circle_color);",
+        "        gl_FragColor = v_circle_color;",
         "    } else {",
         "        discard;",
         "    }",
         "}",
     ].join("\n");
     return SelectionDrawer;
-})();
+}());
 //# sourceMappingURL=selection_drawer.js.map

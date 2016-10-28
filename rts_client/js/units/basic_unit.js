@@ -47,5 +47,5 @@ var BasicUnit = (function (_super) {
         layers[2].push({ x: this.x, y: this.y, ang: this.wpn_facing, ref: "basic_wpn" });
     };
     return BasicUnit;
-})(Unit);
+}(Unit));
 //# sourceMappingURL=basic_unit.js.map

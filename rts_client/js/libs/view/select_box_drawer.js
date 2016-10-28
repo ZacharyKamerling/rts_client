@@ -53,5 +53,5 @@ var SelectionBoxDrawer = (function () {
         "}",
     ].join("\n");
     return SelectionBoxDrawer;
-})();
+}());
 //# sourceMappingURL=select_box_drawer.js.map

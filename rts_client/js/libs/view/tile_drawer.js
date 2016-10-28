@@ -144,5 +144,5 @@ var TileDrawer = (function () {
         "}"
     ].join("\n");
     return TileDrawer;
-})();
+}());
 //# sourceMappingURL=tile_drawer.js.map

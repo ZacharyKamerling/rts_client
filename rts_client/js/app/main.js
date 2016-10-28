@@ -21,6 +21,7 @@ function main() {
     game.fowDrawer = new FOWDrawer(fowCanvas);
     game.selectionDrawer = new SelectionDrawer(drawCanvas);
     game.selectionBoxDrawer = new SelectionBoxDrawer(drawCanvas);
+    game.statusBarDrawer = new StatusBarDrawer(drawCanvas);
     game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
     var unitRefs = [
         {

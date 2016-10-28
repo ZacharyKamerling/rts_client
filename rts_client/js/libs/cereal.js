@@ -49,7 +49,7 @@ var Cereal = (function () {
         return (this.dv.byteLength === this.offset);
     };
     return Cereal;
-})();
+}());
 function uintToString(uintArray) {
     return decodeURIComponent(encodeURI(atob(String.fromCharCode.apply(null, uintArray))));
 }

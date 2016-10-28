@@ -9,7 +9,7 @@ var Interaction;
                 return this.inputEvent;
             };
             return BeingIssued;
-        })();
+        }());
         AttackMoveOrder.BeingIssued = BeingIssued;
         function issue(game, parent, event) {
             var selected = Interaction.SelectingUnits.selectedUnitIDs(game);

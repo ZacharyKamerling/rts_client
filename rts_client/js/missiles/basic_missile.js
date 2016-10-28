@@ -25,5 +25,5 @@ var BasicMissile = (function (_super) {
         return Game.TILESIZE * 12.0 / 10.0;
     };
     return BasicMissile;
-})(Missile);
+}(Missile));
 //# sourceMappingURL=basic_missile.js.map

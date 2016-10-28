@@ -33,5 +33,5 @@ var BasicStructure = (function (_super) {
         layers[1].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_structure" });
     };
     return BasicStructure;
-})(Unit);
+}(Unit));
 //# sourceMappingURL=basic_structure.js.map

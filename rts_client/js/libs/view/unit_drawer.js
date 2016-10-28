@@ -106,5 +106,5 @@ var UnitDrawer = (function () {
         "}",
     ].join("\n");
     return UnitDrawer;
-})();
+}());
 //# sourceMappingURL=unit_drawer.js.map

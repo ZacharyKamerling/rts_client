@@ -100,5 +100,5 @@ var Chef = (function () {
         return utf8;
     };
     return Chef;
-})();
+}());
 //# sourceMappingURL=chef.js.map

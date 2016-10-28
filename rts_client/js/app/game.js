@@ -9,6 +9,7 @@ var Game = (function () {
         this.commandPanel = null;
         this.selectionDrawer = null;
         this.selectionBoxDrawer = null;
+        this.statusBarDrawer = null;
         this.control = new Interaction.Core.DoingNothing();
         this.camera = new Camera(0, 0);
         this.connection = null;
@@ -66,6 +67,7 @@ var Game = (function () {
         this.drawSelections();
         this.drawSelectBox();
         this.drawUnitsAndMissiles();
+        this.drawStatusBars();
         this.drawFogOfWar();
         this.lastDrawTime = currentTime;
     };
@@ -139,14 +141,38 @@ var Game = (function () {
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul && (soul.current.isSelected || soul.current.isBeingSelected)) {
-                var r = 255 * Math.min(1, (1 - soul.current.health) * 2);
-                var g = 255 * Math.min(1, (1 - soul.current.health) * 2);
-                var b = 255 * Math.min(1, soul.current.health * 2);
+                var x = soul.current.x;
+                var y = soul.current.y;
+                var radius = soul.current.getRadius();
+                var r = 0;
+                var g = 255;
+                var b = 200;
                 var a = 255;
-                selections.push({ x: soul.current.x, y: soul.current.y, radius: soul.current.getRadius(), r: r, g: g, b: b, a: a });
+                selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
             }
         }
         this.selectionDrawer.draw(this.camera.x, this.camera.y, 1, selections);
+    };
+    Game.prototype.drawStatusBars = function () {
+        var bars = new Array();
+        // Render units
+        for (var i = 0; i < this.souls.length; i++) {
+            var soul = this.souls[i];
+            if (soul && soul.current && soul.current.health < 1) {
+                var x = soul.current.x;
+                var y = soul.current.y + soul.current.getRadius() * Game.TILESIZE;
+                var w = soul.current.getRadius() * Game.TILESIZE;
+                var h = 2;
+                var v = soul.current.health;
+                var radius = soul.current.getRadius();
+                var r = 255 * (1 - soul.current.health);
+                var g = 255 * (1 - soul.current.health);
+                var b = 255 * soul.current.health;
+                var a = 255;
+                bars.push({ x: x, y: y, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
+            }
+        }
+        this.statusBarDrawer.draw(this.camera.x, this.camera.y, 1, bars);
     };
     Game.prototype.drawFogOfWar = function () {
         var circles = new Array();
@@ -164,12 +190,12 @@ var Game = (function () {
     Game.TILESIZE = 32;
     Game.FPS = 10;
     return Game;
-})();
+}());
 var Camera = (function () {
     function Camera(x, y) {
         this.x = x;
         this.y = y;
     }
     return Camera;
-})();
+}());
 //# sourceMappingURL=game.js.map

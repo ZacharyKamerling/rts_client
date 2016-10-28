@@ -11,7 +11,7 @@ var Interaction;
                 this.shiftDown = sd;
             }
             return CurrentAction;
-        })();
+        }());
         SelectingUnits.CurrentAction = CurrentAction;
         function selectedUnitIDs(game) {
             var selected = new Array();

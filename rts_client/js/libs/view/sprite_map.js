@@ -63,5 +63,5 @@ var SpriteMap = (function () {
     SpriteMap.WIDTH = 4096;
     SpriteMap.HEIGHT = 4096;
     return SpriteMap;
-})();
+}());
 //# sourceMappingURL=sprite_map.js.map

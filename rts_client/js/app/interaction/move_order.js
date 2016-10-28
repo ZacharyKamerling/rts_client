@@ -6,7 +6,7 @@ var Interaction;
             function BeingIssued() {
             }
             return BeingIssued;
-        })();
+        }());
         MoveOrder.BeingIssued = BeingIssued;
         function issue(game, parent, event) {
             var selected = Interaction.SelectingUnits.selectedUnitIDs(game);

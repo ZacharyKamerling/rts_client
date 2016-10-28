@@ -8,7 +8,7 @@ var Interaction;
             this.cameraY = cy;
         }
         return MovingCamera;
-    })();
+    }());
     Interaction.MovingCamera = MovingCamera;
 })(Interaction || (Interaction = {}));
 //# sourceMappingURL=moving_camera.js.map

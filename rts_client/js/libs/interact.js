@@ -7,7 +7,7 @@ var InputEvent = (function () {
     function InputEvent() {
     }
     return InputEvent;
-})();
+}());
 var MouseButton;
 (function (MouseButton) {
     MouseButton[MouseButton["Left"] = 0] = "Left";
@@ -20,21 +20,21 @@ var MousePress = (function (_super) {
         _super.apply(this, arguments);
     }
     return MousePress;
-})(InputEvent);
+}(InputEvent));
 var MouseMove = (function (_super) {
     __extends(MouseMove, _super);
     function MouseMove() {
         _super.apply(this, arguments);
     }
     return MouseMove;
-})(InputEvent);
+}(InputEvent));
 var KeyPress = (function (_super) {
     __extends(KeyPress, _super);
     function KeyPress() {
         _super.apply(this, arguments);
     }
     return KeyPress;
-})(InputEvent);
+}(InputEvent));
 function interact(parent, handler) {
     parent.draggable = false;
     document.addEventListener('contextmenu', function (e) {

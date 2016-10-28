@@ -18,8 +18,8 @@
         scale = scale / 4;
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
-        let xm = Game.TILESIZE / this.canvas.width;
-        let ym = Game.TILESIZE / this.canvas.height;
+        let xm = 1 / this.canvas.width;
+        let ym = 1 / this.canvas.height;
 
         const BYTES_PER_VERTEX = 24;
         var drawData = new ArrayBuffer(6 * BYTES_PER_VERTEX * circles.length);
@@ -182,7 +182,7 @@
         "    float yDif = (v_frag_position.y - v_circle_position.y) / scaleY;",
         "    float dist = xDif * xDif + yDif * yDif;",
         "    if (dist <= (v_circle_radius * v_circle_radius) && dist >= ((v_circle_radius - scale) * (v_circle_radius - scale))) {",
-        "        gl_FragColor = vec4(v_circle_color);",
+        "        gl_FragColor = v_circle_color;",
         "    } else {",
         "        discard;",
         "    }",
