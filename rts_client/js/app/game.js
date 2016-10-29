@@ -158,18 +158,28 @@ var Game = (function () {
         // Render units
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
-            if (soul && soul.current && soul.current.health < 1) {
+            if (soul && soul.current) {
+                var radius = soul.current.getRadius();
                 var x = soul.current.x;
-                var y = soul.current.y + soul.current.getRadius() * Game.TILESIZE;
+                var y = soul.current.y + radius * Game.TILESIZE;
                 var w = soul.current.getRadius() * Game.TILESIZE;
                 var h = 2;
-                var v = soul.current.health;
-                var radius = soul.current.getRadius();
-                var r = 255 * (1 - soul.current.health);
-                var g = 255 * (1 - soul.current.health);
-                var b = 255 * soul.current.health;
-                var a = 255;
-                bars.push({ x: x, y: y, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
+                if (soul.current.health <= 254) {
+                    var v = soul.current.health / 254;
+                    var r = (255 - soul.current.health);
+                    var g = (255 - soul.current.health);
+                    var b = soul.current.health;
+                    var a = 255;
+                    bars.push({ x: x, y: y, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
+                }
+                if (soul.current.progress <= 254) {
+                    var v = soul.current.progress / 254;
+                    var r = 175;
+                    var g = 175;
+                    var b = 175;
+                    var a = 255;
+                    bars.push({ x: x, y: y - 2, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
+                }
             }
         }
         this.statusBarDrawer.draw(this.camera.x, this.camera.y, 1, bars);

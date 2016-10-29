@@ -33,6 +33,6 @@
     buildables(blds: { [index: string]: void }) {}
 
     render(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
-        layers[1].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_structure" });
+        layers[0].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_structure" });
     }
 }

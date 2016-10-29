@@ -189,18 +189,29 @@ class Game {
         for (let i = 0; i < this.souls.length; i++) {
             let soul = this.souls[i];
 
-            if (soul && soul.current && soul.current.health < 1) {
+            if (soul && soul.current) {
+                let radius = soul.current.getRadius();
                 let x = soul.current.x;
-                let y = soul.current.y + soul.current.getRadius() * Game.TILESIZE;
+                let y = soul.current.y + radius * Game.TILESIZE;
                 let w = soul.current.getRadius() * Game.TILESIZE;
                 let h = 2;
-                let v = soul.current.health;
-                let radius = soul.current.getRadius();
-                let r = 255 * (1 - soul.current.health);
-                let g = 255 * (1 - soul.current.health);
-                let b = 255 * soul.current.health;
-                let a = 255;
-                bars.push({ x: x, y: y, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
+                
+                if (soul.current.health <= 254) {
+                    let v = soul.current.health / 254;
+                    let r = (255 - soul.current.health);
+                    let g = (255 - soul.current.health);
+                    let b = soul.current.health;
+                    let a = 255;
+                    bars.push({ x: x, y: y, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
+                }
+                if (soul.current.progress <= 254) {
+                    let v = soul.current.progress / 254;
+                    let r = 175;
+                    let g = 175;
+                    let b = 175;
+                    let a = 255;
+                    bars.push({ x: x, y: y - 2, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
+                }
             }
         }
 

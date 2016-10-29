@@ -12,10 +12,7 @@ function main() {
     var drawCanvas = document.getElementById('drawCanvas');
     var ctrlDiv = document.getElementById('controlDiv');
     var cmdDiv = document.getElementById('commandDiv');
-    var cmds = {};
-    cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
-    cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
-    cmds["build"] = { src: "img/build.png", tooltip: "[B] Build" };
+    var cmds = commands();
     game.chef = chef;
     game.tileDrawer = new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png');
     game.fowDrawer = new FOWDrawer(fowCanvas);
@@ -23,25 +20,7 @@ function main() {
     game.selectionBoxDrawer = new SelectionBoxDrawer(drawCanvas);
     game.statusBarDrawer = new StatusBarDrawer(drawCanvas);
     game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
-    var unitRefs = [
-        {
-            src: "img/basic_unit.png",
-            ref: "basic_unit"
-        },
-        {
-            src: "img/basic_wpn.png",
-            ref: "basic_wpn"
-        },
-        {
-            src: "img/basic_missile.png",
-            ref: "basic_missile"
-        },
-        {
-            src: "img/basic_structure.png",
-            ref: "basic_structure"
-        },
-    ];
-    var spritemap = new SpriteMap(unitRefs);
+    var spritemap = new SpriteMap(spriteRefs());
     spritemap.onload = function (e) {
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
     };
@@ -101,6 +80,41 @@ function playGame(game) {
         }
     }
     draw();
+}
+function commands() {
+    var cmds = {};
+    cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
+    cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
+    cmds["build"] = { src: "img/build.png", tooltip: "[B] Build" };
+    return cmds;
+}
+function spriteRefs() {
+    return [
+        {
+            src: "img/basic_unit.png",
+            ref: "basic_unit"
+        },
+        {
+            src: "img/basic_wpn.png",
+            ref: "basic_wpn"
+        },
+        {
+            src: "img/basic_missile.png",
+            ref: "basic_missile"
+        },
+        {
+            src: "img/basic_structure.png",
+            ref: "basic_structure"
+        },
+        {
+            src: "img/fighter1.png",
+            ref: "fighter1"
+        },
+        {
+            src: "img/bomber1.png",
+            ref: "bomber1"
+        },
+    ];
 }
 main();
 //# sourceMappingURL=main.js.map

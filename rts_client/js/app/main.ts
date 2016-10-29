@@ -13,10 +13,7 @@ function main() {
     let drawCanvas = <HTMLCanvasElement>document.getElementById('drawCanvas');
     let ctrlDiv = <HTMLElement>document.getElementById('controlDiv');
     let cmdDiv = <HTMLElement>document.getElementById('commandDiv');
-    let cmds: { [index: string]: { src: string, tooltip: string } } = {};
-    cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
-    cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
-    cmds["build"] = { src: "img/build.png", tooltip: "[B] Build" };
+    let cmds = commands();
     
     game.chef = chef;
     game.tileDrawer = new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png');
@@ -26,26 +23,9 @@ function main() {
     game.statusBarDrawer = new StatusBarDrawer(drawCanvas);
     game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
 
-    let unitRefs = [
-        {
-            src: "img/basic_unit.png",
-            ref: "basic_unit"
-        },
-        {
-            src: "img/basic_wpn.png",
-            ref: "basic_wpn"
-        },
-        {
-            src: "img/basic_missile.png",
-            ref: "basic_missile"
-        },
-        {
-            src: "img/basic_structure.png",
-            ref: "basic_structure"
-        },
-    ];
+    
 
-    let spritemap = new SpriteMap(unitRefs);
+    let spritemap = new SpriteMap(spriteRefs());
     spritemap.onload = function (e: Event) {
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
     };
@@ -114,4 +94,43 @@ function playGame(game: Game) {
 
     draw();
 }
+
+function commands(): { [index: string]: { src: string, tooltip: string } } {
+    let cmds: { [index: string]: { src: string, tooltip: string } } = {};
+    cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
+    cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
+    cmds["build"] = { src: "img/build.png", tooltip: "[B] Build" };
+
+    return cmds;
+}
+
+function spriteRefs(): { src: string, ref: string }[] {
+    return [
+        {
+            src: "img/basic_unit.png",
+            ref: "basic_unit"
+        },
+        {
+            src: "img/basic_wpn.png",
+            ref: "basic_wpn"
+        },
+        {
+            src: "img/basic_missile.png",
+            ref: "basic_missile"
+        },
+        {
+            src: "img/basic_structure.png",
+            ref: "basic_structure"
+        },
+        {
+            src: "img/fighter1.png",
+            ref: "fighter1"
+        },
+        {
+            src: "img/bomber1.png",
+            ref: "bomber1"
+        },
+    ];
+}
+
 main();

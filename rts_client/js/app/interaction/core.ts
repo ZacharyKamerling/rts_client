@@ -86,8 +86,17 @@
                 if (event instanceof MousePress) {
                     if (event.btn === MouseButton.Left && event.down) {
                         Interaction.BuildOrder.issue(game, parent, event, control.type);
+
+                        if (!event.shiftDown) {
+                            game.control = new DoingNothing();
+                        }
                     }
-                    game.control = new DoingNothing();
+                    else if (event.btn === MouseButton.Right && event.down) {
+                        game.control = new DoingNothing();
+                    }
+                    else if (event.btn === MouseButton.Middle && event.down) {
+
+                    }
                 }
             }
         };

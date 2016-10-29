@@ -9,8 +9,8 @@ var Unit = (function () {
             this.anim_ID = c.getU8();
             this.team = c.getU8();
             this.facing = c.getU8() * 2 * Math.PI / 255;
-            this.health = c.getU8() / 255;
-            this.progress = c.getU8() / 255;
+            this.health = c.getU8();
+            this.progress = c.getU8();
         }
     }
     Unit.prototype.copycat = function (unit) {
