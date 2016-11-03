@@ -16,12 +16,12 @@
         return u;
     }
 
-    getSightRadius(): number {
+    sightRadius(): number {
         return 12;
     }
 
-    getRadius(): number {
-        return 1.5;
+    radius(): number {
+        return 2.0;
     }
 
     step(timeDelta: number, oldUnit: BasicStructure, newUnit: BasicStructure) {

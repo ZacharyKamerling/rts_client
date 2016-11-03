@@ -14,20 +14,23 @@
         let y = 0;
         let max_h = 0;
         let count = 0;
-        let imgs: HTMLImageElement[] = Array();
+        let imgs: { ref: string, img: HTMLImageElement }[] = Array(stuff.length);
 
         for (let i = 0; i < stuff.length; i++) {
             let sprite = stuff[i];
             let img = document.createElement('img');
-            imgs.push(img);
+            imgs[i] = { ref: stuff[i].ref, img: img };
             img.src = sprite.src;
             img.onload = function () {
                 return function (event: Event) {
                     count++;
                     if (count === stuff.length) {
+                        imgs.sort(function (a, b) {
+                            return b.img.width * b.img.height - a.img.width * a.img.height;
+                        });
                         for (let n = 0; n < stuff.length; n++) {
-                            let w = imgs[n].width;
-                            let h = imgs[n].width;
+                            let w = imgs[n].img.width;
+                            let h = imgs[n].img.width;
 
                             if (w > SpriteMap.WIDTH || h > SpriteMap.HEIGHT) {
                                 console.error('IMAGE LARGER THAN SPRITEMAP!');
@@ -49,8 +52,8 @@
                                 max_h = h;
                             }
 
-                            spriteSheet.getContext('2d').drawImage(imgs[n], x, y, w, h);
-                            that.map[stuff[n].ref] = {
+                            spriteSheet.getContext('2d').drawImage(imgs[n].img, x, y, w, h);
+                            that.map[imgs[n].ref] = {
                                 x: x / SpriteMap.WIDTH,
                                 y: y / SpriteMap.HEIGHT,
                                 w: w / SpriteMap.WIDTH,

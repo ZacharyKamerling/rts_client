@@ -18,11 +18,11 @@ var BasicStructure = (function (_super) {
         this.copycat(u);
         return u;
     };
-    BasicStructure.prototype.getSightRadius = function () {
+    BasicStructure.prototype.sightRadius = function () {
         return 12;
     };
-    BasicStructure.prototype.getRadius = function () {
-        return 1.5;
+    BasicStructure.prototype.radius = function () {
+        return 2.0;
     };
     BasicStructure.prototype.step = function (timeDelta, oldUnit, newUnit) {
         _super.prototype.step.call(this, timeDelta, oldUnit, newUnit);

@@ -46,11 +46,11 @@
         throw new Error('Unit: clone() is abstract');
     }
 
-    getSightRadius(): number {
+    sightRadius(): number {
         throw new Error('Unit: getSightRadius() is abstract');
     }
 
-    getRadius(): number {
+    radius(): number {
         throw new Error('Unit: getRadius() is abstract');
     }
 

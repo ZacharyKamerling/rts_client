@@ -24,10 +24,10 @@ var BasicUnit = (function (_super) {
         u.wpn_facing = this.wpn_facing;
         return u;
     };
-    BasicUnit.prototype.getSightRadius = function () {
+    BasicUnit.prototype.sightRadius = function () {
         return 12;
     };
-    BasicUnit.prototype.getRadius = function () {
+    BasicUnit.prototype.radius = function () {
         return 0.6;
     };
     BasicUnit.prototype.step = function (timeDelta, oldUnit, newUnit) {

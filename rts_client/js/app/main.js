@@ -14,6 +14,7 @@ function main() {
     var cmdDiv = document.getElementById('commandDiv');
     var cmds = commands();
     game.chef = chef;
+    game.inputState = new UserInput.InputState(ctrlDiv, Interaction.Core.interact(game));
     game.tileDrawer = new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png');
     game.fowDrawer = new FOWDrawer(fowCanvas);
     game.selectionDrawer = new SelectionDrawer(drawCanvas);
@@ -23,6 +24,7 @@ function main() {
     var spritemap = new SpriteMap(spriteRefs());
     spritemap.onload = function (e) {
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
+        mainMenu.appendChild(spritemap.spriteSheet);
     };
     connectBtn.onclick = function () {
         var nameFieldValue = document.getElementById('nameField').value;
@@ -71,8 +73,6 @@ function main() {
 function playGame(game) {
     var mainMenu = document.getElementById('mainMenu');
     var content = document.getElementById('content');
-    var ctrlDiv = document.getElementById('controlDiv');
-    interact(ctrlDiv, Interaction.Core.interact(game));
     function draw() {
         if (game.connected) {
             game.draw();
@@ -91,16 +91,16 @@ function commands() {
 function spriteRefs() {
     return [
         {
+            src: "img/basic_missile.png",
+            ref: "basic_missile"
+        },
+        {
             src: "img/basic_unit.png",
             ref: "basic_unit"
         },
         {
             src: "img/basic_wpn.png",
             ref: "basic_wpn"
-        },
-        {
-            src: "img/basic_missile.png",
-            ref: "basic_missile"
         },
         {
             src: "img/basic_structure.png",

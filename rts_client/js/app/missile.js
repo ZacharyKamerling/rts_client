@@ -30,9 +30,10 @@ var Missile = (function () {
         throw new Error('Missile: speed() is abstract');
     };
     Missile.prototype.step = function (fps, timeDelta, oldMisl, newMisl) {
+        var speed = this.speed() * Game.TILESIZE / Game.FPS;
         this.facing = Math.atan2(newMisl.y - this.y, newMisl.x - this.x);
-        this.x += this.speed() * Math.cos(this.facing) * timeDelta;
-        this.y += this.speed() * Math.sin(this.facing) * timeDelta;
+        this.x += speed * Math.cos(this.facing) * timeDelta;
+        this.y += speed * Math.sin(this.facing) * timeDelta;
         var xDifA = this.x - oldMisl.x;
         var yDifA = this.y - oldMisl.y;
         var xDifB = oldMisl.x - newMisl.x;

@@ -30,10 +30,10 @@ var Unit = (function () {
     Unit.prototype.clone = function () {
         throw new Error('Unit: clone() is abstract');
     };
-    Unit.prototype.getSightRadius = function () {
+    Unit.prototype.sightRadius = function () {
         throw new Error('Unit: getSightRadius() is abstract');
     };
-    Unit.prototype.getRadius = function () {
+    Unit.prototype.radius = function () {
         throw new Error('Unit: getRadius() is abstract');
     };
     Unit.prototype.render = function (game, layers) {

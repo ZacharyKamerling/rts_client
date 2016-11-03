@@ -22,7 +22,7 @@ var BasicMissile = (function (_super) {
     BasicMissile.prototype.renderExplosion = function (game, layers) {
     };
     BasicMissile.prototype.speed = function () {
-        return Game.TILESIZE * 12.0 / 10.0;
+        return 12.0;
     };
     return BasicMissile;
 }(Missile));

@@ -3,6 +3,7 @@ var Game = (function () {
     function Game() {
         this.connected = true;
         this.chef = null;
+        this.inputState = null;
         this.tileDrawer = null;
         this.unitDrawer = null;
         this.fowDrawer = null;
@@ -75,7 +76,6 @@ var Game = (function () {
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul && soul.current && soul.new && soul.old) {
-                //let tcDelta = (this.lastLogicFrameTime - soul.old.timeCreated) * this.fps / 1000;
                 soul.current.step(timeDelta, soul.old, soul.new);
             }
         }
@@ -137,21 +137,33 @@ var Game = (function () {
     };
     Game.prototype.drawSelections = function () {
         var selections = new Array();
+        var dashed = new Array();
         // Render units
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
-            if (soul && (soul.current.isSelected || soul.current.isBeingSelected)) {
+            if (soul && (soul.current.isSelected)) {
                 var x = soul.current.x;
                 var y = soul.current.y;
-                var radius = soul.current.getRadius();
+                var radius = soul.current.radius();
                 var r = 0;
                 var g = 255;
-                var b = 200;
+                var b = 100;
                 var a = 255;
                 selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
             }
+            else if (soul && soul.current.isBeingSelected) {
+                var x = soul.current.x;
+                var y = soul.current.y;
+                var radius = soul.current.radius();
+                var r = 0;
+                var g = 255;
+                var b = 100;
+                var a = 255;
+                dashed.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
+            }
         }
-        this.selectionDrawer.draw(this.camera.x, this.camera.y, 1, selections);
+        this.selectionDrawer.draw(false, this.camera.x, this.camera.y, selections);
+        this.selectionDrawer.draw(true, this.camera.x, this.camera.y, dashed);
     };
     Game.prototype.drawStatusBars = function () {
         var bars = new Array();
@@ -159,19 +171,11 @@ var Game = (function () {
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul && soul.current) {
-                var radius = soul.current.getRadius();
+                var radius = soul.current.radius();
                 var x = soul.current.x;
                 var y = soul.current.y + radius * Game.TILESIZE;
-                var w = soul.current.getRadius() * Game.TILESIZE;
+                var w = soul.current.radius() * Game.TILESIZE;
                 var h = 2;
-                if (soul.current.health <= 254) {
-                    var v = soul.current.health / 254;
-                    var r = (255 - soul.current.health);
-                    var g = (255 - soul.current.health);
-                    var b = soul.current.health;
-                    var a = 255;
-                    bars.push({ x: x, y: y, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
-                }
                 if (soul.current.progress <= 254) {
                     var v = soul.current.progress / 254;
                     var r = 175;
@@ -179,6 +183,14 @@ var Game = (function () {
                     var b = 175;
                     var a = 255;
                     bars.push({ x: x, y: y - 2, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
+                }
+                if (soul.current.health <= 254) {
+                    var v = soul.current.health / 254;
+                    var r = (255 - soul.current.health);
+                    var g = (255 - soul.current.health);
+                    var b = soul.current.health;
+                    var a = 255;
+                    bars.push({ x: x, y: y, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
                 }
             }
         }
@@ -190,7 +202,7 @@ var Game = (function () {
             var soul = this.souls[i];
             if (soul) {
                 if (soul.current.team === this.team) {
-                    circles.push({ x: soul.current.x, y: soul.current.y, r: soul.current.getSightRadius() });
+                    circles.push({ x: soul.current.x, y: soul.current.y, r: soul.current.sightRadius() });
                 }
             }
         }

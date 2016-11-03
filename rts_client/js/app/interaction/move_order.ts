@@ -2,19 +2,21 @@
 
     export class BeingIssued implements Interaction.Core.Control { }
 
-    export function issue(game: Game, parent: HTMLElement, event: MousePress) {
+    export function issue(game: Game) {
         let selected = Interaction.SelectingUnits.selectedUnitIDs(game);
+        let input = game.inputState;
+        let elem = game.inputState.element();
 
         game.chef.put8(0);
-        if (event.shiftDown) {
+        if (input.shiftDown()) {
             game.chef.put8(1);
         }
         else {
             game.chef.put8(0);
         }
 
-        game.chef.putF64((game.camera.x + (event.x - parent.offsetWidth / 2)) / Game.TILESIZE);
-        game.chef.putF64((game.camera.y - (event.y - parent.offsetHeight / 2)) / Game.TILESIZE);
+        game.chef.putF64((game.camera.x + (input.mouseX() - elem.offsetWidth / 2)) / Game.TILESIZE);
+        game.chef.putF64((game.camera.y - (input.mouseY() - elem.offsetHeight / 2)) / Game.TILESIZE);
 
         for (let i = 0; i < selected.length; i++) {
             game.chef.put16(selected[i]);

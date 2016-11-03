@@ -4,6 +4,7 @@ class Game {
     public static TILESIZE = 32;
     public connected: boolean = true;
     public chef: Chef = null;
+    public inputState: UserInput.InputState = null;
     public tileDrawer: TileDrawer = null;
     public unitDrawer: UnitDrawer = null;
     public fowDrawer: FOWDrawer = null;
@@ -90,7 +91,6 @@ class Game {
         for (let i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul && soul.current && soul.new && soul.old) {
-                //let tcDelta = (this.lastLogicFrameTime - soul.old.timeCreated) * this.fps / 1000;
                 soul.current.step(timeDelta, soul.old, soul.new);
             }
         }
@@ -164,23 +164,35 @@ class Game {
 
     private drawSelections() {
         let selections: { x: number; y: number; radius: number; r: number; g: number; b: number; a: number }[] = new Array();
+        let dashed: { x: number; y: number; radius: number; r: number; g: number; b: number; a: number }[] = new Array();
         // Render units
         for (let i = 0; i < this.souls.length; i++) {
             let soul = this.souls[i];
 
-            if (soul && (soul.current.isSelected || soul.current.isBeingSelected)) {
+            if (soul && (soul.current.isSelected)) {
                 let x = soul.current.x;
                 let y = soul.current.y;
-                let radius = soul.current.getRadius();
+                let radius = soul.current.radius();
                 let r = 0;
                 let g = 255;
-                let b = 200;
+                let b = 100;
                 let a = 255;
                 selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
             }
+            else if (soul && soul.current.isBeingSelected) {
+                let x = soul.current.x;
+                let y = soul.current.y;
+                let radius = soul.current.radius();
+                let r = 0;
+                let g = 255;
+                let b = 100;
+                let a = 255;
+                dashed.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
+            }
         }
 
-        this.selectionDrawer.draw(this.camera.x, this.camera.y, 1, selections);
+        this.selectionDrawer.draw(false, this.camera.x, this.camera.y, selections);
+        this.selectionDrawer.draw(true, this.camera.x, this.camera.y, dashed);
     }
 
     private drawStatusBars() {
@@ -190,20 +202,12 @@ class Game {
             let soul = this.souls[i];
 
             if (soul && soul.current) {
-                let radius = soul.current.getRadius();
+                let radius = soul.current.radius();
                 let x = soul.current.x;
                 let y = soul.current.y + radius * Game.TILESIZE;
-                let w = soul.current.getRadius() * Game.TILESIZE;
+                let w = soul.current.radius() * Game.TILESIZE;
                 let h = 2;
-                
-                if (soul.current.health <= 254) {
-                    let v = soul.current.health / 254;
-                    let r = (255 - soul.current.health);
-                    let g = (255 - soul.current.health);
-                    let b = soul.current.health;
-                    let a = 255;
-                    bars.push({ x: x, y: y, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
-                }
+
                 if (soul.current.progress <= 254) {
                     let v = soul.current.progress / 254;
                     let r = 175;
@@ -212,6 +216,15 @@ class Game {
                     let a = 255;
                     bars.push({ x: x, y: y - 2, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
                 }
+                if (soul.current.health <= 254) {
+                    let v = soul.current.health / 254;
+                    let r = (255 - soul.current.health);
+                    let g = (255 - soul.current.health);
+                    let b = soul.current.health;
+                    let a = 255;
+                    bars.push({ x: x, y: y, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
+                }
+                
             }
         }
 
@@ -226,7 +239,7 @@ class Game {
 
             if (soul) {
                 if (soul.current.team === this.team) {
-                    circles.push({ x: soul.current.x, y: soul.current.y, r: soul.current.getSightRadius() });
+                    circles.push({ x: soul.current.x, y: soul.current.y, r: soul.current.sightRadius() });
                 }
             }
         }

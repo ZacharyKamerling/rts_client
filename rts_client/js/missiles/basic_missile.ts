@@ -22,6 +22,6 @@
     }
 
     speed(): number {
-        return Game.TILESIZE * 12.0 / 10.0;
+        return 12.0;
     }
 }

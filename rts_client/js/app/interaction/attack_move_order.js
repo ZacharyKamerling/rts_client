@@ -5,23 +5,22 @@ var Interaction;
         var BeingIssued = (function () {
             function BeingIssued() {
             }
-            BeingIssued.prototype.triggeredWith = function () {
-                return this.inputEvent;
-            };
             return BeingIssued;
         }());
         AttackMoveOrder.BeingIssued = BeingIssued;
-        function issue(game, parent, event) {
+        function issue(game) {
             var selected = Interaction.SelectingUnits.selectedUnitIDs(game);
+            var input = game.inputState;
+            var elem = input.element();
             game.chef.put8(3);
-            if (event.shiftDown) {
+            if (input.shiftDown()) {
                 game.chef.put8(1);
             }
             else {
                 game.chef.put8(0);
             }
-            game.chef.putF64((game.camera.x + (event.x - parent.offsetWidth / 2)) / Game.TILESIZE);
-            game.chef.putF64((game.camera.y - (event.y - parent.offsetHeight / 2)) / Game.TILESIZE);
+            game.chef.putF64((game.camera.x + (input.mouseX() - elem.offsetWidth / 2)) / Game.TILESIZE);
+            game.chef.putF64((game.camera.y - (input.mouseY() - elem.offsetHeight / 2)) / Game.TILESIZE);
             for (var i = 0; i < selected.length; i++) {
                 game.chef.put16(selected[i]);
             }

@@ -5,11 +5,6 @@
         height: number;
         type: number;
         img: string;
-        private inputEvent: InputEvent;
-
-        triggeredWith(): InputEvent {
-            return this.inputEvent;
-        }
 
         constructor(width: number, height: number, type: number, img: string) {
             this.width = width;
@@ -19,11 +14,13 @@
         }
     }
 
-    export function issue(game: Game, parent: HTMLElement, event: MousePress, build_type: number) {
+    export function issue(game: Game, build_type: number) {
         let selected = Interaction.SelectingUnits.selectedUnitIDs(game);
+        let input = game.inputState;
+        let elem = input.element();
 
         game.chef.put8(2);
-        if (event.shiftDown) {
+        if (input.shiftDown()) {
             game.chef.put8(1);
         }
         else {
@@ -31,8 +28,8 @@
         }
 
         game.chef.put16(build_type);
-        game.chef.putF64((game.camera.x + (event.x - parent.offsetWidth / 2)) / Game.TILESIZE);
-        game.chef.putF64((game.camera.y - (event.y - parent.offsetHeight / 2)) / Game.TILESIZE);
+        game.chef.putF64((game.camera.x + (input.mouseX() - elem.offsetWidth / 2)) / Game.TILESIZE);
+        game.chef.putF64((game.camera.y - (input.mouseY() - elem.offsetHeight / 2)) / Game.TILESIZE);
 
         for (let i = 0; i < selected.length; i++) {
             game.chef.put16(selected[i]);

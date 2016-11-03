@@ -51,11 +51,12 @@
     <TypeScriptCompile Include="js\app\unit.ts" />
     <TypeScriptCompile Include="js\libs\cereal.ts" />
     <TypeScriptCompile Include="js\libs\chef.ts" />
+    <TypeScriptCompile Include="js\libs\grid.ts" />
+    <TypeScriptCompile Include="js\libs\user_input.ts" />
     <TypeScriptCompile Include="js\libs\view\command_panel.ts" />
     <TypeScriptCompile Include="js\libs\view\selection_drawer.ts" />
     <TypeScriptCompile Include="js\libs\view\fow_drawer.ts" />
     <TypeScriptCompile Include="js\libs\view\select_box_drawer.ts" />
-    <TypeScriptCompile Include="js\libs\interact.ts" />
     <TypeScriptCompile Include="js\libs\misc.ts" />
     <TypeScriptCompile Include="js\libs\view\sprite_map.ts" />
     <TypeScriptCompile Include="js\libs\view\status_bar_drawer.ts" />
@@ -117,6 +118,8 @@
     <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
     <TypeScriptMapRoot />
     <TypeScriptSourceRoot />
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TypeScriptRemoveComments>true</TypeScriptRemoveComments>

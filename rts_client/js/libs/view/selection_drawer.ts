@@ -1,5 +1,6 @@
 ﻿class SelectionDrawer {
     private program: MetaProgram;
+    private programDashed: MetaProgram;
     private canvas: HTMLCanvasElement;
     private buffer: WebGLBuffer;
 
@@ -7,15 +8,15 @@
         this.canvas = canvas;
         let gl = <WebGLRenderingContext>this.canvas.getContext('webgl');
         this.program = new MetaProgram(gl, createProgram(gl, SelectionDrawer.vertexShader, SelectionDrawer.fragmentShader));
+        this.programDashed = new MetaProgram(gl, createProgram(gl, SelectionDrawer.vertexShader, SelectionDrawer.fragmentShaderDashed));
         this.buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
     }
 
-    public draw(x: number, y: number, scale: number, circles: { x: number, y: number, radius: number, r: number, g: number, b: number, a: number }[]) {
+    public draw(dashed: boolean, x: number, y: number, circles: { x: number, y: number, radius: number, r: number, g: number, b: number, a: number }[]) {
         x = Math.floor(x);
         y = Math.floor(y);
-        scale = scale / 4;
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
         let xm = 1 / this.canvas.width;
@@ -123,22 +124,34 @@
 
         let gl = <WebGLRenderingContext>this.canvas.getContext('webgl');
         gl.viewport(0, 0, this.canvas.width, this.canvas.height);
-        gl.useProgram(this.program.program);
+
+        let att: { [index: string]: number };
+        let uni: { [index: string]: WebGLUniformLocation };
+
+        if (dashed) {
+            gl.useProgram(this.programDashed.program);
+            att = this.programDashed.attribute;
+            uni = this.programDashed.uniform;
+        }
+        else {
+            gl.useProgram(this.program.program);
+            att = this.program.attribute;
+            uni = this.program.uniform;
+        }
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
         gl.bufferData(gl.ARRAY_BUFFER, drawData, gl.STATIC_DRAW);
 
-        gl.enableVertexAttribArray(this.program.attribute['a_position']);
-        gl.enableVertexAttribArray(this.program.attribute['a_circle_position']);
-        gl.enableVertexAttribArray(this.program.attribute['a_circle_radius']);
-        gl.enableVertexAttribArray(this.program.attribute['a_circle_color']);
-        gl.vertexAttribPointer(this.program.attribute['a_position'], 2, gl.FLOAT, false, BYTES_PER_VERTEX, 0);
-        gl.vertexAttribPointer(this.program.attribute['a_circle_position'], 2, gl.FLOAT, false, BYTES_PER_VERTEX, 8);
-        gl.vertexAttribPointer(this.program.attribute['a_circle_radius'], 1, gl.FLOAT, false, BYTES_PER_VERTEX, 16);
-        gl.vertexAttribPointer(this.program.attribute['a_circle_color'], 4, gl.UNSIGNED_BYTE, true, BYTES_PER_VERTEX, 20);
-        gl.uniform1f(this.program.uniform['scaleY'], this.canvas.width / this.canvas.height);
-        gl.uniform1f(this.program.uniform['scale'], 2 / this.canvas.width);
-
+        gl.enableVertexAttribArray(att['a_position']);
+        gl.enableVertexAttribArray(att['a_circle_position']);
+        gl.enableVertexAttribArray(att['a_circle_radius']);
+        gl.enableVertexAttribArray(att['a_circle_color']);
+        gl.vertexAttribPointer(att['a_position'], 2, gl.FLOAT, false, BYTES_PER_VERTEX, 0);
+        gl.vertexAttribPointer(att['a_circle_position'], 2, gl.FLOAT, false, BYTES_PER_VERTEX, 8);
+        gl.vertexAttribPointer(att['a_circle_radius'], 1, gl.FLOAT, false, BYTES_PER_VERTEX, 16);
+        gl.vertexAttribPointer(att['a_circle_color'], 4, gl.UNSIGNED_BYTE, true, BYTES_PER_VERTEX, 20);
+        gl.uniform1f(uni['scaleY'], this.canvas.width / this.canvas.height);
+        gl.uniform1f(uni['scale'], 2 / this.canvas.width);
         gl.drawArrays(gl.TRIANGLES, 0, 6 * circles.length);
     }
 
@@ -181,7 +194,33 @@
         "    float xDif = v_frag_position.x - v_circle_position.x;",
         "    float yDif = (v_frag_position.y - v_circle_position.y) / scaleY;",
         "    float dist = xDif * xDif + yDif * yDif;",
-        "    if (dist <= (v_circle_radius * v_circle_radius) && dist >= ((v_circle_radius - scale) * (v_circle_radius - scale))) {",
+        "    float radi = v_circle_radius - scale;",
+        "    if (dist <= (v_circle_radius * v_circle_radius) && dist >= (radi * radi)) {",
+        "        gl_FragColor = v_circle_color;",
+        "    } else {",
+        "        discard;",
+        "    }",
+        "}",
+    ].join("\n");
+
+    private static fragmentShaderDashed = [
+        "precision highp float;",
+
+        "varying vec2 v_circle_position;",
+        "varying vec2 v_frag_position;",
+        "varying float v_circle_radius;",
+        "varying vec4 v_circle_color;",
+
+        "uniform float scaleY;",
+        "uniform float scale;",
+
+        "void main() {",
+        "    float xDif = v_frag_position.x - v_circle_position.x;",
+        "    float yDif = (v_frag_position.y - v_circle_position.y) / scaleY;",
+        "    float angl = atan(yDif, xDif);",
+        "    float dist = xDif * xDif + yDif * yDif;",
+        "    float radi = v_circle_radius - scale;",
+        "    if (dist <= (v_circle_radius * v_circle_radius) && dist >= (radi * radi) && mod(angl, 0.39269908169872415480783042290994) >= 0.19634954084936207740391521145497) {",
         "        gl_FragColor = v_circle_color;",
         "    } else {",
         "        discard;",

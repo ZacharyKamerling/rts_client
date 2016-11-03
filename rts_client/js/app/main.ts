@@ -16,6 +16,7 @@ function main() {
     let cmds = commands();
     
     game.chef = chef;
+    game.inputState = new UserInput.InputState(ctrlDiv, Interaction.Core.interact(game));
     game.tileDrawer = new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png');
     game.fowDrawer = new FOWDrawer(fowCanvas);
     game.selectionDrawer = new SelectionDrawer(drawCanvas);
@@ -23,11 +24,10 @@ function main() {
     game.statusBarDrawer = new StatusBarDrawer(drawCanvas);
     game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
 
-    
-
     let spritemap = new SpriteMap(spriteRefs());
     spritemap.onload = function (e: Event) {
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
+        mainMenu.appendChild(spritemap.spriteSheet);
     };
 
     connectBtn.onclick = function () {
@@ -82,8 +82,7 @@ function main() {
 function playGame(game: Game) {
     let mainMenu = document.getElementById('mainMenu');
     let content = document.getElementById('content');
-    let ctrlDiv = <HTMLCanvasElement>document.getElementById('controlDiv');
-    interact(ctrlDiv, Interaction.Core.interact(game));
+    
 
     function draw() {
         if (game.connected) {
@@ -107,16 +106,16 @@ function commands(): { [index: string]: { src: string, tooltip: string } } {
 function spriteRefs(): { src: string, ref: string }[] {
     return [
         {
+            src: "img/basic_missile.png",
+            ref: "basic_missile"
+        },
+        {
             src: "img/basic_unit.png",
             ref: "basic_unit"
         },
         {
             src: "img/basic_wpn.png",
             ref: "basic_wpn"
-        },
-        {
-            src: "img/basic_missile.png",
-            ref: "basic_missile"
         },
         {
             src: "img/basic_structure.png",

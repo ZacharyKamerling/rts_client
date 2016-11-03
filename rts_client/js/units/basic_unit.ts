@@ -24,11 +24,11 @@
         return u;
     }
 
-    getSightRadius(): number {
+    sightRadius(): number {
         return 12;
     }
 
-    getRadius(): number {
+    radius(): number {
         return 0.6;
     }
 

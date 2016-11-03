@@ -44,9 +44,10 @@
     }
 
     step(fps: number, timeDelta: number, oldMisl: Missile, newMisl: Missile) {
+        let speed = this.speed() * Game.TILESIZE / Game.FPS;
         this.facing = Math.atan2(newMisl.y - this.y, newMisl.x - this.x);
-        this.x += this.speed() * Math.cos(this.facing) * timeDelta;
-        this.y += this.speed() * Math.sin(this.facing) * timeDelta;
+        this.x += speed * Math.cos(this.facing) * timeDelta;
+        this.y += speed * Math.sin(this.facing) * timeDelta;
         let xDifA = this.x - oldMisl.x;
         let yDifA = this.y - oldMisl.y;
         let xDifB = oldMisl.x - newMisl.x;

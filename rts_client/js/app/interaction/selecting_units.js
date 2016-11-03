@@ -8,7 +8,6 @@ var Interaction;
                 this.clickY = my;
                 this.currentX = cx;
                 this.currentY = cy;
-                this.shiftDown = sd;
             }
             return CurrentAction;
         }());
@@ -33,7 +32,7 @@ var Interaction;
                         if (soul.current.team === game.team && soul.current.isBeingSelected) {
                             soul.current.isSelected = true;
                         }
-                        else if (!control.shiftDown) {
+                        else if (!game.inputState.shiftDown()) {
                             soul.current.isSelected = false;
                         }
                     }
@@ -72,6 +71,11 @@ var Interaction;
                 configureUnitsBeingSelected(game, control.clickX, control.clickY, control.currentX, control.currentY);
             }
             if (control instanceof Interaction.Core.DoingNothing) {
+                var input = game.inputState;
+                var elem = game.inputState.element();
+                var x = game.camera.x + input.mouseX() - elem.offsetWidth / 2;
+                var y = game.camera.y - (input.mouseY() - elem.offsetHeight / 2);
+                configureUnitsBeingSelected(game, x, y, x, y);
             }
         }
         SelectingUnits.configUnitSelections = configUnitSelections;
@@ -85,7 +89,7 @@ var Interaction;
                 if (soul && soul.new && soul.new.team === game.team) {
                     var x = soul.current.x;
                     var y = soul.current.y;
-                    var r = soul.current.getRadius() * Game.TILESIZE;
+                    var r = soul.current.radius() * Game.TILESIZE;
                     var rSqrd = r * r;
                     var nDif = y - maxY;
                     var sDif = y - minY;
@@ -137,11 +141,13 @@ var Interaction;
                 }
             }
         }
-        function begin(game, parent, event) {
-            var x = game.camera.x + event.x - parent.offsetWidth / 2;
-            var y = game.camera.y - (event.y - parent.offsetHeight / 2);
-            game.control = new Interaction.SelectingUnits.CurrentAction(x, y, x, y, event.shiftDown);
-            if (!event.shiftDown) {
+        function begin(game) {
+            var input = game.inputState;
+            var elem = game.inputState.element();
+            var x = game.camera.x + input.mouseX() - elem.offsetWidth / 2;
+            var y = game.camera.y - (input.mouseY() - elem.offsetHeight / 2);
+            game.control = new Interaction.SelectingUnits.CurrentAction(x, y, x, y, game.inputState.shiftDown());
+            if (!input.shiftDown()) {
                 for (var i = 0; i < game.souls.length; i++) {
                     var soul = game.souls[i];
                     if (soul) {

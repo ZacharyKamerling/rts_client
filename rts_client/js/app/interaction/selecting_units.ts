@@ -4,14 +4,12 @@
         clickY: number;
         currentX: number;
         currentY: number;
-        shiftDown: boolean;
 
         constructor(mx: number, my: number, cx: number, cy: number, sd: boolean) {
             this.clickX = mx;
             this.clickY = my;
             this.currentX = cx;
             this.currentY = cy;
-            this.shiftDown = sd;
         }
     }
 
@@ -39,7 +37,7 @@
                     if (soul.current.team === game.team && soul.current.isBeingSelected) {
                         soul.current.isSelected = true;
                     }
-                    else if (!control.shiftDown) {
+                    else if (!game.inputState.shiftDown()) {
                         soul.current.isSelected = false;
                     }
                 }
@@ -84,7 +82,11 @@
             configureUnitsBeingSelected(game, control.clickX, control.clickY, control.currentX, control.currentY);
         }
         if (control instanceof Interaction.Core.DoingNothing) {
-
+            let input = game.inputState;
+            let elem = game.inputState.element();
+            let x = game.camera.x + input.mouseX() - elem.offsetWidth / 2;
+            let y = game.camera.y - (input.mouseY() - elem.offsetHeight / 2);
+            configureUnitsBeingSelected(game, x, y, x, y);
         }
     }
 
@@ -100,7 +102,7 @@
             if (soul && soul.new && soul.new.team === game.team) {
                 let x = soul.current.x;
                 let y = soul.current.y;
-                let r = soul.current.getRadius() * Game.TILESIZE;
+                let r = soul.current.radius() * Game.TILESIZE;
                 let rSqrd = r * r;
 
                 let nDif = y - maxY;
@@ -157,12 +159,14 @@
         }
     }
 
-    export function begin(game: Game, parent: HTMLElement, event: MousePress) {
-        let x = game.camera.x + event.x - parent.offsetWidth / 2;
-        let y = game.camera.y - (event.y - parent.offsetHeight / 2);
-        game.control = new Interaction.SelectingUnits.CurrentAction(x, y, x, y, event.shiftDown);
+    export function begin(game: Game) {
+        let input = game.inputState;
+        let elem = game.inputState.element();
+        let x = game.camera.x + input.mouseX() - elem.offsetWidth / 2;
+        let y = game.camera.y - (input.mouseY() - elem.offsetHeight / 2);
+        game.control = new Interaction.SelectingUnits.CurrentAction(x, y, x, y, game.inputState.shiftDown());
 
-        if (!event.shiftDown) {
+        if (!input.shiftDown()) {
             for (let i = 0; i < game.souls.length; i++) {
                 let soul = game.souls[i];
 
