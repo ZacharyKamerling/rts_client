@@ -2,6 +2,7 @@
     misl_ID: number;
     x: number;
     y: number;
+    team: number;
     facing: number;
     exploding: boolean;
     timeCreated: number;
@@ -15,6 +16,7 @@
             this.misl_ID = c.getU16();
             this.x = c.getU16() / (64 / Game.TILESIZE);
             this.y = c.getU16() / (64 / Game.TILESIZE);
+            this.team = c.getU8();
         }
     }
 
@@ -26,6 +28,7 @@
         misl.misl_ID = this.misl_ID;
         misl.x = this.x;
         misl.y = this.y;
+        misl.team = this.team;
         misl.exploding = this.exploding;
         misl.frameCreated = this.frameCreated;
         misl.timeCreated = this.timeCreated;

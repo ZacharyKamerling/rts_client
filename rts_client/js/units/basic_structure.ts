@@ -32,7 +32,8 @@
 
     buildables(blds: { [index: string]: void }) {}
 
-    render(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
-        layers[0].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_structure" });
+    render(game: Game, layers: { x: number, y: number, ang: number, teamColor: TeamColor, ref: string }[][]): void {
+        let tc = game.teamColors[this.team];
+        layers[0].push({ x: this.x, y: this.y, ang: this.facing, teamColor: tc, ref: "basic_structure" });
     }
 }

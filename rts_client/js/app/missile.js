@@ -7,6 +7,7 @@ var Missile = (function () {
             this.misl_ID = c.getU16();
             this.x = c.getU16() / (64 / Game.TILESIZE);
             this.y = c.getU16() / (64 / Game.TILESIZE);
+            this.team = c.getU8();
         }
     }
     Missile.prototype.clone = function () {
@@ -16,6 +17,7 @@ var Missile = (function () {
         misl.misl_ID = this.misl_ID;
         misl.x = this.x;
         misl.y = this.y;
+        misl.team = this.team;
         misl.exploding = this.exploding;
         misl.frameCreated = this.frameCreated;
         misl.timeCreated = this.timeCreated;

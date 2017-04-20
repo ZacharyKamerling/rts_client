@@ -110,6 +110,10 @@ function spriteRefs(): { src: string, ref: string }[] {
             ref: "basic_missile"
         },
         {
+            src: "img/missile1.png",
+            ref: "missile1"
+        },
+        {
             src: "img/basic_unit.png",
             ref: "basic_unit"
         },

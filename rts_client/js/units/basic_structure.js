@@ -30,7 +30,8 @@ var BasicStructure = (function (_super) {
     BasicStructure.prototype.commands = function (cmds) { };
     BasicStructure.prototype.buildables = function (blds) { };
     BasicStructure.prototype.render = function (game, layers) {
-        layers[0].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_structure" });
+        var tc = game.teamColors[this.team];
+        layers[0].push({ x: this.x, y: this.y, ang: this.facing, teamColor: tc, ref: "basic_structure" });
     };
     return BasicStructure;
 }(Unit));

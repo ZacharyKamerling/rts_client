@@ -20,6 +20,7 @@ class Game {
     public logicFrame: number = 0;
     public lastDrawTime: number = 0;
     public lastLogicFrameTime: number = 0;
+    public teamColors: TeamColor[];
     public team: number = 0;
     public metal: number = 0;
     public energy: number = 0;
@@ -37,6 +38,19 @@ class Game {
         for (let i = 0; i < Game.MAX_UNITS * 4; i++) {
             this.missileSouls.push(null);
         }
+
+        this.teamColors = Array();
+
+        let tc = new TeamColor();
+        tc.red = 1.0;
+        tc.green = 0.0;
+        tc.blue = 1.0;
+        this.teamColors.push(tc.clone());
+        tc.red = 0.0;
+        tc.green = 1.0;
+        tc.blue = 0.0;
+        this.teamColors.push(tc.clone());
+        
     }
 
     public reset() {
@@ -70,7 +84,7 @@ class Game {
         };
     }
 
-    
+
 
     public draw() {
         let currentTime = Date.now();
@@ -81,6 +95,7 @@ class Game {
         this.tileDrawer.draw(this.camera.x, this.camera.y, 1);
         this.drawSelections();
         this.drawSelectBox();
+        this.drawBuildPlacement();
         this.drawUnitsAndMissiles();
         this.drawStatusBars();
         this.drawFogOfWar();
@@ -120,8 +135,17 @@ class Game {
         }
     }
 
+    private drawBuildPlacement() {
+        let control = this.control;
+
+        if (control instanceof Interaction.BuildOrder.BeingIssued) {
+            let x = Math.floor((this.inputState.mouseX() - this.camera.x) / Game.TILESIZE) * Game.TILESIZE;
+            let y = Math.floor((this.inputState.mouseY() - this.camera.y) / Game.TILESIZE) * Game.TILESIZE;
+        }
+    }
+
     private drawUnitsAndMissiles() {
-        let layers: { x: number; y: number; ang: number; ref: string }[][] = new Array(10);
+        let layers: { x: number; y: number; ang: number; teamColor: TeamColor; ref: string }[][] = new Array(10);
 
         for (let i = 0; i < layers.length; i++) {
             layers[i] = new Array();
@@ -151,7 +175,7 @@ class Game {
             }
         }
 
-        let flattened: { x: number; y: number; ang: number; ref: string }[] = new Array();
+        let flattened: { x: number; y: number; ang: number; teamColor: TeamColor; ref: string }[] = new Array();
 
         for (let i = 0; i < layers.length; i++) {
             for (let n = 0; n < layers[i].length; n++) {

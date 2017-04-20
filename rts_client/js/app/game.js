@@ -30,6 +30,16 @@ var Game = (function () {
         for (var i = 0; i < Game.MAX_UNITS * 4; i++) {
             this.missileSouls.push(null);
         }
+        this.teamColors = Array();
+        var tc = new TeamColor();
+        tc.red = 1.0;
+        tc.green = 0.0;
+        tc.blue = 1.0;
+        this.teamColors.push(tc.clone());
+        tc.red = 0.0;
+        tc.green = 1.0;
+        tc.blue = 0.0;
+        this.teamColors.push(tc.clone());
     }
     Game.prototype.reset = function () {
         for (var i = 0; i < Game.MAX_UNITS; i++) {
@@ -67,6 +77,7 @@ var Game = (function () {
         this.tileDrawer.draw(this.camera.x, this.camera.y, 1);
         this.drawSelections();
         this.drawSelectBox();
+        this.drawBuildPlacement();
         this.drawUnitsAndMissiles();
         this.drawStatusBars();
         this.drawFogOfWar();
@@ -100,6 +111,13 @@ var Game = (function () {
             var maxBoxX = maxX - this.camera.x;
             var maxBoxY = maxY - this.camera.y;
             this.selectionBoxDrawer.draw(minBoxX, minBoxY, maxBoxX, maxBoxY);
+        }
+    };
+    Game.prototype.drawBuildPlacement = function () {
+        var control = this.control;
+        if (control instanceof Interaction.BuildOrder.BeingIssued) {
+            var x = Math.floor((this.inputState.mouseX() - this.camera.x) / Game.TILESIZE) * Game.TILESIZE;
+            var y = Math.floor((this.inputState.mouseY() - this.camera.y) / Game.TILESIZE) * Game.TILESIZE;
         }
     };
     Game.prototype.drawUnitsAndMissiles = function () {
