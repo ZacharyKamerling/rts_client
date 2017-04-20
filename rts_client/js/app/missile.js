@@ -51,6 +51,8 @@ var Missile = (function () {
         switch (mislType) {
             case 0:
                 return new BasicMissile(data, time, frame, exploding);
+            case 1:
+                return new BasicMissile(data, time, frame, exploding);
             default:
                 console.log("No missile of type " + mislType + " exists.");
                 return null;
