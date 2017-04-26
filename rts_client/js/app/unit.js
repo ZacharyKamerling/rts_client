@@ -39,6 +39,9 @@ var Unit = (function () {
     Unit.prototype.render = function (game, layers) {
         throw new Error('Unit: render() is abstract');
     };
+    Unit.prototype.renderDeath = function (game, layers) {
+        throw new Error('Unit: render() is abstract');
+    };
     Unit.prototype.commands = function (cmds) {
         throw new Error('Unit: commands() is abstract');
     };

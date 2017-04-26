@@ -21,7 +21,7 @@ function main() {
     game.selectionBoxDrawer = new SelectionBoxDrawer(drawCanvas);
     game.statusBarDrawer = new StatusBarDrawer(drawCanvas);
     game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
-    var spritemap = new SpriteMap(spriteRefs());
+    var spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e) {
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
         mainMenu.appendChild(spritemap.spriteSheet);
@@ -88,8 +88,8 @@ function commands() {
     cmds["build"] = { src: "img/build.png", tooltip: "[B] Build" };
     return cmds;
 }
-function spriteRefs() {
-    return [
+function spriteRefs(colors) {
+    var imgs = [
         {
             src: "img/basic_missile.png",
             ref: "basic_missile"
@@ -127,6 +127,16 @@ function spriteRefs() {
             ref: "bomber1"
         },
     ];
+    var list = new Array();
+    for (var i = 0; i < colors.length; i++) {
+        var color = colors[i];
+        for (var n = 0; n < imgs.length; n++) {
+            var src = imgs[n].src;
+            var ref = imgs[n].ref + color.name;
+            list.push({ src: src, ref: ref, color: color });
+        }
+    }
+    return list;
 }
 main();
 //# sourceMappingURL=main.js.map

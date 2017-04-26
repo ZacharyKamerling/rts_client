@@ -44,8 +44,8 @@ var BasicUnit = (function (_super) {
     BasicUnit.prototype.buildables = function (blds) { };
     BasicUnit.prototype.render = function (game, layers) {
         var tc = game.teamColors[this.team];
-        layers[1].push({ x: this.x, y: this.y, ang: this.facing, teamColor: tc, ref: "basic_unit" });
-        layers[2].push({ x: this.x, y: this.y, ang: this.wpn_facing, teamColor: tc, ref: "basic_wpn" });
+        layers[1].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_unit" + tc.name });
+        layers[2].push({ x: this.x, y: this.y, ang: this.wpn_facing, ref: "basic_wpn" + tc.name });
     };
     return BasicUnit;
 }(Unit));

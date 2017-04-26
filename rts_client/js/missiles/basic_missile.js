@@ -18,12 +18,12 @@ var BasicMissile = (function (_super) {
     };
     BasicMissile.prototype.render = function (game, layers) {
         var tc = game.teamColors[this.team];
-        layers[3].push({ x: this.x, y: this.y, ang: this.facing, teamColor: tc, ref: "missile1" });
+        layers[3].push({ x: this.x, y: this.y, ang: this.facing, ref: "missile1" + tc.name });
     };
     BasicMissile.prototype.renderExplosion = function (game, layers) {
     };
     BasicMissile.prototype.speed = function () {
-        return 12.0;
+        return 24.0;
     };
     return BasicMissile;
 }(Missile));

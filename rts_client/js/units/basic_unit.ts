@@ -47,9 +47,9 @@
 
     buildables(blds: { [index: string]: void }) {}
 
-    render(game: Game, layers: { x: number, y: number, ang: number, teamColor: TeamColor, ref: string }[][]): void {
+    render(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
         let tc = game.teamColors[this.team];
-        layers[1].push({ x: this.x, y: this.y, ang: this.facing, teamColor: tc, ref: "basic_unit" });
-        layers[2].push({ x: this.x, y: this.y, ang: this.wpn_facing, teamColor: tc, ref: "basic_wpn"});
+        layers[1].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_unit" + tc.name });
+        layers[2].push({ x: this.x, y: this.y, ang: this.wpn_facing, ref: "basic_wpn" + tc.name });
     }
 }

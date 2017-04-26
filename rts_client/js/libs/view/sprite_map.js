@@ -4,6 +4,7 @@ var SpriteMap = (function () {
         var spriteSheet = document.createElement('canvas');
         spriteSheet.width = 4096;
         spriteSheet.height = 4096;
+        var ctx = spriteSheet.getContext('2d');
         var that = this;
         var x = 0;
         var y = 0;
@@ -13,7 +14,7 @@ var SpriteMap = (function () {
         for (var i = 0; i < stuff.length; i++) {
             var sprite = stuff[i];
             var img = document.createElement('img');
-            imgs[i] = { ref: stuff[i].ref, img: img };
+            imgs[i] = { ref: sprite.ref, img: img, color: sprite.color };
             img.src = sprite.src;
             img.onload = function () {
                 return function (event) {
@@ -22,9 +23,10 @@ var SpriteMap = (function () {
                         imgs.sort(function (a, b) {
                             return b.img.width * b.img.height - a.img.width * a.img.height;
                         });
-                        for (var n = 0; n < stuff.length; n++) {
+                        for (var n = 0; n < imgs.length; n++) {
                             var w = imgs[n].img.width;
-                            var h = imgs[n].img.width;
+                            var h = imgs[n].img.height;
+                            var color = imgs[n].color;
                             if (w > SpriteMap.WIDTH || h > SpriteMap.HEIGHT) {
                                 console.error('IMAGE LARGER THAN SPRITEMAP!');
                                 return;
@@ -41,7 +43,21 @@ var SpriteMap = (function () {
                             if (h > max_h) {
                                 max_h = h;
                             }
-                            spriteSheet.getContext('2d').drawImage(imgs[n].img, x, y, w, h);
+                            ctx.drawImage(imgs[n].img, x, y, w, h);
+                            if (color) {
+                                var imgData = ctx.getImageData(x, y, w, h);
+                                var data = imgData.data;
+                                for (var i = 0; i < data.length; i += 4) {
+                                    if (data[i] === 255) {
+                                        var intensity = data[i + 1];
+                                        data[i] = color.red * intensity;
+                                        data[i + 1] = color.green * intensity;
+                                        data[i + 2] = color.blue * intensity;
+                                        console.log('stuff');
+                                    }
+                                }
+                                ctx.putImageData(imgData, x, y);
+                            }
                             that.map[imgs[n].ref] = {
                                 x: x / SpriteMap.WIDTH,
                                 y: y / SpriteMap.HEIGHT,

@@ -14,7 +14,7 @@ var Decoding;
             }
             for (var i = 0; i < game.missileSouls.length; i++) {
                 var misl_soul = game.missileSouls[i];
-                if (misl_soul && (logicFrame - misl_soul.new.frameCreated > 2)) {
+                if (misl_soul && (logicFrame - misl_soul.new.frameCreated > 1)) {
                     game.missileSouls[i] = null;
                 }
             }
@@ -51,6 +51,7 @@ var Decoding;
                         var soul = game.missileSouls[new_misl.misl_ID];
                         if (soul) {
                             soul.old = soul.current.clone();
+                            soul.old.timeCreated = soul.new.frameCreated;
                             soul.new = new_misl;
                         }
                         else {
@@ -63,7 +64,7 @@ var Decoding;
                 case 3:
                     var unit_ID = data.getU16();
                     var dmg_type = data.getU8();
-                    game.souls[unit_ID] = null;
+                    game.souls[unit_ID].current.isDead = true;
                     break msg_switch;
                 // Player Info
                 case 4:

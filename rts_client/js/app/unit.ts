@@ -9,6 +9,7 @@
     progress: number;
     frameCreated: number;
     timeCreated: number;
+    isDead: boolean;
     isSelected: boolean;
     isBeingSelected: boolean;
 
@@ -55,6 +56,10 @@
     }
 
     render(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
+        throw new Error('Unit: render() is abstract');
+    }
+
+    renderDeath(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
         throw new Error('Unit: render() is abstract');
     }
 

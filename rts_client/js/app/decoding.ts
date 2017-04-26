@@ -17,7 +17,7 @@
 
             for (let i = 0; i < game.missileSouls.length; i++) {
                 let misl_soul = game.missileSouls[i];
-                if (misl_soul && (logicFrame - misl_soul.new.frameCreated > 2)) {
+                if (misl_soul && (logicFrame - misl_soul.new.frameCreated > 1)) {
                     game.missileSouls[i] = null;
                 }
             }
@@ -61,6 +61,7 @@
 
                         if (soul) {
                             soul.old = soul.current.clone();
+                            soul.old.timeCreated = soul.new.frameCreated;
                             soul.new = new_misl;
                         }
                         else {
@@ -73,7 +74,7 @@
                 case 3:
                     let unit_ID = data.getU16();
                     let dmg_type = data.getU8();
-                    game.souls[unit_ID] = null;
+                    game.souls[unit_ID].current.isDead = true;
                     break msg_switch;
                 // Player Info
                 case 4:

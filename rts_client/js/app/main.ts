@@ -24,7 +24,7 @@ function main() {
     game.statusBarDrawer = new StatusBarDrawer(drawCanvas);
     game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
 
-    let spritemap = new SpriteMap(spriteRefs());
+    let spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e: Event) {
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
         mainMenu.appendChild(spritemap.spriteSheet);
@@ -103,8 +103,8 @@ function commands(): { [index: string]: { src: string, tooltip: string } } {
     return cmds;
 }
 
-function spriteRefs(): { src: string, ref: string }[] {
-    return [
+function spriteRefs(colors: TeamColor[]): { src: string, ref: string, color: TeamColor }[] {
+    let imgs = [
         {
             src: "img/basic_missile.png",
             ref: "basic_missile"
@@ -142,6 +142,19 @@ function spriteRefs(): { src: string, ref: string }[] {
             ref: "bomber1"
         },
     ];
+
+    let list: { src: string, ref: string, color: TeamColor }[] = new Array();
+
+    for (let i = 0; i < colors.length; i++) {
+        let color = colors[i];
+
+        for (let n = 0; n < imgs.length; n++) {
+            let src = imgs[n].src;
+            let ref = imgs[n].ref + color.name;
+            list.push({ src: src, ref: ref, color: color });
+        }
+    }
+    return list;
 }
 
 main();

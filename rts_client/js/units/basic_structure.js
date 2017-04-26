@@ -28,7 +28,7 @@ var BasicStructure = (function (_super) {
         return 12;
     };
     BasicStructure.prototype.radius = function () {
-        return 2.0;
+        return 0.9;
     };
     BasicStructure.prototype.step = function (timeDelta, oldUnit, newUnit) {
         _super.prototype.step.call(this, timeDelta, oldUnit, newUnit);
@@ -40,8 +40,8 @@ var BasicStructure = (function (_super) {
     BasicStructure.prototype.buildables = function (blds) { };
     BasicStructure.prototype.render = function (game, layers) {
         var tc = game.teamColors[this.team];
-        layers[0].push({ x: this.x, y: this.y, ang: this.facing, teamColor: tc, ref: "artillery_platform1" });
-        layers[3].push({ x: this.x, y: this.y, ang: this.wpn_facing, teamColor: tc, ref: "artillery_wpn1" });
+        layers[0].push({ x: this.x, y: this.y, ang: this.facing, ref: "artillery_platform1" + tc.name });
+        layers[3].push({ x: this.x, y: this.y, ang: this.wpn_facing, ref: "artillery_wpn1" + tc.name });
     };
     return BasicStructure;
 }(Unit));

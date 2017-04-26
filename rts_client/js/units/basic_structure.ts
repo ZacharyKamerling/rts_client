@@ -29,7 +29,7 @@
     }
 
     radius(): number {
-        return 2.0;
+        return 0.9;
     }
 
     step(timeDelta: number, oldUnit: BasicStructure, newUnit: BasicStructure) {
@@ -43,9 +43,9 @@
 
     buildables(blds: { [index: string]: void }) {}
 
-    render(game: Game, layers: { x: number, y: number, ang: number, teamColor: TeamColor, ref: string }[][]): void {
+    render(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
         let tc = game.teamColors[this.team];
-        layers[0].push({ x: this.x, y: this.y, ang: this.facing, teamColor: tc, ref: "artillery_platform1" });
-        layers[3].push({ x: this.x, y: this.y, ang: this.wpn_facing, teamColor: tc, ref: "artillery_wpn1" });
+        layers[0].push({ x: this.x, y: this.y, ang: this.facing, ref: "artillery_platform1" + tc.name });
+        layers[3].push({ x: this.x, y: this.y, ang: this.wpn_facing, ref: "artillery_wpn1" + tc.name });
     }
 }

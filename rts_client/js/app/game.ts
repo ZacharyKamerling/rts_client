@@ -42,15 +42,16 @@ class Game {
         this.teamColors = Array();
 
         let tc = new TeamColor();
+        tc.name = "purple";
         tc.red = 1.0;
         tc.green = 0.0;
         tc.blue = 1.0;
         this.teamColors.push(tc.clone());
+        tc.name = "green";
         tc.red = 0.0;
         tc.green = 1.0;
         tc.blue = 0.0;
         this.teamColors.push(tc.clone());
-        
     }
 
     public reset() {
@@ -78,6 +79,7 @@ class Game {
                     game.control = new Interaction.BuildOrder.BeingIssued(3, 3, 1, "building");
                     break;
                 default:
+                    console.log('commandPanelHandler couldn\'t handle: ' + name);
                     game.control = new Interaction.Core.DoingNothing();
                     break;
             }
@@ -114,7 +116,7 @@ class Game {
     private stepMissiles(timeDelta: number) {
         for (let i = 0; i < this.missileSouls.length; i++) {
             var soul = this.missileSouls[i];
-            if (soul && soul.old) {
+            if (soul && soul.current && soul.old && soul.new) {
                 soul.current.step(Game.FPS, timeDelta, soul.old, soul.new);
             }
         }
@@ -248,7 +250,6 @@ class Game {
                     let a = 255;
                     bars.push({ x: x, y: y, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
                 }
-                
             }
         }
 
