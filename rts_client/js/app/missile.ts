@@ -2,17 +2,21 @@
     misl_ID: number;
     x: number;
     y: number;
+    team: number;
     facing: number;
     exploding: boolean;
-    frame_created: number;
+    timeCreated: number;
+    frameCreated: number;
 
-    constructor(c: Cereal, frame: number, exploding: boolean) {
+    constructor(c: Cereal, time: number, frame: number, exploding: boolean) {
         if (c) {
-            this.frame_created = frame;
+            this.frameCreated = frame;
+            this.timeCreated = time;
             this.exploding = exploding;
             this.misl_ID = c.getU16();
             this.x = c.getU16() / (64 / Game.TILESIZE);
             this.y = c.getU16() / (64 / Game.TILESIZE);
+            this.team = c.getU8();
         }
     }
 
@@ -24,8 +28,10 @@
         misl.misl_ID = this.misl_ID;
         misl.x = this.x;
         misl.y = this.y;
+        misl.team = this.team;
         misl.exploding = this.exploding;
-        misl.frame_created = this.frame_created;
+        misl.frameCreated = this.frameCreated;
+        misl.timeCreated = this.timeCreated;
     }
 
     render(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
@@ -40,10 +46,11 @@
         throw new Error('Missile: speed() is abstract');
     }
 
-    step(time: number, oldMisl: Missile, newMisl: Missile) {
-        this.facing = Math.atan2(newMisl.y - this.y, newMisl.x - this.x);
-        this.x += this.speed() * Math.cos(this.facing) * time;
-        this.y += this.speed() * Math.sin(this.facing) * time;
+    step(fps: number, timeDelta: number, oldMisl: Missile, newMisl: Missile) {
+        let speed = this.speed() * Game.TILESIZE / Game.FPS;
+        this.facing = Math.atan2(newMisl.y - oldMisl.y, newMisl.x - oldMisl.x);
+        this.x += speed * Math.cos(this.facing) * timeDelta;
+        this.y += speed * Math.sin(this.facing) * timeDelta;
         let xDifA = this.x - oldMisl.x;
         let yDifA = this.y - oldMisl.y;
         let xDifB = oldMisl.x - newMisl.x;
@@ -56,11 +63,13 @@
         }
     }
 
-    static decodeMissile(data: Cereal, frame: number, exploding: boolean): Missile {
+    static decodeMissile(data: Cereal, time: number, frame: number, exploding: boolean): Missile {
         let mislType = data.getU8();
         switch (mislType) {
             case 0:
-                return new BasicMissile(data, frame, exploding);
+                return new BasicMissile(data, time, frame, exploding);
+            case 1:
+                return new BasicMissile(data, time, frame, exploding);
             default:
                 console.log("No missile of type " + mislType + " exists.");
                 return null;

@@ -10,7 +10,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <TypeScriptToolsVersion>1.6</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -22,12 +22,16 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="img\attack.png" />
     <Content Include="img\basic_missile.png" />
+    <Content Include="img\basic_structure.png" />
     <Content Include="img\basic_unit.png" />
     <Content Include="img\basic_wpn.png" />
     <Content Include="img\bomber1.png" />
+    <Content Include="img\build.png" />
     <Content Include="img\dirt0.png" />
     <Content Include="img\fighter1.png" />
+    <Content Include="img\move.png" />
     <Content Include="img\spelunky-tiles.png" />
     <Content Include="img\spelunky0.png" />
     <Content Include="img\wall0.png" />
@@ -35,22 +39,35 @@
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="js\app\decoding.ts" />
     <TypeScriptCompile Include="js\app\game.ts" />
+    <TypeScriptCompile Include="js\app\interaction\attack_move_order.ts" />
+    <TypeScriptCompile Include="js\app\interaction\build_order.ts" />
+    <TypeScriptCompile Include="js\app\interaction\core.ts" />
+    <TypeScriptCompile Include="js\app\interaction\move_order.ts" />
+    <TypeScriptCompile Include="js\app\interaction\moving_camera.ts" />
+    <TypeScriptCompile Include="js\app\interaction\selecting_units.ts" />
     <TypeScriptCompile Include="js\app\missile.ts" />
     <TypeScriptCompile Include="js\app\unit.ts" />
     <TypeScriptCompile Include="js\libs\cereal.ts" />
     <TypeScriptCompile Include="js\libs\chef.ts" />
-    <TypeScriptCompile Include="js\libs\graphics\selection_drawer.ts" />
-    <TypeScriptCompile Include="js\libs\graphics\fow_drawer.ts" />
-    <TypeScriptCompile Include="js\libs\graphics\select_box_drawer.ts" />
-    <TypeScriptCompile Include="js\libs\interact.ts" />
+    <TypeScriptCompile Include="js\libs\grid.ts" />
+    <TypeScriptCompile Include="js\libs\user_input.ts" />
+    <TypeScriptCompile Include="js\libs\view\command_panel.ts" />
+    <TypeScriptCompile Include="js\libs\view\selection_drawer.ts" />
+    <TypeScriptCompile Include="js\libs\view\fow_drawer.ts" />
+    <TypeScriptCompile Include="js\libs\view\select_box_drawer.ts" />
     <TypeScriptCompile Include="js\libs\misc.ts" />
-    <TypeScriptCompile Include="js\libs\graphics\sprite_map.ts" />
-    <TypeScriptCompile Include="js\libs\graphics\web_gl_help.ts" />
-    <TypeScriptCompile Include="js\libs\graphics\tile_drawer.ts" />
+    <TypeScriptCompile Include="js\libs\view\sprite_map.ts" />
+    <TypeScriptCompile Include="js\libs\view\status_bar_drawer.ts" />
+    <TypeScriptCompile Include="js\libs\view\team_color.ts" />
+    <TypeScriptCompile Include="js\libs\view\build_placement_drawer.ts" />
+    <TypeScriptCompile Include="js\libs\view\web_gl_help.ts" />
+    <TypeScriptCompile Include="js\libs\view\tile_drawer.ts" />
     <TypeScriptCompile Include="js\app\main.ts" />
-    <TypeScriptCompile Include="js\libs\graphics\unit_drawer.ts" />
+    <TypeScriptCompile Include="js\libs\view\unit_drawer.ts" />
     <TypeScriptCompile Include="js\missiles\basic_missile.ts" />
+    <TypeScriptCompile Include="js\units\basic_structure.ts" />
     <TypeScriptCompile Include="js\units\basic_unit.ts" />
   </ItemGroup>
   <ItemGroup>
@@ -92,6 +109,19 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
+    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TypeScriptRemoveComments>true</TypeScriptRemoveComments>

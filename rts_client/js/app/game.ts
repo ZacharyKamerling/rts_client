@@ -1,24 +1,31 @@
 ﻿"use strict";
 class Game {
-    public connected: boolean = true;
+    public static MAX_UNITS = 4096;
     public static TILESIZE = 32;
-    private chef: Chef = null;
-    private tileDrawer: TileDrawer = null;
-    private unitDrawer: UnitDrawer = null;
-    private fowDrawer: FOWDrawer = null;
-    private selectionDrawer: SelectionDrawer = null;
-    private selectionBoxDrawer: SelectionBoxDrawer = null;
-    private control: Control = new DoingNothing();
-    private camera: Camera = new Camera(0, 0);
-    private connection: WebSocket = null;
-    private souls: { old: Unit, current: Unit, new: Unit }[] = null;
-    private missileSouls: { old: Missile, current: Missile, new: Missile }[] = null;
-    private logicFrame: number = 0;
-    private team: number = 0;
-    private metal: number = 0;
-    private energy: number = 0;
-    private timeSinceLastLogicFrame: number = 0;
-    private static MAX_UNITS = 4096;
+    public connected: boolean = true;
+    public chef: Chef = null;
+    public inputState: UserInput.InputState = null;
+    public tileDrawer: TileDrawer = null;
+    public unitDrawer: UnitDrawer = null;
+    public fowDrawer: FOWDrawer = null;
+    public commandPanel: CommandPanel = null;
+    public selectionDrawer: SelectionDrawer = null;
+    public selectionBoxDrawer: SelectionBoxDrawer = null;
+    public statusBarDrawer: StatusBarDrawer = null;
+    public buildPlacementDrawer: BuildPlacementDrawer = null;
+    public control: Interaction.Core.Control = new Interaction.Core.DoingNothing();
+    public camera: Camera = new Camera(0, 0);
+    public connection: WebSocket = null;
+    public souls: { old: Unit, current: Unit, new: Unit }[] = null;
+    public missileSouls: { old: Missile, current: Missile, new: Missile }[] = null;
+    public logicFrame: number = 0;
+    public lastDrawTime: number = 0;
+    public lastLogicFrameTime: number = 0;
+    public teamColors: TeamColor[];
+    public team: number = 0;
+    public metal: number = 0;
+    public energy: number = 0;
+    public static FPS = 10;
 
     constructor() {
         this.souls = Array();
@@ -32,10 +39,28 @@ class Game {
         for (let i = 0; i < Game.MAX_UNITS * 4; i++) {
             this.missileSouls.push(null);
         }
+
+        this.teamColors = Array();
+
+        let tc = new TeamColor();
+        tc.name = "aqua";
+        tc.red = 0.0;
+        tc.green = 1.0;
+        tc.blue = 1.0;
+        this.teamColors.push(tc.clone());
+        tc.name = "purple";
+        tc.red = 0.8;
+        tc.green = 0.0;
+        tc.blue = 1.0;
+        this.teamColors.push(tc.clone());
+        tc.name = "green";
+        tc.red = 0.0;
+        tc.green = 0.8;
+        tc.blue = 0.0;
+        this.teamColors.push(tc.clone());
     }
 
     public reset() {
-        this.timeSinceLastLogicFrame = 0;
 
         for (let i = 0; i < Game.MAX_UNITS; i++) {
             this.souls[i] = null;
@@ -46,337 +71,65 @@ class Game {
         }
     }
 
-    public setChef(chef: Chef) {
-        this.chef = chef;
-    }
-
-    public setConnection(conn: WebSocket) {
-        this.connection = conn;
-    }
-
-    public setTileDrawer(td: TileDrawer) {
-        this.tileDrawer = td;
-    }
-
-    public setUnitDrawer(ud: UnitDrawer) {
-        this.unitDrawer = ud;
-    }
-
-    public setFOWDrawer(fd: FOWDrawer) {
-        this.fowDrawer = fd;
-    }
-
-    public setSelectionDrawer(sd: SelectionDrawer) {
-        this.selectionDrawer = sd;
-    }
-
-    public setSelectionBoxDrawer(sbd: SelectionBoxDrawer) {
-        this.selectionBoxDrawer = sbd;
-    }
-
-    public processPacket(data: Cereal): void {
-        let logicFrame = data.getU32();
-
-        if (logicFrame >= this.logicFrame) {
-            this.logicFrame = logicFrame;
-            this.timeSinceLastLogicFrame = 0;
-
-            for (let i = 0; i < this.souls.length; i++) {
-                let soul = this.souls[i];
-                if (soul && (logicFrame - soul.new.frame_created > 1)) {
-                    this.souls[i] = null;
-                }
-            }
-
-            for (let i = 0; i < this.missileSouls.length; i++) {
-                let misl_soul = this.missileSouls[i];
-                if (misl_soul && (logicFrame - misl_soul.new.frame_created > 1)) {
-                    this.missileSouls[i] = null;
-                }
-            }
-        }
-        else {
-            return;
-        }
-
-        while (!data.empty()) {
-            let msg_type = data.getU8();
-
-
-            msg_switch:
-            switch (msg_type) {
-                // Unit
-                case 0:
-                    let new_unit: Unit = Unit.decodeUnit(data, logicFrame);
-
-                    // If unit_soul exists, update it with new_unit
-                    if (new_unit) {
-                        let soul = this.souls[new_unit.unit_ID];
-
-                        if (soul) {
-                            soul.old = soul.current.clone();
-                            soul.new = new_unit;
-                        }
-                        else {
-                            var cur = new_unit.clone();
-                            this.souls[new_unit.unit_ID] = { old: null, current: cur, new: new_unit };
-                        }
-                    }
-                    break msg_switch;
-                // Missile
-                case 1:
-                case 2:
-                    let exploding = msg_type === 2;
-                    let new_misl: Missile = Missile.decodeMissile(data, logicFrame, exploding);
-
-                    if (new_misl) {
-                        let soul = this.missileSouls[new_misl.misl_ID];
-
-                        if (soul) {
-                            soul.old = soul.current.clone();
-                            soul.new = new_misl;
-                        }
-                        else {
-                            let cur = new_misl.clone();
-                            this.missileSouls[new_misl.misl_ID] = { old: null, current: cur, new: new_misl };
-                        }
-                    }
-                    break msg_switch;
-                // Unit death
-                case 3:
-                    let unit_ID = data.getU16();
-                    let dmg_type = data.getU8();
-                    this.souls[unit_ID] = null;
-                    break msg_switch;
-                // Player Info
-                case 4:
-                    this.team = data.getU8();
-                    this.metal = data.getU32();
-                    this.energy = data.getU32();
-                    break msg_switch;
-                default:
-                    console.log("No message of type " + msg_type + " exists.");
-                    return;
-            }
-        }
-    }
-
-    public interact_canvas(): ((parent: HTMLElement, e: InputEvent) => void) {
+    public commandPanelHandler(): (name: string) => void {
         let game = this;
-
-        return function (parent, event) {
-            let control = game.control;
-
-            if (control instanceof DoingNothing) {
-                if (event instanceof MousePress) {
-                    // Move Camera initiate
-                    if (event.btn === MouseButton.Middle && event.down) {
-                        game.control = new MovingCamera(event.x, event.y, game.camera.x, game.camera.y);
-                    }
-                    // Select things initiate
-                    if (event.btn === MouseButton.Left && event.down) {
-                        let x = game.camera.x + event.x - parent.offsetWidth / 2;
-                        let y = game.camera.y - (event.y - parent.offsetHeight / 2);
-                        game.control = new SelectingUnits(x, y, x, y, event.shiftDown);
-
-                        if (!event.shiftDown) {
-                            for (let i = 0; i < game.souls.length; i++) {
-                                let soul = game.souls[i];
-
-                                if (soul) {
-                                    soul.current.isSelected = false;
-                                }
-                            }
-                        }
-                    }
-                    // Issue move order
-                    if (event.btn === MouseButton.Right && event.down) {
-                        let selected: number[] = new Array();
-
-                        for (let i = 0; i < game.souls.length; i++) {
-                            let soul = game.souls[i];
-
-                            if (soul && soul.current.isSelected) {
-                                selected.push(i);
-                            }
-                        }
-
-                        game.chef.put8(0);
-                        if (event.shiftDown) {
-                            game.chef.put8(1);
-                        }
-                        else {
-                            game.chef.put8(0);
-                        }
-
-                        game.chef.put16(selected.length);
-                        game.chef.putF64((game.camera.x + event.x - parent.offsetWidth / 2) / Game.TILESIZE);
-                        game.chef.putF64((game.camera.y - (event.y - parent.offsetHeight / 2)) / Game.TILESIZE);
-
-                        for (let i = 0; i < selected.length; i++) {
-                            game.chef.put16(selected[i]);
-                        }
-                        game.connection.send(game.chef.done());
-                    }
-                }
-                else if (event instanceof KeyPress) {
-                    // TODO
-                    //if (event.key === )
-                }
-            }
-            else if (control instanceof MovingCamera) {
-                // Stop moving camera
-                if (event instanceof MousePress) {
-                    if (event.btn === MouseButton.Middle && !event.down) {
-                        game.control = new DoingNothing();
-                    }
-                }
-                // Move camera
-                else if (event instanceof MouseMove) {
-                    game.camera.x = control.cameraX + control.clickX - event.x;
-                    game.camera.y = control.cameraY - (control.clickY - event.y);
-                }
-            }
-            else if (control instanceof SelectingUnits) {
-                // Select units
-                if (event instanceof MousePress) {
-                    if (event.btn === MouseButton.Left && !event.down) {
-                        game.selectUnits();
-                        game.control = new DoingNothing();
-                    }
-                }
-                else if (event instanceof MouseMove) {
-                    control.currentX = game.camera.x + event.x - parent.offsetWidth / 2;
-                    control.currentY = game.camera.y - (event.y - parent.offsetHeight / 2);
-                    control.shiftDown = event.shiftDown;
-                }
+        return function (name: string) {
+            switch (name) {
+                case "move":
+                    game.control = new Interaction.MoveOrder.BeingIssued();
+                    break;
+                case "attack":
+                    game.control = new Interaction.AttackMoveOrder.BeingIssued();
+                    break;
+                case "build":
+                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, 1, "building");
+                    break;
+                default:
+                    console.log('commandPanelHandler couldn\'t handle: ' + name);
+                    game.control = new Interaction.Core.DoingNothing();
+                    break;
             }
         };
     }
 
-    private selectUnits() {
-        let control = this.control;
-        if (control instanceof SelectingUnits) {
-            for (let i = 0; i < this.souls.length; i++) {
-                let soul = this.souls[i];
-
-                if (soul) {
-                    if (soul.new && soul.new.team === this.team && soul.current.isBeingSelected) {
-                        soul.current.isSelected = true;
-                    }
-                    else if (!control.shiftDown) {
-                        soul.current.isSelected = false;
-                    }
-                }
-            }
-        }
-    }
-
-    private configureUnitsBeingSelected() {
-        let control = this.control;
-        if (control instanceof SelectingUnits) {
-            let minX = Math.min(control.clickX, control.currentX);
-            let minY = Math.min(control.clickY, control.currentY);
-            let maxX = Math.max(control.clickX, control.currentX);
-            let maxY = Math.max(control.clickY, control.currentY);
-
-            for (let i = 0; i < this.souls.length; i++) {
-                let soul = this.souls[i];
-
-                if (soul && soul.new && soul.new.team === this.team) {
-                    let x = soul.current.x;
-                    let y = soul.current.y;
-                    let r = soul.current.getRadius() * Game.TILESIZE;
-                    let rSqrd = r * r;
-
-                    let nDif = y - maxY;
-                    let sDif = y - minY;
-                    let eDif = x - maxX;
-                    let wDif = x - minX;
-
-                    if (y >= minY && y <= maxY) {
-                        if (x + r >= minX && x - r <= maxX) {
-                            soul.current.isBeingSelected = true;
-                        }
-                        else if (!control.shiftDown) {
-                            soul.current.isBeingSelected = false;
-                        }
-                    }
-                    else if (x >= minX && x <= maxX) {
-                        if (y + r >= minY && y - r <= maxY) {
-                            soul.current.isBeingSelected = true;
-                        }
-                        else if (!control.shiftDown) {
-                            soul.current.isBeingSelected = false;
-                        }
-                    }
-                    else if (x > maxX) {
-                        // Northeast
-                        if (y > maxY && (nDif * nDif + eDif * eDif) <= rSqrd) {
-                            soul.current.isBeingSelected = true;
-                        }
-                        // Southeast
-                        else if (y < minY && (sDif * sDif + eDif * eDif) <= rSqrd) {
-                            soul.current.isBeingSelected = true;
-                        }
-                        else if (!control.shiftDown) {
-                            soul.current.isBeingSelected = false;
-                        }
-                    }
-                    else if (x < minX) {
-                        // Northwest
-                        if (y > maxY && (nDif * nDif + wDif * wDif) <= rSqrd) {
-                            soul.current.isBeingSelected = true;
-                        }
-                        // Southwest
-                        else if (y < minY && (sDif * sDif + wDif * wDif) <= rSqrd) {
-                            soul.current.isBeingSelected = true;
-                        }
-                        else if (!control.shiftDown) {
-                            soul.current.isBeingSelected = false;
-                        }
-                    }
-                    else if (!control.shiftDown) {
-                        soul.current.isBeingSelected = false;
-                    }
-                }
-            }
-        }
-    }
-
-    public draw(time_passed: number) {
-        this.configureUnitsBeingSelected();
-        this.timeSinceLastLogicFrame += time_passed;
-        this.stepUnits(time_passed);
-        this.stepMissiles(time_passed);
+    public draw() {
+        let currentTime = Date.now();
+        let timeDelta = (currentTime - this.lastDrawTime) * Game.FPS / 1000;
+        Interaction.SelectingUnits.configUnitSelections(this);
+        this.stepUnits(timeDelta);
+        this.stepMissiles(timeDelta);
         this.tileDrawer.draw(this.camera.x, this.camera.y, 1);
         this.drawSelections();
-        this.drawSelectBox();
+        this.drawBuildPlacement();
         this.drawUnitsAndMissiles();
+        this.drawBuildPlacement();
         this.drawFogOfWar();
+        this.drawStatusBars();
+        this.drawSelectBox();
+        this.lastDrawTime = currentTime;
     }
 
-    private stepUnits(time: number) {
+    private stepUnits(timeDelta: number) {
         for (let i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul && soul.current && soul.new && soul.old) {
-                soul.current.step(time, soul.old, soul.new);
+                soul.current.step(timeDelta, soul.old, soul.new);
             }
         }
     }
 
-    private stepMissiles(time: number) {
+    private stepMissiles(timeDelta: number) {
         for (let i = 0; i < this.missileSouls.length; i++) {
             var soul = this.missileSouls[i];
-            if (soul && soul.old) {
-                soul.current.step(time, soul.old, soul.new);
+            if (soul && soul.current && soul.old && soul.new) {
+                soul.current.step(Game.FPS, timeDelta, soul.old, soul.new);
             }
         }
     }
 
     private drawSelectBox() {
         let control = this.control;
-        if (control instanceof SelectingUnits) {
+        if (control instanceof Interaction.SelectingUnits.CurrentAction) {
             let minX = Math.min(control.clickX, control.currentX);
             let minY = Math.min(control.clickY, control.currentY);
             let maxX = Math.max(control.clickX, control.currentX);
@@ -389,8 +142,17 @@ class Game {
         }
     }
 
+    private drawBuildPlacement() {
+        let control = this.control;
+
+        if (control instanceof Interaction.BuildOrder.BeingIssued) {
+            let x = Math.floor((this.inputState.mouseX() - this.camera.x) / Game.TILESIZE) * Game.TILESIZE;
+            let y = Math.floor((this.inputState.mouseY() - this.camera.y) / Game.TILESIZE) * Game.TILESIZE;
+        }
+    }
+
     private drawUnitsAndMissiles() {
-        let layers: { x: number; y: number; ang: number; ref: string }[][] = new Array(10);
+        let layers: { x: number; y: number; ang: number; teamColor: TeamColor; ref: string }[][] = new Array(10);
 
         for (let i = 0; i < layers.length; i++) {
             layers[i] = new Array();
@@ -420,7 +182,7 @@ class Game {
             }
         }
 
-        let flattened: { x: number; y: number; ang: number; ref: string }[] = new Array();
+        let flattened: { x: number; y: number; ang: number; teamColor: TeamColor; ref: string }[] = new Array();
 
         for (let i = 0; i < layers.length; i++) {
             for (let n = 0; n < layers[i].length; n++) {
@@ -432,17 +194,71 @@ class Game {
     }
 
     private drawSelections() {
-        let selections: { x: number; y: number; r: number }[] = new Array();
+        let selections: { x: number; y: number; radius: number; r: number; g: number; b: number; a: number }[] = new Array();
+        let dashed: { x: number; y: number; radius: number; r: number; g: number; b: number; a: number }[] = new Array();
         // Render units
         for (let i = 0; i < this.souls.length; i++) {
             let soul = this.souls[i];
 
-            if (soul && (soul.current.isSelected || soul.current.isBeingSelected)) {
-                selections.push({ x: soul.current.x, y: soul.current.y, r: soul.current.getRadius() });
+            if (soul && (soul.current.isSelected)) {
+                let x = soul.current.x;
+                let y = soul.current.y;
+                let radius = soul.current.radius();
+                let r = 0;
+                let g = 255;
+                let b = 100;
+                let a = 255;
+                selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
+            }
+            else if (soul && soul.current.isBeingSelected) {
+                let x = soul.current.x;
+                let y = soul.current.y;
+                let radius = soul.current.radius();
+                let r = 0;
+                let g = 255;
+                let b = 100;
+                let a = 255;
+                dashed.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
             }
         }
 
-        this.selectionDrawer.draw(this.camera.x, this.camera.y, 1, selections);
+        this.selectionDrawer.draw(false, this.camera.x, this.camera.y, selections);
+        this.selectionDrawer.draw(true, this.camera.x, this.camera.y, dashed);
+    }
+
+    private drawStatusBars() {
+        let bars: { x: number; y: number; w: number; h: number, v: number, r: number; g: number; b: number; a: number }[] = new Array();
+        // Render units
+        for (let i = 0; i < this.souls.length; i++) {
+            let soul = this.souls[i];
+
+            if (soul && soul.current) {
+                let radius = soul.current.radius();
+                let x = soul.current.x;
+                let y = soul.current.y + radius * Game.TILESIZE;
+                let w = soul.current.radius() * Game.TILESIZE;
+                let h = 2;
+
+                if (soul.current.progress <= 254) {
+                    let v = soul.current.progress / 254;
+                    let r = 175;
+                    let g = 175;
+                    let b = 175;
+                    let a = 255;
+                    bars.push({ x: x, y: y - 2, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
+                }
+                if (soul.current.health <= 254) {
+                    let v = soul.current.health / 254;
+                    let r = (255 - soul.current.health);
+                    let g = (255 - soul.current.health);
+                    let b = soul.current.health;
+                    let a = 255;
+                    bars.push({ x: x, y: y, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
+                }
+            }
+        }
+
+        this.statusBarDrawer.draw(this.camera.x, this.camera.y, 1, bars);
     }
 
     private drawFogOfWar() {
@@ -453,46 +269,12 @@ class Game {
 
             if (soul) {
                 if (soul.current.team === this.team) {
-                    circles.push({ x: soul.current.x, y: soul.current.y, r: soul.current.getSightRadius() });
+                    circles.push({ x: soul.current.x, y: soul.current.y, r: soul.current.sightRadius() });
                 }
             }
         }
 
         this.fowDrawer.draw(this.camera.x, this.camera.y, 1, circles);
-    }
-}
-
-interface Control { }
-
-class DoingNothing implements Control { }
-
-class SelectingUnits implements Control {
-    clickX: number;
-    clickY: number;
-    currentX: number;
-    currentY: number;
-    shiftDown: boolean;
-
-    constructor(mx: number, my: number, cx: number, cy: number, sd: boolean) {
-        this.clickX = mx;
-        this.clickY = my;
-        this.currentX = cx;
-        this.currentY = cy;
-        this.shiftDown = sd;
-    }
-}
-
-class MovingCamera implements Control {
-    clickX: number;
-    clickY: number;
-    cameraX: number;
-    cameraY: number;
-
-    constructor(mx: number, my: number, cx: number, cy: number) {
-        this.clickX = mx;
-        this.clickY = my;
-        this.cameraX = cx;
-        this.cameraY = cy;
     }
 }
 

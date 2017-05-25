@@ -10,29 +10,22 @@ function main() {
     var game = new Game();
     var fowCanvas = document.getElementById('fowCanvas');
     var drawCanvas = document.getElementById('drawCanvas');
-    var ctrlCanvas = document.getElementById('controlCanvas');
-    var unitRefs = [
-        {
-            src: "img/basic_unit.png",
-            ref: "basic_unit"
-        },
-        {
-            src: "img/basic_wpn.png",
-            ref: "basic_wpn"
-        },
-        {
-            src: "img/basic_missile.png",
-            ref: "basic_missile"
-        },
-    ];
-    game.setChef(chef);
-    game.setTileDrawer(new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png'));
-    game.setFOWDrawer(new FOWDrawer(fowCanvas));
-    game.setSelectionDrawer(new SelectionDrawer(drawCanvas));
-    game.setSelectionBoxDrawer(new SelectionBoxDrawer(drawCanvas));
-    var spritemap = new SpriteMap(unitRefs);
+    var ctrlDiv = document.getElementById('controlDiv');
+    var cmdDiv = document.getElementById('commandDiv');
+    var cmds = commands();
+    game.chef = chef;
+    game.inputState = new UserInput.InputState(ctrlDiv, Interaction.Core.interact(game));
+    game.tileDrawer = new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png');
+    game.fowDrawer = new FOWDrawer(fowCanvas);
+    game.selectionDrawer = new SelectionDrawer(drawCanvas);
+    game.selectionBoxDrawer = new SelectionBoxDrawer(drawCanvas);
+    game.statusBarDrawer = new StatusBarDrawer(drawCanvas);
+    game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
+    var spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e) {
-        game.setUnitDrawer(new UnitDrawer(drawCanvas, spritemap));
+        game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
+        game.buildPlacementDrawer = new BuildPlacementDrawer(drawCanvas, spritemap);
+        mainMenu.appendChild(spritemap.spriteSheet);
     };
     connectBtn.onclick = function () {
         var nameFieldValue = document.getElementById('nameField').value;
@@ -47,7 +40,7 @@ function main() {
             conn = new WebSocket('ws://[' + addrFieldValue + ']:' + portFieldValue);
         }
         conn.binaryType = "arraybuffer";
-        game.setConnection(conn);
+        game.connection = conn;
         conn.onclose = function () {
             console.log('Connection closed.');
             mainMenu.hidden = false;
@@ -56,7 +49,7 @@ function main() {
             game.reset();
         };
         conn.onmessage = function (event) {
-            game.processPacket(new Cereal(new DataView(event.data)));
+            Decoding.processPacket(game, new Cereal(new DataView(event.data)));
         };
         conn.onopen = function () {
             console.log('Connection open.');
@@ -81,18 +74,66 @@ function main() {
 function playGame(game) {
     var mainMenu = document.getElementById('mainMenu');
     var content = document.getElementById('content');
-    var canvas = document.getElementById('controlCanvas');
-    interact(canvas, game.interact_canvas());
-    var last_time = Date.now();
-    function draw(time_passed) {
+    function draw() {
         if (game.connected) {
-            var time_delta = (time_passed - last_time) / 100;
-            game.draw(time_delta);
-            last_time = time_passed;
+            game.draw();
             requestAnimationFrame(draw);
         }
     }
-    draw(last_time);
+    draw();
+}
+function commands() {
+    var cmds = {};
+    cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
+    cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
+    cmds["build"] = { src: "img/build.png", tooltip: "[B] Build" };
+    return cmds;
+}
+function spriteRefs(colors) {
+    var tc_imgs = [
+        {
+            src: "img/basic_missile.png",
+            ref: "basic_missile"
+        },
+        {
+            src: "img/artillery_platform1.png",
+            ref: "artillery_platform1"
+        },
+        {
+            src: "img/artillery_wpn1.png",
+            ref: "artillery_wpn1"
+        },
+        {
+            src: "img/missile1.png",
+            ref: "missile1"
+        },
+        {
+            src: "img/basic_unit.png",
+            ref: "basic_unit"
+        },
+        {
+            src: "img/basic_wpn.png",
+            ref: "basic_wpn"
+        },
+        {
+            src: "img/fighter1.png",
+            ref: "fighter1"
+        },
+        {
+            src: "img/bomber1.png",
+            ref: "bomber1"
+        },
+    ];
+    var list = new Array();
+    for (var i = 0; i < colors.length; i++) {
+        var color = colors[i];
+        for (var n = 0; n < tc_imgs.length; n++) {
+            var src = tc_imgs[n].src;
+            var ref = tc_imgs[n].ref + color.name;
+            list.push({ src: src, ref: ref, color: color });
+        }
+    }
+    return list;
 }
 main();
 //# sourceMappingURL=main.js.map

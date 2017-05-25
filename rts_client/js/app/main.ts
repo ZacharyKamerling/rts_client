@@ -11,31 +11,24 @@ function main() {
     let game: Game = new Game();
     let fowCanvas = <HTMLCanvasElement>document.getElementById('fowCanvas');
     let drawCanvas = <HTMLCanvasElement>document.getElementById('drawCanvas');
-    let ctrlCanvas = <HTMLCanvasElement>document.getElementById('controlCanvas');
-    let unitRefs = [
-        {
-            src: "img/basic_unit.png",
-            ref: "basic_unit"
-        },
-        {
-            src: "img/basic_wpn.png",
-            ref: "basic_wpn"
-        },
-        {
-            src: "img/basic_missile.png",
-            ref: "basic_missile"
-        },
-    ];
+    let ctrlDiv = <HTMLElement>document.getElementById('controlDiv');
+    let cmdDiv = <HTMLElement>document.getElementById('commandDiv');
+    let cmds = commands();
     
-    game.setChef(chef);
-    game.setTileDrawer(new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png'));
-    game.setFOWDrawer(new FOWDrawer(fowCanvas));
-    game.setSelectionDrawer(new SelectionDrawer(drawCanvas));
-    game.setSelectionBoxDrawer(new SelectionBoxDrawer(drawCanvas));
+    game.chef = chef;
+    game.inputState = new UserInput.InputState(ctrlDiv, Interaction.Core.interact(game));
+    game.tileDrawer = new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png');
+    game.fowDrawer = new FOWDrawer(fowCanvas);
+    game.selectionDrawer = new SelectionDrawer(drawCanvas);
+    game.selectionBoxDrawer = new SelectionBoxDrawer(drawCanvas);
+    game.statusBarDrawer = new StatusBarDrawer(drawCanvas);
+    game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
 
-    let spritemap = new SpriteMap(unitRefs);
+    let spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e: Event) {
-        game.setUnitDrawer(new UnitDrawer(drawCanvas, spritemap));
+        game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
+        game.buildPlacementDrawer = new BuildPlacementDrawer(drawCanvas, spritemap);
+        mainMenu.appendChild(spritemap.spriteSheet);
     };
 
     connectBtn.onclick = function () {
@@ -52,7 +45,7 @@ function main() {
             conn = new WebSocket('ws://[' + addrFieldValue + ']:' + portFieldValue);
         }
         conn.binaryType = "arraybuffer";
-        game.setConnection(conn);
+        game.connection = conn;
 
         conn.onclose = function () {
             console.log('Connection closed.');
@@ -63,7 +56,7 @@ function main() {
         }
 
         conn.onmessage = function (event) {
-            game.processPacket(new Cereal(new DataView(event.data)));
+            Decoding.processPacket(game, new Cereal(new DataView(event.data)));
         }
 
         conn.onopen = function () {
@@ -90,21 +83,75 @@ function main() {
 function playGame(game: Game) {
     let mainMenu = document.getElementById('mainMenu');
     let content = document.getElementById('content');
-    let canvas = <HTMLCanvasElement>document.getElementById('controlCanvas');
-    interact(canvas, game.interact_canvas());
+    
 
-    let last_time = Date.now();
-
-    function draw(time_passed: number) {
+    function draw() {
         if (game.connected) {
-            let time_delta = (time_passed - last_time) / 100;
-            game.draw(time_delta);
-            last_time = time_passed;
+            game.draw();
             requestAnimationFrame(draw);
         }
     }
 
-    draw(last_time);
+    draw();
+}
+
+function commands(): { [index: string]: { src: string, tooltip: string } } {
+    let cmds: { [index: string]: { src: string, tooltip: string } } = {};
+    cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
+    cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
+    cmds["build"] = { src: "img/build.png", tooltip: "[B] Build" };
+
+    return cmds;
+}
+
+function spriteRefs(colors: TeamColor[]): { src: string, ref: string, color: TeamColor }[] {
+    let tc_imgs = [
+        {
+            src: "img/basic_missile.png",
+            ref: "basic_missile"
+        },
+        {
+            src: "img/artillery_platform1.png",
+            ref: "artillery_platform1"
+        },
+        {
+            src: "img/artillery_wpn1.png",
+            ref: "artillery_wpn1"
+        },
+        {
+            src: "img/missile1.png",
+            ref: "missile1"
+        },
+        {
+            src: "img/basic_unit.png",
+            ref: "basic_unit"
+        },
+        {
+            src: "img/basic_wpn.png",
+            ref: "basic_wpn"
+        },
+        {
+            src: "img/fighter1.png",
+            ref: "fighter1"
+        },
+        {
+            src: "img/bomber1.png",
+            ref: "bomber1"
+        },
+    ];
+
+    let list: { src: string, ref: string, color: TeamColor }[] = new Array();
+
+    for (let i = 0; i < colors.length; i++) {
+        let color = colors[i];
+
+        for (let n = 0; n < tc_imgs.length; n++) {
+            let src = tc_imgs[n].src;
+            let ref = tc_imgs[n].ref + color.name;
+            list.push({ src: src, ref: ref, color: color });
+        }
+    }
+    return list;
 }
 
 main();

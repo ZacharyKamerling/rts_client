@@ -1,10 +1,10 @@
 // Cooks up binary data
 class Chef {
-    private ab = new ArrayBuffer(100);
+    private ab = new ArrayBuffer(4096);
     private dv = new DataView(this.ab);
     private offset = 0;
 
-    resize(spaceNeeded): void {
+    private resize(spaceNeeded: number): void {
         if (this.ab.byteLength < this.offset + spaceNeeded) {
             let newAB = new ArrayBuffer((this.ab.byteLength + spaceNeeded) * 2);
             let newDV = new DataView(newAB);
@@ -86,7 +86,7 @@ class Chef {
     }
 
     private toUTF8Array(str: string): number[] {
-        let utf8 = [];
+        let utf8: number[] = [];
         for (let i = 0; i < str.length; i++) {
             let charcode = str.charCodeAt(i);
             if (charcode < 0x80) utf8.push(charcode);

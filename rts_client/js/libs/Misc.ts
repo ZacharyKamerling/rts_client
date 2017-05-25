@@ -24,25 +24,20 @@
     export function turnTowards(a: number, b: number, turn: number): number {
         let dist = angularDistance(a, b);
 
-        if (turn > dist) {
-            return b;
-        }
-        else {
-            if (a > b) {
-                if (a - b > Math.PI) {
-                    return normalizeAngle(a + turn);
-                }
-                else {
-                    return normalizeAngle(a - turn);
-                }
+        if (a > b) {
+            if (a - b > Math.PI) {
+                return normalizeAngle(a + turn);
             }
             else {
-                if (b - a > Math.PI) {
-                    return normalizeAngle(a - turn);
-                }
-                else {
-                    return normalizeAngle(a + turn);
-                }
+                return normalizeAngle(a - turn);
+            }
+        }
+        else {
+            if (b - a > Math.PI) {
+                return normalizeAngle(a - turn);
+            }
+            else {
+                return normalizeAngle(a + turn);
             }
         }
     }

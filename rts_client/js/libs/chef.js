@@ -1,7 +1,7 @@
 // Cooks up binary data
 var Chef = (function () {
     function Chef() {
-        this.ab = new ArrayBuffer(100);
+        this.ab = new ArrayBuffer(4096);
         this.dv = new DataView(this.ab);
         this.offset = 0;
     }
@@ -100,5 +100,5 @@ var Chef = (function () {
         return utf8;
     };
     return Chef;
-})();
+}());
 //# sourceMappingURL=chef.js.map

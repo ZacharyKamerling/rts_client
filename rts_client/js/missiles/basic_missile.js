@@ -5,25 +5,26 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var BasicMissile = (function (_super) {
     __extends(BasicMissile, _super);
-    function BasicMissile(c, frame, exploding) {
-        _super.call(this, c, frame, exploding);
+    function BasicMissile(c, time, frame, exploding) {
+        _super.call(this, c, time, frame, exploding);
     }
     BasicMissile.prototype.copycat = function (misl) {
         _super.prototype.copycat.call(this, misl);
     };
     BasicMissile.prototype.clone = function () {
-        var u = new BasicMissile(null, 0, false);
+        var u = new BasicMissile(null, this.timeCreated, this.frameCreated, false);
         this.copycat(u);
         return u;
     };
     BasicMissile.prototype.render = function (game, layers) {
-        layers[3].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_missile" });
+        var tc = game.teamColors[this.team];
+        layers[3].push({ x: this.x, y: this.y, ang: this.facing, ref: "missile1" + tc.name });
     };
     BasicMissile.prototype.renderExplosion = function (game, layers) {
     };
     BasicMissile.prototype.speed = function () {
-        return Game.TILESIZE * 12.0 / 10.0;
+        return 24.0;
     };
     return BasicMissile;
-})(Missile);
+}(Missile));
 //# sourceMappingURL=basic_missile.js.map

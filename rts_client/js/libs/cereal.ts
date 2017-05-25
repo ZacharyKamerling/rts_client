@@ -60,6 +60,6 @@ class Cereal {
     }
 }
 
-function uintToString(uintArray): string {
+function uintToString(uintArray: number[]): string {
     return decodeURIComponent(encodeURI(atob(String.fromCharCode.apply(null, uintArray))));
 }

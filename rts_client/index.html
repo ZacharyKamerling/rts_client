@@ -4,22 +4,33 @@
 <head>
     <meta charset="utf-8" />
     <title>RTS</title>
-    <script src="js/libs/graphics/web_gl_help.js"></script>
-    <script src="js/libs/graphics/tile_drawer.js"></script>
-    <script src="js/libs/graphics/sprite_map.js"></script>
-    <script src="js/libs/graphics/unit_drawer.js"></script>
-    <script src="js/libs/graphics/fow_drawer.js"></script>
-    <script src="js/libs/graphics/selection_drawer.js"></script>
-    <script src="js/libs/graphics/select_box_drawer.js"></script>
-    <script src="js/libs/interact.js"></script>
+    <script src="js/libs/view/web_gl_help.js"></script>
+    <script src="js/libs/view/tile_drawer.js"></script>
+    <script src="js/libs/view/sprite_map.js"></script>
+    <script src="js/libs/view/unit_drawer.js"></script>
+    <script src="js/libs/view/fow_drawer.js"></script>
+    <script src="js/libs/view/selection_drawer.js"></script>
+    <script src="js/libs/view/select_box_drawer.js"></script>
+    <script src="js/libs/view/status_bar_drawer.js"></script>
+    <script src="js/libs/view/command_panel.js"></script>
+    <script src="js/libs/view/team_color.js"></script>
+    <script src="js/libs/user_input.js"></script>
     <script src="js/libs/chef.js"></script>
     <script src="js/libs/cereal.js"></script>
     <script src="js/libs/misc.js"></script>
+    <script src="js/app/interaction/core.js"></script>
+    <script src="js/app/interaction/attack_move_order.js"></script>
+    <script src="js/app/interaction/move_order.js"></script>
+    <script src="js/app/interaction/build_order.js"></script>
+    <script src="js/app/interaction/moving_camera.js"></script>
+    <script src="js/app/interaction/selecting_units.js"></script>
     <script src="js/app/game.js"></script>
+    <script src="js/app/decoding.js"></script>
     <script src="js/app/missile.js"></script>
     <script src="js/app/unit.js"></script>
     <script src="js/missiles/basic_missile.js"></script>
     <script src="js/units/basic_unit.js"></script>
+    <script src="js/units/basic_structure.js"></script>
 </head>
 <body style="width: 100%; height: 100%; margin-left: 0px; margin-top: 0px; margin-bottom: 0px; margin-right: 0px; overflow: hidden">
 
@@ -38,9 +49,15 @@
     <div id="content" style="height: 100%; ">
         <canvas style="height: 100%; width: 100%; position: absolute; z-index: 0;" id="drawCanvas"></canvas>
         <canvas style="height: 100%; width: 100%; position: absolute; z-index: 1;" id="fowCanvas" ></canvas>
-        <canvas style="height: 100%; width: 100%; position: absolute; z-index: 2;" id="controlCanvas"></canvas>
+        <div    style="height: 100%; width: 100%; position: absolute; z-index: 2;" id="controlDiv"></div>
+        <div    style="list-style-type:none; padding: 0; position: fixed; bottom: 0;  z-index: 3" id="commandDiv"></div>
     </div>
 
     <script src="js/app/main.js"></script>
+    <style>
+        input:focus, textarea:focus {
+            outline: none;
+        }
+    </style>
 </body>
 </html>

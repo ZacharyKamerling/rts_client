@@ -1,6 +1,6 @@
 ﻿class BasicMissile extends Missile{
-    constructor(c: Cereal, frame: number, exploding: boolean) {
-        super(c, frame, exploding);
+    constructor(c: Cereal, time:number, frame: number, exploding: boolean) {
+        super(c, time, frame, exploding);
     }
 
     copycat(misl: BasicMissile) {
@@ -8,13 +8,14 @@
     }
 
     clone(): BasicMissile {
-        var u = new BasicMissile(null, 0, false);
+        var u = new BasicMissile(null, this.timeCreated, this.frameCreated, false);
         this.copycat(u);
         return u;
     }
 
     render(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
-        layers[3].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_missile" });
+        let tc = game.teamColors[this.team];
+        layers[3].push({ x: this.x, y: this.y, ang: this.facing, ref: "missile1" + tc.name });
     }
 
     renderExplosion(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
@@ -22,6 +23,6 @@
     }
 
     speed(): number {
-        return Game.TILESIZE * 12.0 / 10.0;
+        return 24.0;
     }
 }
