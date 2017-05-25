@@ -27,6 +27,7 @@ function main() {
     let spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e: Event) {
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
+        game.buildPlacementDrawer = new BuildPlacementDrawer(drawCanvas, spritemap);
         mainMenu.appendChild(spritemap.spriteSheet);
     };
 
@@ -104,7 +105,7 @@ function commands(): { [index: string]: { src: string, tooltip: string } } {
 }
 
 function spriteRefs(colors: TeamColor[]): { src: string, ref: string, color: TeamColor }[] {
-    let imgs = [
+    let tc_imgs = [
         {
             src: "img/basic_missile.png",
             ref: "basic_missile"
@@ -130,10 +131,6 @@ function spriteRefs(colors: TeamColor[]): { src: string, ref: string, color: Tea
             ref: "basic_wpn"
         },
         {
-            src: "img/basic_structure.png",
-            ref: "basic_structure"
-        },
-        {
             src: "img/fighter1.png",
             ref: "fighter1"
         },
@@ -148,9 +145,9 @@ function spriteRefs(colors: TeamColor[]): { src: string, ref: string, color: Tea
     for (let i = 0; i < colors.length; i++) {
         let color = colors[i];
 
-        for (let n = 0; n < imgs.length; n++) {
-            let src = imgs[n].src;
-            let ref = imgs[n].ref + color.name;
+        for (let n = 0; n < tc_imgs.length; n++) {
+            let src = tc_imgs[n].src;
+            let ref = tc_imgs[n].ref + color.name;
             list.push({ src: src, ref: ref, color: color });
         }
     }

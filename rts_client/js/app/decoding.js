@@ -1,5 +1,14 @@
 var Decoding;
 (function (Decoding) {
+    var ClientMessage;
+    (function (ClientMessage) {
+        ClientMessage[ClientMessage["UnitMove"] = 0] = "UnitMove";
+        ClientMessage[ClientMessage["UnitDeath"] = 1] = "UnitDeath";
+        ClientMessage[ClientMessage["MissileMove"] = 2] = "MissileMove";
+        ClientMessage[ClientMessage["MissileExplode"] = 3] = "MissileExplode";
+        ClientMessage[ClientMessage["TeamInfo"] = 4] = "TeamInfo";
+        ClientMessage[ClientMessage["MapInfo"] = 5] = "MapInfo";
+    })(ClientMessage || (ClientMessage = {}));
     function processPacket(game, data) {
         var currentTime = Date.now();
         var logicFrame = data.getU32();
@@ -26,7 +35,7 @@ var Decoding;
             var msg_type = data.getU8();
             msg_switch: switch (msg_type) {
                 // Unit
-                case 0:
+                case ClientMessage.UnitMove:
                     var new_unit = Unit.decodeUnit(data, currentTime, logicFrame);
                     // If unit_soul exists, update it with new_unit
                     if (new_unit) {
@@ -43,9 +52,9 @@ var Decoding;
                     }
                     break msg_switch;
                 // Missile
-                case 1:
-                case 2:
-                    var exploding = msg_type === 2;
+                case ClientMessage.MissileMove:
+                case ClientMessage.MissileExplode:
+                    var exploding = msg_type === ClientMessage.MissileExplode;
                     var new_misl = Missile.decodeMissile(data, currentTime, logicFrame, exploding);
                     if (new_misl) {
                         var soul = game.missileSouls[new_misl.misl_ID];
@@ -61,13 +70,13 @@ var Decoding;
                     }
                     break msg_switch;
                 // Unit death
-                case 3:
+                case ClientMessage.UnitDeath:
                     var unit_ID = data.getU16();
                     var dmg_type = data.getU8();
                     game.souls[unit_ID].current.isDead = true;
                     break msg_switch;
                 // Player Info
-                case 4:
+                case ClientMessage.TeamInfo:
                     game.team = data.getU8();
                     game.metal = data.getU32();
                     game.energy = data.getU32();
@@ -75,6 +84,13 @@ var Decoding;
                 default:
                     console.log("No message of type " + msg_type + " exists.");
                     return;
+                case ClientMessage.MapInfo:
+                    var width = data.getU16();
+                    var height = data.getU16();
+                    for (var y = 0; y < height; y++) {
+                        for (var x = 0; x < width; x++) {
+                        }
+                    }
             }
         }
     }

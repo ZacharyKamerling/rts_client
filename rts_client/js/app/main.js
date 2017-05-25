@@ -24,6 +24,7 @@ function main() {
     var spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e) {
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
+        game.buildPlacementDrawer = new BuildPlacementDrawer(drawCanvas, spritemap);
         mainMenu.appendChild(spritemap.spriteSheet);
     };
     connectBtn.onclick = function () {
@@ -89,7 +90,7 @@ function commands() {
     return cmds;
 }
 function spriteRefs(colors) {
-    var imgs = [
+    var tc_imgs = [
         {
             src: "img/basic_missile.png",
             ref: "basic_missile"
@@ -115,10 +116,6 @@ function spriteRefs(colors) {
             ref: "basic_wpn"
         },
         {
-            src: "img/basic_structure.png",
-            ref: "basic_structure"
-        },
-        {
             src: "img/fighter1.png",
             ref: "fighter1"
         },
@@ -130,9 +127,9 @@ function spriteRefs(colors) {
     var list = new Array();
     for (var i = 0; i < colors.length; i++) {
         var color = colors[i];
-        for (var n = 0; n < imgs.length; n++) {
-            var src = imgs[n].src;
-            var ref = imgs[n].ref + color.name;
+        for (var n = 0; n < tc_imgs.length; n++) {
+            var src = tc_imgs[n].src;
+            var ref = tc_imgs[n].ref + color.name;
             list.push({ src: src, ref: ref, color: color });
         }
     }

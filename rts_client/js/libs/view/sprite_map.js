@@ -33,7 +33,7 @@ var SpriteMap = (function () {
                             }
                             if (x + w > SpriteMap.WIDTH) {
                                 x = 0;
-                                y += max_h;
+                                y += max_h + 1;
                                 max_h = 0;
                             }
                             if (y + h > SpriteMap.HEIGHT) {
@@ -64,7 +64,7 @@ var SpriteMap = (function () {
                                 w: w / SpriteMap.WIDTH,
                                 h: h / SpriteMap.HEIGHT
                             };
-                            x += w;
+                            x += w + 1;
                         }
                         that.spriteSheet = new Image(4096, 4096);
                         that.spriteSheet.src = spriteSheet.toDataURL();

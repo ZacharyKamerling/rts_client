@@ -1,4 +1,4 @@
-﻿class UnitDrawer {
+﻿class BuildPlacementDrawer {
     private spriteMap: SpriteMap;
     private canvas: HTMLCanvasElement;
     private spriteTex: WebGLTexture;
@@ -9,7 +9,7 @@
         let self = this;
         this.canvas = canvas;
         let gl = <WebGLRenderingContext>this.canvas.getContext('webgl');
-        this.program = new MetaProgram(gl, createProgram(gl, UnitDrawer.vertexShader, UnitDrawer.fragmentShader));
+        this.program = new MetaProgram(gl, createProgram(gl, BuildPlacementDrawer.vertexShader, BuildPlacementDrawer.fragmentShader));
         this.spriteTex = gl.createTexture();
         this.spriteMap = spritemap;
 
@@ -139,7 +139,7 @@
         "uniform sampler2D u_sampler;",
 
         "void main() {",
-        "    gl_FragColor = texture2D(u_sampler, v_texture_coord);",
+        "    gl_FragColor = (texture2D(u_sampler, v_texture_coord) + vec4(0.0,1.0,0.0,1.0)) / 2;",
         "}",
     ].join("\n");
 }

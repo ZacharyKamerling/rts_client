@@ -1,5 +1,14 @@
 ﻿module Decoding {
 
+    enum ClientMessage {
+        UnitMove,
+        UnitDeath,
+        MissileMove,
+        MissileExplode,
+        TeamInfo,
+        MapInfo,
+    }
+
     export function processPacket(game: Game, data: Cereal): void {
         let currentTime = Date.now();
         let logicFrame = data.getU32();
@@ -32,7 +41,7 @@
             msg_switch:
             switch (msg_type) {
                 // Unit
-                case 0:
+                case ClientMessage.UnitMove:
                     let new_unit: Unit = Unit.decodeUnit(data, currentTime, logicFrame);
 
                     // If unit_soul exists, update it with new_unit
@@ -51,9 +60,9 @@
                     }
                     break msg_switch;
                 // Missile
-                case 1:
-                case 2:
-                    let exploding = msg_type === 2;
+                case ClientMessage.MissileMove:
+                case ClientMessage.MissileExplode:
+                    let exploding = msg_type === ClientMessage.MissileExplode;
                     let new_misl: Missile = Missile.decodeMissile(data, currentTime, logicFrame, exploding);
 
                     if (new_misl) {
@@ -71,13 +80,13 @@
                     }
                     break msg_switch;
                 // Unit death
-                case 3:
+                case ClientMessage.UnitDeath:
                     let unit_ID = data.getU16();
                     let dmg_type = data.getU8();
                     game.souls[unit_ID].current.isDead = true;
                     break msg_switch;
                 // Player Info
-                case 4:
+                case ClientMessage.TeamInfo:
                     game.team = data.getU8();
                     game.metal = data.getU32();
                     game.energy = data.getU32();
@@ -85,6 +94,15 @@
                 default:
                     console.log("No message of type " + msg_type + " exists.");
                     return;
+                case ClientMessage.MapInfo:
+                    let width = data.getU16();
+                    let height = data.getU16();
+
+                    for (let y = 0; y < height; y++) {
+                        for (let x = 0; x < width; x++) {
+
+                        }
+                    }
             }
         }
     }

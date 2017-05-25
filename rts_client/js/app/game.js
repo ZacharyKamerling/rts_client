@@ -11,6 +11,7 @@ var Game = (function () {
         this.selectionDrawer = null;
         this.selectionBoxDrawer = null;
         this.statusBarDrawer = null;
+        this.buildPlacementDrawer = null;
         this.control = new Interaction.Core.DoingNothing();
         this.camera = new Camera(0, 0);
         this.connection = null;
@@ -32,14 +33,19 @@ var Game = (function () {
         }
         this.teamColors = Array();
         var tc = new TeamColor();
+        tc.name = "aqua";
+        tc.red = 0.0;
+        tc.green = 1.0;
+        tc.blue = 1.0;
+        this.teamColors.push(tc.clone());
         tc.name = "purple";
-        tc.red = 1.0;
+        tc.red = 0.8;
         tc.green = 0.0;
         tc.blue = 1.0;
         this.teamColors.push(tc.clone());
         tc.name = "green";
         tc.red = 0.0;
-        tc.green = 1.0;
+        tc.green = 0.8;
         tc.blue = 0.0;
         this.teamColors.push(tc.clone());
     }
@@ -79,11 +85,12 @@ var Game = (function () {
         this.stepMissiles(timeDelta);
         this.tileDrawer.draw(this.camera.x, this.camera.y, 1);
         this.drawSelections();
-        this.drawSelectBox();
         this.drawBuildPlacement();
         this.drawUnitsAndMissiles();
-        this.drawStatusBars();
+        this.drawBuildPlacement();
         this.drawFogOfWar();
+        this.drawStatusBars();
+        this.drawSelectBox();
         this.lastDrawTime = currentTime;
     };
     Game.prototype.stepUnits = function (timeDelta) {

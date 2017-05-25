@@ -12,6 +12,7 @@ class Game {
     public selectionDrawer: SelectionDrawer = null;
     public selectionBoxDrawer: SelectionBoxDrawer = null;
     public statusBarDrawer: StatusBarDrawer = null;
+    public buildPlacementDrawer: BuildPlacementDrawer = null;
     public control: Interaction.Core.Control = new Interaction.Core.DoingNothing();
     public camera: Camera = new Camera(0, 0);
     public connection: WebSocket = null;
@@ -42,14 +43,19 @@ class Game {
         this.teamColors = Array();
 
         let tc = new TeamColor();
+        tc.name = "aqua";
+        tc.red = 0.0;
+        tc.green = 1.0;
+        tc.blue = 1.0;
+        this.teamColors.push(tc.clone());
         tc.name = "purple";
-        tc.red = 1.0;
+        tc.red = 0.8;
         tc.green = 0.0;
         tc.blue = 1.0;
         this.teamColors.push(tc.clone());
         tc.name = "green";
         tc.red = 0.0;
-        tc.green = 1.0;
+        tc.green = 0.8;
         tc.blue = 0.0;
         this.teamColors.push(tc.clone());
     }
@@ -86,8 +92,6 @@ class Game {
         };
     }
 
-
-
     public draw() {
         let currentTime = Date.now();
         let timeDelta = (currentTime - this.lastDrawTime) * Game.FPS / 1000;
@@ -96,11 +100,12 @@ class Game {
         this.stepMissiles(timeDelta);
         this.tileDrawer.draw(this.camera.x, this.camera.y, 1);
         this.drawSelections();
-        this.drawSelectBox();
         this.drawBuildPlacement();
         this.drawUnitsAndMissiles();
-        this.drawStatusBars();
+        this.drawBuildPlacement();
         this.drawFogOfWar();
+        this.drawStatusBars();
+        this.drawSelectBox();
         this.lastDrawTime = currentTime;
     }
 

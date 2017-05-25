@@ -13,7 +13,7 @@
         }
     }
 
-    export function selectedUnitIDs(game: Game): Array < number > {
+    export function selectedUnitIDs(game: Game): Array<number> {
         let selected: number[] = new Array();
 
         for(let i = 0; i < game.souls.length; i++) {
