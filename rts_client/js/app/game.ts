@@ -25,6 +25,7 @@ class Game {
     public team: number = 0;
     public metal: number = 0;
     public energy: number = 0;
+    public orderID: number = 0;
     public static FPS = 10;
 
     constructor() {

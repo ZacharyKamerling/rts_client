@@ -12,7 +12,8 @@ var Interaction;
             var selected = Interaction.SelectingUnits.selectedUnitIDs(game);
             var input = game.inputState;
             var elem = game.inputState.element();
-            game.chef.put8(0);
+            game.chef.put8(Interaction.Core.ServerMessage.Move);
+            game.chef.putU32(game.orderID++);
             if (input.shiftDown()) {
                 game.chef.put8(1);
             }

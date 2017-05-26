@@ -7,7 +7,8 @@
         let input = game.inputState;
         let elem = input.element();
 
-        game.chef.put8(3);
+        game.chef.put8(Interaction.Core.ServerMessage.AttackMove);
+        game.chef.putU32(game.orderID++);
         if (input.shiftDown()) {
             game.chef.put8(1);
         }

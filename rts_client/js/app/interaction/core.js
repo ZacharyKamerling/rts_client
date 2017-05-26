@@ -2,6 +2,13 @@ var Interaction;
 (function (Interaction) {
     var Core;
     (function (Core) {
+        (function (ServerMessage) {
+            ServerMessage[ServerMessage["Move"] = 0] = "Move";
+            ServerMessage[ServerMessage["AttackMove"] = 1] = "AttackMove";
+            ServerMessage[ServerMessage["AttackTarget"] = 2] = "AttackTarget";
+            ServerMessage[ServerMessage["Build"] = 3] = "Build";
+        })(Core.ServerMessage || (Core.ServerMessage = {}));
+        var ServerMessage = Core.ServerMessage;
         var DoingNothing = (function () {
             function DoingNothing() {
             }

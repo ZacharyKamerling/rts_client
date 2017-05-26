@@ -4,10 +4,11 @@ var Decoding;
     (function (ClientMessage) {
         ClientMessage[ClientMessage["UnitMove"] = 0] = "UnitMove";
         ClientMessage[ClientMessage["UnitDeath"] = 1] = "UnitDeath";
-        ClientMessage[ClientMessage["MissileMove"] = 2] = "MissileMove";
-        ClientMessage[ClientMessage["MissileExplode"] = 3] = "MissileExplode";
-        ClientMessage[ClientMessage["TeamInfo"] = 4] = "TeamInfo";
-        ClientMessage[ClientMessage["MapInfo"] = 5] = "MapInfo";
+        ClientMessage[ClientMessage["OrderCompleted"] = 2] = "OrderCompleted";
+        ClientMessage[ClientMessage["MissileMove"] = 3] = "MissileMove";
+        ClientMessage[ClientMessage["MissileExplode"] = 4] = "MissileExplode";
+        ClientMessage[ClientMessage["TeamInfo"] = 5] = "TeamInfo";
+        ClientMessage[ClientMessage["MapInfo"] = 6] = "MapInfo";
     })(ClientMessage || (ClientMessage = {}));
     function processPacket(game, data) {
         var currentTime = Date.now();

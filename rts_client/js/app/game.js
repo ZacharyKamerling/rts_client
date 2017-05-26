@@ -23,6 +23,7 @@ var Game = (function () {
         this.team = 0;
         this.metal = 0;
         this.energy = 0;
+        this.orderID = 0;
         this.souls = Array();
         for (var i = 0; i < Game.MAX_UNITS; i++) {
             this.souls.push(null);

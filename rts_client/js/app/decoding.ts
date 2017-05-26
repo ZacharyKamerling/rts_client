@@ -3,6 +3,7 @@
     enum ClientMessage {
         UnitMove,
         UnitDeath,
+        OrderCompleted,
         MissileMove,
         MissileExplode,
         TeamInfo,

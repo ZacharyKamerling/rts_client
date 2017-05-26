@@ -1,5 +1,12 @@
 ﻿module Interaction.Core {
 
+    export enum ServerMessage {
+        Move,
+        AttackMove,
+        AttackTarget,
+        Build,
+    }
+
     export interface Control { }
 
     export class DoingNothing implements Control { }
