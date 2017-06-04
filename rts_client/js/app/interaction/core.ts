@@ -5,6 +5,13 @@
         AttackMove,
         AttackTarget,
         Build,
+        MapInfoRequest,
+    }
+
+    export enum QueueOrder {
+        Prepend,
+        Append,
+        Replace,
     }
 
     export interface Control { }

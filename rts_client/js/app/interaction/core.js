@@ -7,8 +7,15 @@ var Interaction;
             ServerMessage[ServerMessage["AttackMove"] = 1] = "AttackMove";
             ServerMessage[ServerMessage["AttackTarget"] = 2] = "AttackTarget";
             ServerMessage[ServerMessage["Build"] = 3] = "Build";
+            ServerMessage[ServerMessage["MapInfoRequest"] = 4] = "MapInfoRequest";
         })(Core.ServerMessage || (Core.ServerMessage = {}));
         var ServerMessage = Core.ServerMessage;
+        (function (QueueOrder) {
+            QueueOrder[QueueOrder["Prepend"] = 0] = "Prepend";
+            QueueOrder[QueueOrder["Append"] = 1] = "Append";
+            QueueOrder[QueueOrder["Replace"] = 2] = "Replace";
+        })(Core.QueueOrder || (Core.QueueOrder = {}));
+        var QueueOrder = Core.QueueOrder;
         var DoingNothing = (function () {
             function DoingNothing() {
             }

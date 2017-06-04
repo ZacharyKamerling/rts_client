@@ -98,12 +98,31 @@
                 case ClientMessage.MapInfo:
                     let width = data.getU16();
                     let height = data.getU16();
+                    let canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    let ctx = canvas.getContext('2d');
+                    let imgData = ctx.getImageData(0, 0, width, height);
+                    let quads = imgData.data;
 
                     for (let y = 0; y < height; y++) {
                         for (let x = 0; x < width; x++) {
+                            let r = data.getU8();
+                            let g = data.getU8();
+                            let ix = y * width + x;
 
+                            quads[ix * 4] = r;
+                            quads[ix * 4 + 1] = g;
                         }
                     }
+
+                    ctx.putImageData(imgData, 0, 0);
+
+                    let img = new Image(4096, 4096);
+                    img.src = canvas.toDataURL();
+                    img.onload = function (e: Event) {
+                        game.tileDrawer.setTiles(img);
+                    };
             }
         }
     }

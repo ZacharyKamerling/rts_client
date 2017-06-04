@@ -44,6 +44,11 @@ class Game {
         this.teamColors = Array();
 
         let tc = new TeamColor();
+        tc.name = "white";
+        tc.red = 1.0;
+        tc.green = 1.0;
+        tc.blue = 1.0;
+        this.teamColors.push(tc.clone());
         tc.name = "aqua";
         tc.red = 0.0;
         tc.green = 1.0;
@@ -101,7 +106,6 @@ class Game {
         this.stepMissiles(timeDelta);
         this.tileDrawer.draw(this.camera.x, this.camera.y, 1);
         this.drawSelections();
-        this.drawBuildPlacement();
         this.drawUnitsAndMissiles();
         this.drawBuildPlacement();
         this.drawFogOfWar();
@@ -145,10 +149,25 @@ class Game {
 
     private drawBuildPlacement() {
         let control = this.control;
+        let input = this.inputState;
+        let elem = input.element();
 
         if (control instanceof Interaction.BuildOrder.BeingIssued) {
-            let x = Math.floor((this.inputState.mouseX() - this.camera.x) / Game.TILESIZE) * Game.TILESIZE;
-            let y = Math.floor((this.inputState.mouseY() - this.camera.y) / Game.TILESIZE) * Game.TILESIZE;
+            let layers: { x: number; y: number; ang: number, ref: string }[] = new Array();
+
+            let norm_x = (this.camera.x + (input.mouseX() - elem.offsetWidth / 2)) / Game.TILESIZE;
+            let norm_y = (this.camera.y - (input.mouseY() - elem.offsetHeight / 2)) / Game.TILESIZE;
+            let half_w = 3.0 / 2.0;
+            let half_h = 3.0 / 2.0;
+            let x = (Math.floor(norm_x - half_w + 0.00001) + half_w) * Game.TILESIZE;
+            let y = (Math.floor(norm_y - half_h + 0.00001) + half_h) * Game.TILESIZE;
+            layers.push({
+                x: x, y: y, ang: 0.0, ref: "artillery_platform1" + this.teamColors[this.team].name
+            });
+            layers.push({
+                x: x, y: y, ang: 0.0, ref: "artillery_wpn1" + this.teamColors[this.team].name
+            });
+            this.buildPlacementDrawer.draw(this.camera.x, this.camera.y, 1, layers);
         }
     }
 

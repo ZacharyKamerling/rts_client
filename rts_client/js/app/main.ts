@@ -66,6 +66,10 @@ function main() {
             chef.putString(nameFieldValue);
             chef.putString(passFieldValue);
             conn.send(chef.done());
+            
+            chef.putU8(Interaction.Core.ServerMessage.MapInfoRequest);
+            conn.send(chef.done());
+
             game.connected = true;
             playGame(game);
         }
@@ -81,10 +85,6 @@ function main() {
 };
 
 function playGame(game: Game) {
-    let mainMenu = document.getElementById('mainMenu');
-    let content = document.getElementById('content');
-    
-
     function draw() {
         if (game.connected) {
             game.draw();

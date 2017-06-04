@@ -10,10 +10,10 @@
         game.chef.put8(Interaction.Core.ServerMessage.Move);
         game.chef.putU32(game.orderID++);
         if (input.shiftDown()) {
-            game.chef.put8(1);
+            game.chef.put8(Interaction.Core.QueueOrder.Append);
         }
         else {
-            game.chef.put8(0);
+            game.chef.put8(Interaction.Core.QueueOrder.Replace);
         }
 
         game.chef.putF64((game.camera.x + (input.mouseX() - elem.offsetWidth / 2)) / Game.TILESIZE);

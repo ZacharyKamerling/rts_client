@@ -106,7 +106,8 @@ var BuildPlacementDrawer = (function () {
         "varying vec2 v_texture_coord;",
         "uniform sampler2D u_sampler;",
         "void main() {",
-        "    gl_FragColor = (texture2D(u_sampler, v_texture_coord) + vec4(0.0,1.0,0.0,1.0)) / 2;",
+        "    vec4 sample = texture2D(u_sampler, v_texture_coord);",
+        "    gl_FragColor = (sample + vec4(0.0,0.0,1.0,0.0)) / 2.0;",
         "}",
     ].join("\n");
     return BuildPlacementDrawer;

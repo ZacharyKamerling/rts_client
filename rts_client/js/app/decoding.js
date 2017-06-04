@@ -32,7 +32,7 @@ var Decoding;
         else if (logicFrame < game.logicFrame) {
             return;
         }
-        while (!data.empty()) {
+        var _loop_1 = function() {
             var msg_type = data.getU8();
             msg_switch: switch (msg_type) {
                 // Unit
@@ -47,7 +47,7 @@ var Decoding;
                             soul.new = new_unit;
                         }
                         else {
-                            var cur = new_unit.clone();
+                            cur = new_unit.clone();
                             game.souls[new_unit.unit_ID] = { old: null, current: cur, new: new_unit };
                         }
                     }
@@ -84,15 +84,37 @@ var Decoding;
                     break msg_switch;
                 default:
                     console.log("No message of type " + msg_type + " exists.");
-                    return;
+                    return { value: void 0 };
                 case ClientMessage.MapInfo:
                     var width = data.getU16();
                     var height = data.getU16();
+                    var canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    var ctx = canvas.getContext('2d');
+                    var imgData = ctx.getImageData(0, 0, width, height);
+                    var quads = imgData.data;
                     for (var y = 0; y < height; y++) {
                         for (var x = 0; x < width; x++) {
+                            var r = data.getU8();
+                            var g = data.getU8();
+                            var ix = y * width + x;
+                            quads[ix * 4] = r;
+                            quads[ix * 4 + 1] = g;
                         }
                     }
+                    ctx.putImageData(imgData, 0, 0);
+                    var img_1 = new Image(4096, 4096);
+                    img_1.src = canvas.toDataURL();
+                    img_1.onload = function (e) {
+                        game.tileDrawer.setTiles(img_1);
+                    };
             }
+        };
+        var cur;
+        while (!data.empty()) {
+            var state_1 = _loop_1();
+            if (typeof state_1 === "object") return state_1.value;
         }
     }
     Decoding.processPacket = processPacket;

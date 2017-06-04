@@ -55,6 +55,10 @@
         throw new Error('Unit: getRadius() is abstract');
     }
 
+    widthAndHeight(): { w: number, h: number } {
+        throw new Error('Unit: widthAndHeight() is abstract');
+    }
+
     render(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
         throw new Error('Unit: render() is abstract');
     }

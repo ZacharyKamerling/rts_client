@@ -36,6 +36,9 @@ var Unit = (function () {
     Unit.prototype.radius = function () {
         throw new Error('Unit: getRadius() is abstract');
     };
+    Unit.prototype.widthAndHeight = function () {
+        throw new Error('Unit: widthAndHeight() is abstract');
+    };
     Unit.prototype.render = function (game, layers) {
         throw new Error('Unit: render() is abstract');
     };

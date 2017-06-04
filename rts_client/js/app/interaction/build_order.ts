@@ -22,10 +22,10 @@
         game.chef.put8(Interaction.Core.ServerMessage.Build);
         game.chef.putU32(game.orderID++);
         if (input.shiftDown()) {
-            game.chef.put8(1);
+            game.chef.put8(Interaction.Core.QueueOrder.Append);
         }
         else {
-            game.chef.put8(0);
+            game.chef.put8(Interaction.Core.QueueOrder.Replace);
         }
 
         game.chef.put16(build_type);

@@ -18,7 +18,7 @@ var BasicMissile = (function (_super) {
     };
     BasicMissile.prototype.render = function (game, layers) {
         var tc = game.teamColors[this.team];
-        layers[3].push({ x: this.x, y: this.y, ang: this.facing, ref: "missile1" + tc.name });
+        layers[3].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_missile" + tc.name });
     };
     BasicMissile.prototype.renderExplosion = function (game, layers) {
     };
