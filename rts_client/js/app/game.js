@@ -256,7 +256,7 @@ var Game = (function () {
         this.fowDrawer.draw(this.camera.x, this.camera.y, 1, circles);
     };
     Game.MAX_UNITS = 4096;
-    Game.TILESIZE = 32;
+    Game.TILESIZE = 20;
     Game.FPS = 10;
     return Game;
 }());

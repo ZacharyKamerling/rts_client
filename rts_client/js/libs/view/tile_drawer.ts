@@ -44,7 +44,7 @@ class TileDrawer {
         this.program = new MetaProgram(gl, createProgram(gl, TileDrawer.vertexShader, TileDrawer.fragmentShader));
         this.tileTexture = gl.createTexture();
         this.spriteSheet = gl.createTexture();
-        this.tileSize = 16;
+        this.tileSize = 20;
 
         let self = this;
         let sprts = new Image();

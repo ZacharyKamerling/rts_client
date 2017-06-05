@@ -15,7 +15,7 @@ function main() {
     var cmds = commands();
     game.chef = chef;
     game.inputState = new UserInput.InputState(ctrlDiv, Interaction.Core.interact(game));
-    game.tileDrawer = new TileDrawer(drawCanvas, 'img/lttp-tiles.png', 'img/lttp-all.png');
+    game.tileDrawer = new TileDrawer(drawCanvas, 'img/tileset.png', 'img/lttp-all.png');
     game.fowDrawer = new FOWDrawer(fowCanvas);
     game.selectionDrawer = new SelectionDrawer(drawCanvas);
     game.selectionBoxDrawer = new SelectionBoxDrawer(drawCanvas);
@@ -59,6 +59,7 @@ function main() {
             chef.putString(passFieldValue);
             conn.send(chef.done());
             chef.putU8(Interaction.Core.ServerMessage.MapInfoRequest);
+            chef.putU32(game.orderID++);
             conn.send(chef.done());
             game.connected = true;
             playGame(game);

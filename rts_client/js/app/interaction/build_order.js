@@ -18,15 +18,15 @@ var Interaction;
             var elem = input.element();
             game.chef.put8(Interaction.Core.ServerMessage.Build);
             game.chef.putU32(game.orderID++);
+            game.chef.put16(build_type);
+            game.chef.putF64((game.camera.x + (input.mouseX() - elem.offsetWidth / 2)) / Game.TILESIZE);
+            game.chef.putF64((game.camera.y - (input.mouseY() - elem.offsetHeight / 2)) / Game.TILESIZE);
             if (input.shiftDown()) {
                 game.chef.put8(Interaction.Core.QueueOrder.Append);
             }
             else {
                 game.chef.put8(Interaction.Core.QueueOrder.Replace);
             }
-            game.chef.put16(build_type);
-            game.chef.putF64((game.camera.x + (input.mouseX() - elem.offsetWidth / 2)) / Game.TILESIZE);
-            game.chef.putF64((game.camera.y - (input.mouseY() - elem.offsetHeight / 2)) / Game.TILESIZE);
             for (var i = 0; i < selected.length; i++) {
                 game.chef.put16(selected[i]);
             }

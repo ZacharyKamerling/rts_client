@@ -1,7 +1,7 @@
 ﻿"use strict";
 class Game {
     public static MAX_UNITS = 4096;
-    public static TILESIZE = 32;
+    public static TILESIZE = 20;
     public connected: boolean = true;
     public chef: Chef = null;
     public inputState: UserInput.InputState = null;

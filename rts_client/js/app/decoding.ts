@@ -92,10 +92,13 @@
                     game.metal = data.getU32();
                     game.energy = data.getU32();
                     break msg_switch;
-                default:
-                    console.log("No message of type " + msg_type + " exists.");
-                    return;
+                // Player Info
+                case ClientMessage.OrderCompleted:
+                    let unitID = data.getU16();
+                    let orderID = data.getU16();
+                    break msg_switch;
                 case ClientMessage.MapInfo:
+                    console.log("Received map data. " + data.dv.byteLength);
                     let width = data.getU16();
                     let height = data.getU16();
                     let canvas = document.createElement('canvas');
@@ -113,16 +116,41 @@
 
                             quads[ix * 4] = r;
                             quads[ix * 4 + 1] = g;
+                            quads[ix * 4 + 2] = 255;
+                            quads[ix * 4 + 3] = 255;
                         }
                     }
 
+                    for (let y = 0; y < height; y++) {
+                        for (let x = 0; x < width; x++) {
+                            data.getU8();
+                        }
+                    }
+
+                    let num_locations = data.getU8();
+
+                    for (let n = 0; n < num_locations; n++) {
+                        let x = data.getU16();
+                        let y = data.getU16();
+                        console.log("x: " + x + ", y: " + y);
+                    }
+
+                    console.log("Consumed map data. " + data.offset);
+
                     ctx.putImageData(imgData, 0, 0);
 
-                    let img = new Image(4096, 4096);
+                    let img = new Image(width, height);
                     img.src = canvas.toDataURL();
                     img.onload = function (e: Event) {
                         game.tileDrawer.setTiles(img);
+                        let mainMenu = document.getElementById('mainMenu');
+                        mainMenu.appendChild(img);
                     };
+
+                    break msg_switch;
+                default:
+                    console.log("No message of type " + msg_type + " exists.");
+                    return;
             }
         }
     }

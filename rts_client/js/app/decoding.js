@@ -82,10 +82,13 @@ var Decoding;
                     game.metal = data.getU32();
                     game.energy = data.getU32();
                     break msg_switch;
-                default:
-                    console.log("No message of type " + msg_type + " exists.");
-                    return { value: void 0 };
+                // Player Info
+                case ClientMessage.OrderCompleted:
+                    var unitID = data.getU16();
+                    var orderID = data.getU16();
+                    break msg_switch;
                 case ClientMessage.MapInfo:
+                    console.log("Received map data. " + data.dv.byteLength);
                     var width = data.getU16();
                     var height = data.getU16();
                     var canvas = document.createElement('canvas');
@@ -101,14 +104,34 @@ var Decoding;
                             var ix = y * width + x;
                             quads[ix * 4] = r;
                             quads[ix * 4 + 1] = g;
+                            quads[ix * 4 + 2] = 255;
+                            quads[ix * 4 + 3] = 255;
                         }
                     }
+                    for (var y = 0; y < height; y++) {
+                        for (var x = 0; x < width; x++) {
+                            data.getU8();
+                        }
+                    }
+                    var num_locations = data.getU8();
+                    for (var n = 0; n < num_locations; n++) {
+                        var x = data.getU16();
+                        var y = data.getU16();
+                        console.log("x: " + x + ", y: " + y);
+                    }
+                    console.log("Consumed map data. " + data.offset);
                     ctx.putImageData(imgData, 0, 0);
-                    var img_1 = new Image(4096, 4096);
+                    var img_1 = new Image(width, height);
                     img_1.src = canvas.toDataURL();
                     img_1.onload = function (e) {
                         game.tileDrawer.setTiles(img_1);
+                        var mainMenu = document.getElementById('mainMenu');
+                        mainMenu.appendChild(img_1);
                     };
+                    break msg_switch;
+                default:
+                    console.log("No message of type " + msg_type + " exists.");
+                    return { value: void 0 };
             }
         };
         var cur;
