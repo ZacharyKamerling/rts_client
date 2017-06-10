@@ -7,8 +7,8 @@
 
     constructor(stuff: { src: string, ref: string, color: TeamColor }[]) {
         let spriteSheet = document.createElement('canvas');
-        spriteSheet.width = 4096;
-        spriteSheet.height = 4096;
+        spriteSheet.width = SpriteMap.WIDTH;
+        spriteSheet.height = SpriteMap.HEIGHT;
         let ctx = spriteSheet.getContext('2d');
         let that = this;
         let x = 0;
@@ -65,7 +65,6 @@
                                         data[i] = color.red * intensity;
                                         data[i + 1] = color.green * intensity;
                                         data[i + 2] = color.blue * intensity;
-                                        console.log('stuff');
                                     }
                                 }
 
@@ -81,7 +80,7 @@
                             x += w + 1;
                         }
 
-                        that.spriteSheet = new Image(4096, 4096);
+                        that.spriteSheet = new Image(SpriteMap.WIDTH, SpriteMap.HEIGHT);
                         that.spriteSheet.src = spriteSheet.toDataURL();
                         that.spriteSheet.onload = function (e: Event) {
                             that.onload(e);

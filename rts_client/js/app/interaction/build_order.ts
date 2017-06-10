@@ -17,14 +17,15 @@
     export function issue(game: Game, build_type: number) {
         let selected = Interaction.SelectingUnits.selectedUnitIDs(game);
         let input = game.inputState;
-        let elem = input.element();
+        let width = game.unitDrawer.width();
+        let height = game.unitDrawer.height();
 
         game.chef.put8(Interaction.Core.ServerMessage.Build);
         game.chef.putU32(game.orderID++);
 
         game.chef.put16(build_type);
-        game.chef.putF64((game.camera.x + (input.mouseX() - elem.offsetWidth / 2)) / Game.TILESIZE);
-        game.chef.putF64((game.camera.y - (input.mouseY() - elem.offsetHeight / 2)) / Game.TILESIZE);
+        game.chef.putF64((game.camera.x + (input.mouseX() - width / 2)) / Game.TILESIZE);
+        game.chef.putF64((game.camera.y - (input.mouseY() - height / 2)) / Game.TILESIZE);
 
         if (input.shiftDown()) {
             game.chef.put8(Interaction.Core.QueueOrder.Append);

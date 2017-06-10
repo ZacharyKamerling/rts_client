@@ -72,9 +72,10 @@ var Interaction;
             }
             if (control instanceof Interaction.Core.DoingNothing) {
                 var input = game.inputState;
-                var elem = game.inputState.element();
-                var x = game.camera.x + input.mouseX() - elem.offsetWidth / 2;
-                var y = game.camera.y - (input.mouseY() - elem.offsetHeight / 2);
+                var width = game.unitDrawer.width();
+                var height = game.unitDrawer.height();
+                var x = game.camera.x + input.mouseX() - width / 2;
+                var y = game.camera.y - (input.mouseY() - height / 2);
                 configureUnitsBeingSelected(game, x, y, x, y);
             }
         }
@@ -143,9 +144,10 @@ var Interaction;
         }
         function begin(game) {
             var input = game.inputState;
-            var elem = game.inputState.element();
-            var x = game.camera.x + input.mouseX() - elem.offsetWidth / 2;
-            var y = game.camera.y - (input.mouseY() - elem.offsetHeight / 2);
+            var width = game.unitDrawer.width();
+            var height = game.unitDrawer.height();
+            var x = game.camera.x + input.mouseX() - width / 2;
+            var y = game.camera.y - (input.mouseY() - height / 2);
             game.control = new Interaction.SelectingUnits.CurrentAction(x, y, x, y, game.inputState.shiftDown());
             if (!input.shiftDown()) {
                 for (var i = 0; i < game.souls.length; i++) {

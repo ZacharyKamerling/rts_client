@@ -16,7 +16,8 @@ function main() {
     let cmds = commands();
     
     game.chef = chef;
-    game.inputState = new UserInput.InputState(ctrlDiv, Interaction.Core.interact(game));
+    game.inputState = new UserInput.InputState();
+    game.inputState.addListener(ctrlDiv, Interaction.Core.interact(game));
     game.tileDrawer = new TileDrawer(drawCanvas, 'img/tileset.png', 'img/lttp-all.png');
     game.fowDrawer = new FOWDrawer(fowCanvas);
     game.selectionDrawer = new SelectionDrawer(drawCanvas);

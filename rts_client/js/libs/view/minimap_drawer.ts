@@ -1,4 +1,4 @@
-﻿class UnitDrawer {
+﻿class MinimapDrawer {
     private spriteMap: SpriteMap;
     private canvas: HTMLCanvasElement;
     private spriteTex: WebGLTexture;
@@ -9,7 +9,7 @@
         let self = this;
         this.canvas = canvas;
         let gl = <WebGLRenderingContext>this.canvas.getContext('webgl');
-        this.program = new MetaProgram(gl, createProgram(gl, UnitDrawer.vertexShader, UnitDrawer.fragmentShader));
+        this.program = new MetaProgram(gl, createProgram(gl, MinimapDrawer.vertexShader, MinimapDrawer.fragmentShader));
         this.spriteTex = gl.createTexture();
         this.spriteMap = spritemap;
 
@@ -23,17 +23,10 @@
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
     }
 
-    public width(): number {
-        return this.canvas.offsetWidth;
-    }
-
-    public height(): number {
-        return this.canvas.offsetHeight;
-    }
-
-    public draw(x: number, y: number, scale: number, sprites: { x: number, y: number, ang: number, ref: string }[]) {
-        x = Math.floor(x);
-        y = Math.floor(y);
+    // (x,y) = minimap location on screen
+    // (w,h) = size of minimap on screen
+    // sprites = list of coords and spritemap ref { x: [0.0,1.0], y: [0.0,1.0], ref: 'wee_little_icon' }
+    public draw(sprites: { x: number, y: number, ref: string }[]) {
         if (this.canvas.width !== this.canvas.offsetWidth || this.canvas.height !== this.canvas.offsetHeight) {
             this.canvas.width = this.canvas.offsetWidth;
             this.canvas.height = this.canvas.offsetHeight;
@@ -52,9 +45,9 @@
             let hh = xywh.h; // Half height
 
             // Normalize X & Y
-            // ScrnX = ((x - ScrnL) / ScrnW) * 2 - 1
-            let normX = ((sprite.x - (x - this.canvas.width / 2)) / this.canvas.width) * 2 - 1;
-            let normY = ((sprite.y - (y - this.canvas.height / 2)) / this.canvas.height) * 2 - 1;
+            // ScrnX = x * 2 - 1
+            let normX = sprite.x * 2 - 1;
+            let normY = sprite.y * 2 - 1;
 
             // Coordinates of each corner on the sprite
             let east = normX + hw;
@@ -62,45 +55,42 @@
             let west = normX - hw;
             let south = normY - hh;
 
-            let ne = Misc.rotateAroundOrigin(normX, normY, east, north, sprite.ang);
-            let sw = Misc.rotateAroundOrigin(normX, normY, west, south, sprite.ang);
-            let nw = Misc.rotateAroundOrigin(normX, normY, west, north, sprite.ang);
-            let se = Misc.rotateAroundOrigin(normX, normY, east, south, sprite.ang);
-
             // Fill array with scaled vertices
-            drawData[i++] = normX - (normX - sw.x) * xm;
-            drawData[i++] = normY - (normY - sw.y) * ym;
+            drawData[i++] = normX - (normX - west) * xm;
+            drawData[i++] = normY - (normY - south) * ym;
             drawData[i++] = xywh.x;
             drawData[i++] = xywh.y + xywh.h;
 
-            drawData[i++] = normX - (normX - se.x) * xm;
-            drawData[i++] = normY - (normY - se.y) * ym;
+            drawData[i++] = normX - (normX - east) * xm;
+            drawData[i++] = normY - (normY - south) * ym;
             drawData[i++] = xywh.x + xywh.w;
             drawData[i++] = xywh.y + xywh.h;
 
-            drawData[i++] = normX - (normX - ne.x) * xm;
-            drawData[i++] = normY - (normY - ne.y) * ym;
+            drawData[i++] = normX - (normX - east) * xm;
+            drawData[i++] = normY - (normY - north) * ym;
             drawData[i++] = xywh.x + xywh.w;
             drawData[i++] = xywh.y;
 
-            drawData[i++] = normX - (normX - sw.x) * xm;
-            drawData[i++] = normY - (normY - sw.y) * ym;
+            drawData[i++] = normX - (normX - west) * xm;
+            drawData[i++] = normY - (normY - south) * ym;
             drawData[i++] = xywh.x;
             drawData[i++] = xywh.y + xywh.h;
 
-            drawData[i++] = normX - (normX - ne.x) * xm;
-            drawData[i++] = normY - (normY - ne.y) * ym;
+            drawData[i++] = normX - (normX - east) * xm;
+            drawData[i++] = normY - (normY - north) * ym;
             drawData[i++] = xywh.x + xywh.w;
             drawData[i++] = xywh.y;
 
-            drawData[i++] = normX - (normX - nw.x) * xm;
-            drawData[i++] = normY - (normY - nw.y) * ym;
+            drawData[i++] = normX - (normX - west) * xm;
+            drawData[i++] = normY - (normY - north) * ym;
             drawData[i++] = xywh.x;
             drawData[i++] = xywh.y;
         }
 
         let gl = <WebGLRenderingContext>this.canvas.getContext('webgl');
         gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+        gl.clearColor(0.1,0.1,0.1,1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.useProgram(this.program.program);

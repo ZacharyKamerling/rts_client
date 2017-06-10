@@ -150,17 +150,17 @@ class Game {
     private drawBuildPlacement() {
         let control = this.control;
         let input = this.inputState;
-        let elem = input.element();
 
         if (control instanceof Interaction.BuildOrder.BeingIssued) {
             let layers: { x: number; y: number; ang: number, ref: string }[] = new Array();
 
-            let norm_x = (this.camera.x + (input.mouseX() - elem.offsetWidth / 2)) / Game.TILESIZE;
-            let norm_y = (this.camera.y - (input.mouseY() - elem.offsetHeight / 2)) / Game.TILESIZE;
-            let half_w = 3.0 / 2.0;
-            let half_h = 3.0 / 2.0;
+            let norm_x = (this.camera.x + (input.mouseX() - this.unitDrawer.width() / 2)) / Game.TILESIZE;
+            let norm_y = (this.camera.y - (input.mouseY() - this.unitDrawer.height() / 2)) / Game.TILESIZE;
+            let half_w = 4.0 / 2.0;
+            let half_h = 4.0 / 2.0;
             let x = (Math.floor(norm_x - half_w + 0.00001) + half_w) * Game.TILESIZE;
             let y = (Math.floor(norm_y - half_h + 0.00001) + half_h) * Game.TILESIZE;
+
             layers.push({
                 x: x, y: y, ang: 0.0, ref: "artillery_platform1" + this.teamColors[this.team].name
             });

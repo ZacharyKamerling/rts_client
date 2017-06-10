@@ -15,12 +15,13 @@ var Interaction;
         function issue(game, build_type) {
             var selected = Interaction.SelectingUnits.selectedUnitIDs(game);
             var input = game.inputState;
-            var elem = input.element();
+            var width = game.unitDrawer.width();
+            var height = game.unitDrawer.height();
             game.chef.put8(Interaction.Core.ServerMessage.Build);
             game.chef.putU32(game.orderID++);
             game.chef.put16(build_type);
-            game.chef.putF64((game.camera.x + (input.mouseX() - elem.offsetWidth / 2)) / Game.TILESIZE);
-            game.chef.putF64((game.camera.y - (input.mouseY() - elem.offsetHeight / 2)) / Game.TILESIZE);
+            game.chef.putF64((game.camera.x + (input.mouseX() - width / 2)) / Game.TILESIZE);
+            game.chef.putF64((game.camera.y - (input.mouseY() - height / 2)) / Game.TILESIZE);
             if (input.shiftDown()) {
                 game.chef.put8(Interaction.Core.QueueOrder.Append);
             }

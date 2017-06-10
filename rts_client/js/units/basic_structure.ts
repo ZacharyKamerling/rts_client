@@ -29,7 +29,7 @@
     }
 
     radius(): number {
-        return 0.9;
+        return 1.44;
     }
 
     step(timeDelta: number, oldUnit: BasicStructure, newUnit: BasicStructure) {

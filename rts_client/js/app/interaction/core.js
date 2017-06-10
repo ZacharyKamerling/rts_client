@@ -61,9 +61,10 @@ var Interaction;
                         game.control = new DoingNothing();
                     }
                     else if (event === UserInput.InputEvent.MouseMove) {
-                        var elem = state.element();
-                        control.currentX = game.camera.x + state.mouseX() - elem.offsetWidth / 2;
-                        control.currentY = game.camera.y - (state.mouseY() - elem.offsetHeight / 2);
+                        var width = game.unitDrawer.width();
+                        var height = game.unitDrawer.height();
+                        control.currentX = game.camera.x + state.mouseX() - width / 2;
+                        control.currentY = game.camera.y - (state.mouseY() - height / 2);
                     }
                 }
                 else if (control instanceof Interaction.AttackMoveOrder.BeingIssued) {

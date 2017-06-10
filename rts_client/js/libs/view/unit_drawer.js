@@ -14,6 +14,12 @@ var UnitDrawer = (function () {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
     }
+    UnitDrawer.prototype.width = function () {
+        return this.canvas.offsetWidth;
+    };
+    UnitDrawer.prototype.height = function () {
+        return this.canvas.offsetHeight;
+    };
     UnitDrawer.prototype.draw = function (x, y, scale, sprites) {
         x = Math.floor(x);
         y = Math.floor(y);
@@ -29,10 +35,6 @@ var UnitDrawer = (function () {
         for (var i = 0, n = 0; n < sprites.length; n++) {
             var sprite = sprites[n];
             var xywh = this.spriteMap.coords(sprite.ref);
-            if (!xywh) {
-                console.log(sprite.ref);
-                return;
-            }
             var hw = xywh.w; // Half width
             var hh = xywh.h; // Half height
             // Normalize X & Y

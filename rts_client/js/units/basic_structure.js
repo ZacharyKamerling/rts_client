@@ -28,7 +28,7 @@ var BasicStructure = (function (_super) {
         return 12;
     };
     BasicStructure.prototype.radius = function () {
-        return 0.9;
+        return 1.44;
     };
     BasicStructure.prototype.step = function (timeDelta, oldUnit, newUnit) {
         _super.prototype.step.call(this, timeDelta, oldUnit, newUnit);

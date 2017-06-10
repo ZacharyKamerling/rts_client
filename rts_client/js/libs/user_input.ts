@@ -13,7 +13,7 @@
     }
 
     export class InputState {
-        private _element: HTMLElement;
+        private _elements: HTMLElement[] = new Array();
         private _shift: boolean;
         private _ctrl: boolean;
         private _alt: boolean;
@@ -26,7 +26,7 @@
         private _mouseRight: boolean;
         private _lastKeyPressed: number;
 
-        public element() { return this._element; }
+        public elements() { return this._elements; }
         public shiftDown() { return this._shift; }
         public ctrlDown() { return this._ctrl; }
         public altDown() { return this._alt; }
@@ -37,9 +37,11 @@
         public MouseRightDown() { return this._mouseRight; }
         public lastKeyPressed() { return this._lastKeyPressed; }
 
-        constructor(parent: HTMLElement, handler: (state: InputState, event: InputEvent) => void) {
+        constructor() {}
+
+        addListener(parent: HTMLElement, handler: (state: InputState, event: InputEvent) => void) {
             let self = this;
-            self._element = parent;
+            self._elements.push(parent);
             parent.draggable = false;
 
             document.addEventListener('contextmenu', function (e) {
@@ -108,7 +110,7 @@
                 pauseEvent(e);
             });
 
-            parent.addEventListener("mousemove", function (e) {
+            window.addEventListener("mousemove", function (e) {
                 self._shift = e.shiftKey;
                 self._ctrl = e.ctrlKey;
                 self._alt = e.altKey;

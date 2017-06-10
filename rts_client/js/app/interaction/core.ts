@@ -58,9 +58,10 @@
                     game.control = new DoingNothing();
                 }
                 else if (event === UserInput.InputEvent.MouseMove) {
-                    let elem = state.element();
-                    control.currentX = game.camera.x + state.mouseX() - elem.offsetWidth / 2;
-                    control.currentY = game.camera.y - (state.mouseY() - elem.offsetHeight / 2);
+                    let width = game.unitDrawer.width();
+                    let height = game.unitDrawer.height();
+                    control.currentX = game.camera.x + state.mouseX() - width / 2;
+                    control.currentY = game.camera.y - (state.mouseY() - height / 2);
                 }
             }
             else if (control instanceof Interaction.AttackMoveOrder.BeingIssued) {

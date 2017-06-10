@@ -2,8 +2,8 @@ var SpriteMap = (function () {
     function SpriteMap(stuff) {
         this.map = {};
         var spriteSheet = document.createElement('canvas');
-        spriteSheet.width = 4096;
-        spriteSheet.height = 4096;
+        spriteSheet.width = SpriteMap.WIDTH;
+        spriteSheet.height = SpriteMap.HEIGHT;
         var ctx = spriteSheet.getContext('2d');
         var that = this;
         var x = 0;
@@ -53,7 +53,6 @@ var SpriteMap = (function () {
                                         data[i] = color.red * intensity;
                                         data[i + 1] = color.green * intensity;
                                         data[i + 2] = color.blue * intensity;
-                                        console.log('stuff');
                                     }
                                 }
                                 ctx.putImageData(imgData, x, y);
@@ -66,7 +65,7 @@ var SpriteMap = (function () {
                             };
                             x += w + 1;
                         }
-                        that.spriteSheet = new Image(4096, 4096);
+                        that.spriteSheet = new Image(SpriteMap.WIDTH, SpriteMap.HEIGHT);
                         that.spriteSheet.src = spriteSheet.toDataURL();
                         that.spriteSheet.onload = function (e) {
                             that.onload(e);

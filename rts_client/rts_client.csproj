@@ -43,6 +43,7 @@
     <TypeScriptCompile Include="js\app\game.ts" />
     <TypeScriptCompile Include="js\app\interaction\attack_move_order.ts" />
     <TypeScriptCompile Include="js\app\interaction\build_order.ts" />
+    <TypeScriptCompile Include="js\app\interaction\minimap.ts" />
     <TypeScriptCompile Include="js\app\interaction\core.ts" />
     <TypeScriptCompile Include="js\app\interaction\move_order.ts" />
     <TypeScriptCompile Include="js\app\interaction\moving_camera.ts" />
@@ -62,6 +63,7 @@
     <TypeScriptCompile Include="js\libs\view\status_bar_drawer.ts" />
     <TypeScriptCompile Include="js\libs\view\team_color.ts" />
     <TypeScriptCompile Include="js\libs\view\build_placement_drawer.ts" />
+    <TypeScriptCompile Include="js\libs\view\minimap_drawer.ts" />
     <TypeScriptCompile Include="js\libs\view\web_gl_help.ts" />
     <TypeScriptCompile Include="js\libs\view\tile_drawer.ts" />
     <TypeScriptCompile Include="js\app\main.ts" />

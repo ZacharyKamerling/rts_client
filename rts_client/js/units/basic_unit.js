@@ -28,7 +28,7 @@ var BasicUnit = (function (_super) {
         return 12;
     };
     BasicUnit.prototype.radius = function () {
-        return 0.6;
+        return 0.96;
     };
     BasicUnit.prototype.step = function (timeDelta, oldUnit, newUnit) {
         _super.prototype.step.call(this, timeDelta, oldUnit, newUnit);

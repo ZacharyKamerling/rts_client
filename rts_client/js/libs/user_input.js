@@ -13,9 +13,22 @@ var UserInput;
     })(UserInput.InputEvent || (UserInput.InputEvent = {}));
     var InputEvent = UserInput.InputEvent;
     var InputState = (function () {
-        function InputState(parent, handler) {
+        function InputState() {
+            this._elements = new Array();
+        }
+        InputState.prototype.elements = function () { return this._elements; };
+        InputState.prototype.shiftDown = function () { return this._shift; };
+        InputState.prototype.ctrlDown = function () { return this._ctrl; };
+        InputState.prototype.altDown = function () { return this._alt; };
+        InputState.prototype.mouseX = function () { return this._mouseX; };
+        InputState.prototype.mouseY = function () { return this._mouseY; };
+        InputState.prototype.mouseLeftDown = function () { return this._mouseLeft; };
+        InputState.prototype.mouseMiddleDown = function () { return this._mouseMiddle; };
+        InputState.prototype.MouseRightDown = function () { return this._mouseRight; };
+        InputState.prototype.lastKeyPressed = function () { return this._lastKeyPressed; };
+        InputState.prototype.addListener = function (parent, handler) {
             var self = this;
-            self._element = parent;
+            self._elements.push(parent);
             parent.draggable = false;
             document.addEventListener('contextmenu', function (e) {
                 e.preventDefault();
@@ -76,7 +89,7 @@ var UserInput;
                 handler(self, event);
                 pauseEvent(e);
             });
-            parent.addEventListener("mousemove", function (e) {
+            window.addEventListener("mousemove", function (e) {
                 self._shift = e.shiftKey;
                 self._ctrl = e.ctrlKey;
                 self._alt = e.altKey;
@@ -135,17 +148,7 @@ var UserInput;
                 pauseEvent(e);
             });
             */
-        }
-        InputState.prototype.element = function () { return this._element; };
-        InputState.prototype.shiftDown = function () { return this._shift; };
-        InputState.prototype.ctrlDown = function () { return this._ctrl; };
-        InputState.prototype.altDown = function () { return this._alt; };
-        InputState.prototype.mouseX = function () { return this._mouseX; };
-        InputState.prototype.mouseY = function () { return this._mouseY; };
-        InputState.prototype.mouseLeftDown = function () { return this._mouseLeft; };
-        InputState.prototype.mouseMiddleDown = function () { return this._mouseMiddle; };
-        InputState.prototype.MouseRightDown = function () { return this._mouseRight; };
-        InputState.prototype.lastKeyPressed = function () { return this._lastKeyPressed; };
+        };
         return InputState;
     }());
     UserInput.InputState = InputState;
