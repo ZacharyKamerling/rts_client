@@ -35,13 +35,10 @@ var UnitDrawer = (function () {
         for (var i = 0, n = 0; n < sprites.length; n++) {
             var sprite = sprites[n];
             var xywh = this.spriteMap.coords(sprite.ref);
-            var hw = xywh.w; // Half width
-            var hh = xywh.h; // Half height
-            // Normalize X & Y
-            // ScrnX = ((x - ScrnL) / ScrnW) * 2 - 1
+            var hw = xywh.w;
+            var hh = xywh.h;
             var normX = ((sprite.x - (x - this.canvas.width / 2)) / this.canvas.width) * 2 - 1;
             var normY = ((sprite.y - (y - this.canvas.height / 2)) / this.canvas.height) * 2 - 1;
-            // Coordinates of each corner on the sprite
             var east = normX + hw;
             var north = normY + hh;
             var west = normX - hw;
@@ -50,7 +47,6 @@ var UnitDrawer = (function () {
             var sw = Misc.rotateAroundOrigin(normX, normY, west, south, sprite.ang);
             var nw = Misc.rotateAroundOrigin(normX, normY, west, north, sprite.ang);
             var se = Misc.rotateAroundOrigin(normX, normY, east, south, sprite.ang);
-            // Fill array with scaled vertices
             drawData[i++] = normX - (normX - sw.x) * xm;
             drawData[i++] = normY - (normY - sw.y) * ym;
             drawData[i++] = xywh.x;
@@ -113,4 +109,3 @@ var UnitDrawer = (function () {
     ].join("\n");
     return UnitDrawer;
 }());
-//# sourceMappingURL=unit_drawer.js.map

@@ -21,7 +21,6 @@ var SelectionBoxDrawer = (function () {
         var east = Math.max(x, x2);
         var south = Math.min(y, y2);
         var north = Math.max(y, y2);
-        // Fill array with vertices
         drawData[0] = west;
         drawData[1] = south;
         drawData[2] = west;
@@ -54,4 +53,3 @@ var SelectionBoxDrawer = (function () {
     ].join("\n");
     return SelectionBoxDrawer;
 }());
-//# sourceMappingURL=select_box_drawer.js.map

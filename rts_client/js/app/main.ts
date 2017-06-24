@@ -11,13 +11,13 @@ function main() {
     let game: Game = new Game();
     let fowCanvas = <HTMLCanvasElement>document.getElementById('fowCanvas');
     let drawCanvas = <HTMLCanvasElement>document.getElementById('drawCanvas');
+    let minimapCanvas = <HTMLCanvasElement>document.getElementById('minimapCanvas');
     let ctrlDiv = <HTMLElement>document.getElementById('controlDiv');
     let cmdDiv = <HTMLElement>document.getElementById('commandDiv');
     let cmds = commands();
     
     game.chef = chef;
     game.inputState = new UserInput.InputState();
-    game.inputState.addListener(ctrlDiv, Interaction.Core.interact(game));
     game.tileDrawer = new TileDrawer(drawCanvas, 'img/tileset.png', 'img/lttp-all.png');
     game.fowDrawer = new FOWDrawer(fowCanvas);
     game.selectionDrawer = new SelectionDrawer(drawCanvas);
@@ -27,7 +27,9 @@ function main() {
 
     let spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e: Event) {
+        game.inputState.addListener(ctrlDiv, Interaction.Core.interact(game));
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
+        game.minimapDrawer = new MinimapDrawer(minimapCanvas, spritemap);
         game.buildPlacementDrawer = new BuildPlacementDrawer(drawCanvas, spritemap);
         mainMenu.appendChild(spritemap.spriteSheet);
     };
@@ -45,6 +47,7 @@ function main() {
         else {
             conn = new WebSocket('ws://[' + addrFieldValue + ']:' + portFieldValue);
         }
+
         conn.binaryType = "arraybuffer";
         game.connection = conn;
 
@@ -139,6 +142,10 @@ function spriteRefs(colors: TeamColor[]): { src: string, ref: string, color: Tea
         {
             src: "img/bomber1.png",
             ref: "bomber1"
+        },
+        {
+            src: "img/minimap_unit.png",
+            ref: "minimap_unit"
         },
     ];
 

@@ -89,8 +89,10 @@
                 // Player Info
                 case ClientMessage.TeamInfo:
                     game.team = data.getU8();
-                    game.metal = data.getU32();
+                    game.prime = data.getU32();
                     game.energy = data.getU32();
+
+                    console.log("Prime: " + game.prime + ", Energy: " + game.energy);
                     break msg_switch;
                 // Player Info
                 case ClientMessage.OrderCompleted:

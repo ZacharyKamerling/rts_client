@@ -14,4 +14,3 @@ var Interaction;
         MinimapCore.interact = interact;
     })(MinimapCore = Interaction.MinimapCore || (Interaction.MinimapCore = {}));
 })(Interaction || (Interaction = {}));
-//# sourceMappingURL=minimap.js.map

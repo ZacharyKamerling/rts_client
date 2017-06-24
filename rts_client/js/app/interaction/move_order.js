@@ -31,4 +31,3 @@ var Interaction;
         MoveOrder.issue = issue;
     })(MoveOrder = Interaction.MoveOrder || (Interaction.MoveOrder = {}));
 })(Interaction || (Interaction = {}));
-//# sourceMappingURL=move_order.js.map

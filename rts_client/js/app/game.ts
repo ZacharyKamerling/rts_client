@@ -7,6 +7,7 @@ class Game {
     public inputState: UserInput.InputState = null;
     public tileDrawer: TileDrawer = null;
     public unitDrawer: UnitDrawer = null;
+    public minimapDrawer: MinimapDrawer = null;
     public fowDrawer: FOWDrawer = null;
     public commandPanel: CommandPanel = null;
     public selectionDrawer: SelectionDrawer = null;
@@ -23,7 +24,7 @@ class Game {
     public lastLogicFrameTime: number = 0;
     public teamColors: TeamColor[];
     public team: number = 0;
-    public metal: number = 0;
+    public prime: number = 0;
     public energy: number = 0;
     public orderID: number = 0;
     public static FPS = 10;
@@ -111,6 +112,7 @@ class Game {
         this.drawFogOfWar();
         this.drawStatusBars();
         this.drawSelectBox();
+        this.drawMinimap();
         this.lastDrawTime = currentTime;
     }
 
@@ -171,6 +173,10 @@ class Game {
         }
     }
 
+    private drawMinimap() {
+
+    }
+
     private drawUnitsAndMissiles() {
         let layers: { x: number; y: number; ang: number; teamColor: TeamColor; ref: string }[][] = new Array(10);
 
@@ -216,34 +222,64 @@ class Game {
     private drawSelections() {
         let selections: { x: number; y: number; radius: number; r: number; g: number; b: number; a: number }[] = new Array();
         let dashed: { x: number; y: number; radius: number; r: number; g: number; b: number; a: number }[] = new Array();
+        let enemy_selections: { x: number; y: number; radius: number; r: number; g: number; b: number; a: number }[] = new Array();
+        let enemy_dashed: { x: number; y: number; radius: number; r: number; g: number; b: number; a: number }[] = new Array();
+
+        let onlyEnemyIsBeingSelected = true;
+        let onlyEnemyIsSelected = true;
         // Render units
         for (let i = 0; i < this.souls.length; i++) {
             let soul = this.souls[i];
 
-            if (soul && (soul.current.isSelected)) {
-                let x = soul.current.x;
-                let y = soul.current.y;
-                let radius = soul.current.radius();
-                let r = 0;
-                let g = 255;
-                let b = 100;
-                let a = 255;
-                selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
-            }
-            else if (soul && soul.current.isBeingSelected) {
-                let x = soul.current.x;
-                let y = soul.current.y;
-                let radius = soul.current.radius();
-                let r = 0;
-                let g = 255;
-                let b = 100;
-                let a = 255;
-                dashed.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
+            if (soul) {
+                if (soul.current.team === this.team) {
+                    let x = soul.current.x;
+                    let y = soul.current.y;
+                    let radius = soul.current.radius();
+                    let r = 0;
+                    let g = 255;
+                    let b = 100;
+                    let a = 255;
+                    if (soul.current.isSelected) {
+                        onlyEnemyIsSelected = false;
+                        selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
+                    }
+                    else if (soul.current.isBeingSelected) {
+                        onlyEnemyIsBeingSelected = false;
+                        dashed.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
+                    }
+                }
+                else {
+                    let x = soul.current.x;
+                    let y = soul.current.y;
+                    let radius = soul.current.radius();
+                    let r = 255;
+                    let g = 0;
+                    let b = 100;
+                    let a = 255;
+                    if (soul.current.isSelected && onlyEnemyIsSelected) {
+                        enemy_selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
+                    }
+                    else if (soul.current.isBeingSelected && onlyEnemyIsBeingSelected) {
+                        enemy_dashed.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
+                    }
+                }
             }
         }
 
-        this.selectionDrawer.draw(false, this.camera.x, this.camera.y, selections);
-        this.selectionDrawer.draw(true, this.camera.x, this.camera.y, dashed);
+        if (onlyEnemyIsSelected) {
+            this.selectionDrawer.draw(false, this.camera.x, this.camera.y, enemy_selections);
+        }
+        else {
+            this.selectionDrawer.draw(false, this.camera.x, this.camera.y, selections);
+        }
+
+        if (onlyEnemyIsBeingSelected) {
+            this.selectionDrawer.draw(true, this.camera.x, this.camera.y, enemy_dashed);
+        }
+        else {
+            this.selectionDrawer.draw(true, this.camera.x, this.camera.y, dashed);
+        }
     }
 
     private drawStatusBars() {
@@ -259,16 +295,16 @@ class Game {
                 let w = soul.current.radius() * Game.TILESIZE;
                 let h = 2;
 
-                if (soul.current.progress <= 254) {
-                    let v = soul.current.progress / 254;
+                if (soul.current.progress < 255) {
+                    let v = soul.current.progress / 255;
                     let r = 175;
                     let g = 175;
                     let b = 175;
                     let a = 255;
                     bars.push({ x: x, y: y - 2, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
                 }
-                if (soul.current.health <= 254) {
-                    let v = soul.current.health / 254;
+                if (soul.current.health < 255) {
+                    let v = soul.current.health / 255;
                     let r = (255 - soul.current.health);
                     let g = (255 - soul.current.health);
                     let b = soul.current.health;

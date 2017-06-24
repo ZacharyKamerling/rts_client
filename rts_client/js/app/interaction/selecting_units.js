@@ -29,7 +29,7 @@ var Interaction;
                 for (var i = 0; i < game.souls.length; i++) {
                     var soul = game.souls[i];
                     if (soul) {
-                        if (soul.current.team === game.team && soul.current.isBeingSelected) {
+                        if (soul.current.isBeingSelected) {
                             soul.current.isSelected = true;
                         }
                         else if (!game.inputState.shiftDown()) {
@@ -38,7 +38,6 @@ var Interaction;
                     }
                 }
             }
-            // Configure command card
             var cmdSet = {};
             var bldSet = {};
             for (var i = 0; i < game.souls.length; i++) {
@@ -87,7 +86,7 @@ var Interaction;
             var maxY = Math.max(y1, y2);
             for (var i = 0; i < game.souls.length; i++) {
                 var soul = game.souls[i];
-                if (soul && soul.new && soul.new.team === game.team) {
+                if (soul && soul.new) {
                     var x = soul.current.x;
                     var y = soul.current.y;
                     var r = soul.current.radius() * Game.TILESIZE;
@@ -113,7 +112,6 @@ var Interaction;
                         }
                     }
                     else if (x > maxX) {
-                        // Northeast
                         if (y > maxY && (nDif * nDif + eDif * eDif) <= rSqrd) {
                             soul.current.isBeingSelected = true;
                         }
@@ -125,7 +123,6 @@ var Interaction;
                         }
                     }
                     else if (x < minX) {
-                        // Northwest
                         if (y > maxY && (nDif * nDif + wDif * wDif) <= rSqrd) {
                             soul.current.isBeingSelected = true;
                         }
@@ -161,4 +158,3 @@ var Interaction;
         SelectingUnits.begin = begin;
     })(SelectingUnits = Interaction.SelectingUnits || (Interaction.SelectingUnits = {}));
 })(Interaction || (Interaction = {}));
-//# sourceMappingURL=selecting_units.js.map

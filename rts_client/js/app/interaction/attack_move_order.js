@@ -31,4 +31,3 @@ var Interaction;
         AttackMoveOrder.issue = issue;
     })(AttackMoveOrder = Interaction.AttackMoveOrder || (Interaction.AttackMoveOrder = {}));
 })(Interaction || (Interaction = {}));
-//# sourceMappingURL=attack_move_order.js.map

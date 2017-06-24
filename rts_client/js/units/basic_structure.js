@@ -45,4 +45,3 @@ var BasicStructure = (function (_super) {
     };
     return BasicStructure;
 }(Unit));
-//# sourceMappingURL=basic_structure.js.map

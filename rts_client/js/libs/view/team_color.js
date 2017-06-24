@@ -11,4 +11,3 @@ var TeamColor = (function () {
     };
     return TeamColor;
 }());
-//# sourceMappingURL=team_color.js.map

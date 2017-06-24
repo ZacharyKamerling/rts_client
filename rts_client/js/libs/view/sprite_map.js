@@ -82,4 +82,3 @@ var SpriteMap = (function () {
     SpriteMap.HEIGHT = 4096;
     return SpriteMap;
 }());
-//# sourceMappingURL=sprite_map.js.map

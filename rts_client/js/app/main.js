@@ -10,12 +10,12 @@ function main() {
     var game = new Game();
     var fowCanvas = document.getElementById('fowCanvas');
     var drawCanvas = document.getElementById('drawCanvas');
+    var minimapCanvas = document.getElementById('minimapCanvas');
     var ctrlDiv = document.getElementById('controlDiv');
     var cmdDiv = document.getElementById('commandDiv');
     var cmds = commands();
     game.chef = chef;
     game.inputState = new UserInput.InputState();
-    game.inputState.addListener(ctrlDiv, Interaction.Core.interact(game));
     game.tileDrawer = new TileDrawer(drawCanvas, 'img/tileset.png', 'img/lttp-all.png');
     game.fowDrawer = new FOWDrawer(fowCanvas);
     game.selectionDrawer = new SelectionDrawer(drawCanvas);
@@ -24,7 +24,9 @@ function main() {
     game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
     var spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e) {
+        game.inputState.addListener(ctrlDiv, Interaction.Core.interact(game));
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
+        game.minimapDrawer = new MinimapDrawer(minimapCanvas, spritemap);
         game.buildPlacementDrawer = new BuildPlacementDrawer(drawCanvas, spritemap);
         mainMenu.appendChild(spritemap.spriteSheet);
     };
@@ -125,6 +127,10 @@ function spriteRefs(colors) {
             src: "img/bomber1.png",
             ref: "bomber1"
         },
+        {
+            src: "img/minimap_unit.png",
+            ref: "minimap_unit"
+        },
     ];
     var list = new Array();
     for (var i = 0; i < colors.length; i++) {
@@ -138,4 +144,3 @@ function spriteRefs(colors) {
     return list;
 }
 main();
-//# sourceMappingURL=main.js.map

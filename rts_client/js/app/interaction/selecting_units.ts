@@ -34,7 +34,7 @@
                 let soul = game.souls[i];
 
                 if (soul) {
-                    if (soul.current.team === game.team && soul.current.isBeingSelected) {
+                    if (soul.current.isBeingSelected) {
                         soul.current.isSelected = true;
                     }
                     else if (!game.inputState.shiftDown()) {
@@ -100,7 +100,7 @@
         for (let i = 0; i < game.souls.length; i++) {
             let soul = game.souls[i];
 
-            if (soul && soul.new && soul.new.team === game.team) {
+            if (soul && soul.new) {
                 let x = soul.current.x;
                 let y = soul.current.y;
                 let r = soul.current.radius() * Game.TILESIZE;

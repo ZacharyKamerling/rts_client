@@ -6,6 +6,7 @@ var Game = (function () {
         this.inputState = null;
         this.tileDrawer = null;
         this.unitDrawer = null;
+        this.minimapDrawer = null;
         this.fowDrawer = null;
         this.commandPanel = null;
         this.selectionDrawer = null;
@@ -21,7 +22,7 @@ var Game = (function () {
         this.lastDrawTime = 0;
         this.lastLogicFrameTime = 0;
         this.team = 0;
-        this.metal = 0;
+        this.prime = 0;
         this.energy = 0;
         this.orderID = 0;
         this.souls = Array();
@@ -96,6 +97,7 @@ var Game = (function () {
         this.drawFogOfWar();
         this.drawStatusBars();
         this.drawSelectBox();
+        this.drawMinimap();
         this.lastDrawTime = currentTime;
     };
     Game.prototype.stepUnits = function (timeDelta) {
@@ -148,19 +150,19 @@ var Game = (function () {
             this.buildPlacementDrawer.draw(this.camera.x, this.camera.y, 1, layers);
         }
     };
+    Game.prototype.drawMinimap = function () {
+    };
     Game.prototype.drawUnitsAndMissiles = function () {
         var layers = new Array(10);
         for (var i = 0; i < layers.length; i++) {
             layers[i] = new Array();
         }
-        // Render units
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul) {
                 soul.current.render(this, layers);
             }
         }
-        // Render missiles
         for (var i = 0; i < this.missileSouls.length; i++) {
             var soul = this.missileSouls[i];
             if (soul) {
@@ -184,36 +186,62 @@ var Game = (function () {
     Game.prototype.drawSelections = function () {
         var selections = new Array();
         var dashed = new Array();
-        // Render units
+        var enemy_selections = new Array();
+        var enemy_dashed = new Array();
+        var onlyEnemyIsBeingSelected = true;
+        var onlyEnemyIsSelected = true;
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
-            if (soul && (soul.current.isSelected)) {
-                var x = soul.current.x;
-                var y = soul.current.y;
-                var radius = soul.current.radius();
-                var r = 0;
-                var g = 255;
-                var b = 100;
-                var a = 255;
-                selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
-            }
-            else if (soul && soul.current.isBeingSelected) {
-                var x = soul.current.x;
-                var y = soul.current.y;
-                var radius = soul.current.radius();
-                var r = 0;
-                var g = 255;
-                var b = 100;
-                var a = 255;
-                dashed.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
+            if (soul) {
+                if (soul.current.team === this.team) {
+                    var x = soul.current.x;
+                    var y = soul.current.y;
+                    var radius = soul.current.radius();
+                    var r = 0;
+                    var g = 255;
+                    var b = 100;
+                    var a = 255;
+                    if (soul.current.isSelected) {
+                        onlyEnemyIsSelected = false;
+                        selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
+                    }
+                    else if (soul.current.isBeingSelected) {
+                        onlyEnemyIsBeingSelected = false;
+                        dashed.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
+                    }
+                }
+                else {
+                    var x = soul.current.x;
+                    var y = soul.current.y;
+                    var radius = soul.current.radius();
+                    var r = 255;
+                    var g = 0;
+                    var b = 100;
+                    var a = 255;
+                    if (soul.current.isSelected && onlyEnemyIsSelected) {
+                        enemy_selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
+                    }
+                    else if (soul.current.isBeingSelected && onlyEnemyIsBeingSelected) {
+                        enemy_dashed.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
+                    }
+                }
             }
         }
-        this.selectionDrawer.draw(false, this.camera.x, this.camera.y, selections);
-        this.selectionDrawer.draw(true, this.camera.x, this.camera.y, dashed);
+        if (onlyEnemyIsSelected) {
+            this.selectionDrawer.draw(false, this.camera.x, this.camera.y, enemy_selections);
+        }
+        else {
+            this.selectionDrawer.draw(false, this.camera.x, this.camera.y, selections);
+        }
+        if (onlyEnemyIsBeingSelected) {
+            this.selectionDrawer.draw(true, this.camera.x, this.camera.y, enemy_dashed);
+        }
+        else {
+            this.selectionDrawer.draw(true, this.camera.x, this.camera.y, dashed);
+        }
     };
     Game.prototype.drawStatusBars = function () {
         var bars = new Array();
-        // Render units
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul && soul.current) {
@@ -222,16 +250,16 @@ var Game = (function () {
                 var y = soul.current.y + radius * Game.TILESIZE;
                 var w = soul.current.radius() * Game.TILESIZE;
                 var h = 2;
-                if (soul.current.progress <= 254) {
-                    var v = soul.current.progress / 254;
+                if (soul.current.progress < 255) {
+                    var v = soul.current.progress / 255;
                     var r = 175;
                     var g = 175;
                     var b = 175;
                     var a = 255;
                     bars.push({ x: x, y: y - 2, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
                 }
-                if (soul.current.health <= 254) {
-                    var v = soul.current.health / 254;
+                if (soul.current.health < 255) {
+                    var v = soul.current.health / 255;
                     var r = (255 - soul.current.health);
                     var g = (255 - soul.current.health);
                     var b = soul.current.health;
@@ -266,4 +294,3 @@ var Camera = (function () {
     }
     return Camera;
 }());
-//# sourceMappingURL=game.js.map
