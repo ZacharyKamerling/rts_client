@@ -103,9 +103,14 @@
                     console.log("Received map data. " + data.dv.byteLength);
                     let width = data.getU16();
                     let height = data.getU16();
+                    game.mapWidth = width;
+                    game.mapHeight = height;
                     let canvas = document.createElement('canvas');
+                    let mmCanvas = document.createElement('canvas'); //minimap
                     canvas.width = width;
                     canvas.height = height;
+                    mmCanvas.width = width;
+                    mmCanvas.height = height;
                     let ctx = canvas.getContext('2d');
                     let imgData = ctx.getImageData(0, 0, width, height);
                     let quads = imgData.data;
@@ -118,7 +123,7 @@
 
                             quads[ix * 4] = r;
                             quads[ix * 4 + 1] = g;
-                            quads[ix * 4 + 2] = 255;
+                            quads[ix * 4 + 2] = 0;
                             quads[ix * 4 + 3] = 255;
                         }
                     }

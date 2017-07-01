@@ -7,7 +7,8 @@ var Interaction;
             ServerMessage[ServerMessage["AttackMove"] = 1] = "AttackMove";
             ServerMessage[ServerMessage["AttackTarget"] = 2] = "AttackTarget";
             ServerMessage[ServerMessage["Build"] = 3] = "Build";
-            ServerMessage[ServerMessage["MapInfoRequest"] = 4] = "MapInfoRequest";
+            ServerMessage[ServerMessage["Assist"] = 4] = "Assist";
+            ServerMessage[ServerMessage["MapInfoRequest"] = 5] = "MapInfoRequest";
         })(Core.ServerMessage || (Core.ServerMessage = {}));
         var ServerMessage = Core.ServerMessage;
         (function (QueueOrder) {
@@ -22,6 +23,14 @@ var Interaction;
             return DoingNothing;
         }());
         Core.DoingNothing = DoingNothing;
+        function getTarget(game) {
+            for (var i = 0; i < game.souls.length; i++) {
+                var soul = game.souls[i];
+                if (soul && soul.current.isBeingSelected) {
+                    return soul.current;
+                }
+            }
+        }
         function interact(game) {
             return function (state, event) {
                 var control = game.control;
@@ -33,7 +42,18 @@ var Interaction;
                         game.control = new Interaction.MovingCamera(state.mouseX(), state.mouseY(), game.camera.x, game.camera.y);
                     }
                     else if (event === UserInput.InputEvent.MouseRightDown) {
-                        Interaction.MoveOrder.issue(game);
+                        var target = getTarget(game);
+                        if (target) {
+                            if (target.team === game.team) {
+                                Interaction.AssistOrder.issue(game, target.unit_ID);
+                            }
+                            else {
+                                Interaction.AttackTargetOrder.issue(game, target.unit_ID);
+                            }
+                        }
+                        else {
+                            Interaction.MoveOrder.issue(game);
+                        }
                     }
                     else if (event === UserInput.InputEvent.KeyDown) {
                         var A = 65;

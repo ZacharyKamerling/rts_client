@@ -5,6 +5,7 @@
         AttackMove,
         AttackTarget,
         Build,
+        Assist,
         MapInfoRequest,
     }
 
@@ -18,6 +19,16 @@
 
     export class DoingNothing implements Control { }
 
+    function getTarget(game: Game): Unit {
+        for (let i = 0; i < game.souls.length; i++) {
+            let soul = game.souls[i];
+
+            if (soul && soul.current.isBeingSelected) {
+                return soul.current;
+            }
+        }
+    }
+
     export function interact(game: Game): ((state: UserInput.InputState, event: UserInput.InputEvent) => void) {
         return function (state, event) {
             let control = game.control;
@@ -29,7 +40,20 @@
                     game.control = new MovingCamera(state.mouseX(), state.mouseY(), game.camera.x, game.camera.y);
                 }
                 else if (event === UserInput.InputEvent.MouseRightDown) {
-                    Interaction.MoveOrder.issue(game);
+                    let target = getTarget(game);
+
+                    if (target) {
+                        if (target.team === game.team) {
+                            Interaction.AssistOrder.issue(game, target.unit_ID);
+                        }
+                        else {
+                            Interaction.AttackTargetOrder.issue(game, target.unit_ID);
+                        }
+                    }
+                    else {
+                        Interaction.MoveOrder.issue(game);
+                    }
+                    
                 }
                 else if (event === UserInput.InputEvent.KeyDown) {
                     const A = 65;

@@ -22,6 +22,8 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="img\artillery_platform1.png" />
+    <Content Include="img\artillery_wpn1.png" />
     <Content Include="img\attack.png" />
     <Content Include="img\basic_missile.png" />
     <Content Include="img\basic_structure.png" />
@@ -32,8 +34,6 @@
     <Content Include="img\dirt0.png" />
     <Content Include="img\fighter1.png" />
     <Content Include="img\move.png" />
-    <Content Include="img\spelunky-tiles.png" />
-    <Content Include="img\spelunky0.png" />
     <Content Include="img\wall0.png" />
     <Content Include="index.html" />
     <Content Include="web.config" />
@@ -41,10 +41,12 @@
   <ItemGroup>
     <TypeScriptCompile Include="js\app\decoding.ts" />
     <TypeScriptCompile Include="js\app\game.ts" />
+    <TypeScriptCompile Include="js\app\interaction\attack_target_order.ts" />
     <TypeScriptCompile Include="js\app\interaction\attack_move_order.ts" />
     <TypeScriptCompile Include="js\app\interaction\build_order.ts" />
     <TypeScriptCompile Include="js\app\interaction\minimap.ts" />
     <TypeScriptCompile Include="js\app\interaction\core.ts" />
+    <TypeScriptCompile Include="js\app\interaction\assist_order.ts" />
     <TypeScriptCompile Include="js\app\interaction\move_order.ts" />
     <TypeScriptCompile Include="js\app\interaction\moving_camera.ts" />
     <TypeScriptCompile Include="js\app\interaction\selecting_units.ts" />

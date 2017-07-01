@@ -4,8 +4,8 @@ var Unit = (function () {
             this.frameCreated = frame;
             this.timeCreated = time;
             this.unit_ID = c.getU16();
-            this.x = c.getU16() / (64 / Game.TILESIZE);
-            this.y = c.getU16() / (64 / Game.TILESIZE);
+            this.x = c.getU16() / 64 * Game.TILESIZE;
+            this.y = c.getU16() / 64 * Game.TILESIZE;
             this.anim_ID = c.getU8();
             this.team = c.getU8();
             this.facing = c.getU8() * 2 * Math.PI / 255;
@@ -42,6 +42,9 @@ var Unit = (function () {
     Unit.prototype.render = function (game, layers) {
         throw new Error('Unit: render() is abstract');
     };
+    Unit.prototype.render_minimap = function (game, layers) {
+        throw new Error('Unit: render() is abstract');
+    };
     Unit.prototype.renderDeath = function (game, layers) {
         throw new Error('Unit: render() is abstract');
     };
@@ -58,8 +61,18 @@ var Unit = (function () {
         this.facing = Misc.turnTowards(this.facing, f2, turn);
         this.x = this.x + (newUnit.x - oldUnit.x) * timeDelta;
         this.y = this.y + (newUnit.y - oldUnit.y) * timeDelta;
-        this.health = this.health + (newUnit.health - oldUnit.health) * timeDelta;
-        this.progress = this.progress + (newUnit.progress - oldUnit.progress) * timeDelta;
+        if (newUnit.progress === oldUnit.progress) {
+            this.progress = newUnit.progress;
+        }
+        else {
+            this.progress = this.progress + (newUnit.progress - oldUnit.progress) * timeDelta;
+        }
+        if (newUnit.health === oldUnit.health) {
+            this.health = newUnit.health;
+        }
+        else {
+            this.health = this.health + (newUnit.health - oldUnit.health) * timeDelta;
+        }
     };
     Unit.decodeUnit = function (data, time, frame) {
         var unitType = data.getU8();

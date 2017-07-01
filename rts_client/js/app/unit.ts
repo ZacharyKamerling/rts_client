@@ -18,8 +18,8 @@
             this.frameCreated = frame;
             this.timeCreated = time;
             this.unit_ID = c.getU16();
-            this.x = c.getU16() / (64 / Game.TILESIZE);
-            this.y = c.getU16() / (64 / Game.TILESIZE);
+            this.x = c.getU16() / 64 * Game.TILESIZE;
+            this.y = c.getU16() / 64 * Game.TILESIZE;
             this.anim_ID = c.getU8();
             this.team = c.getU8();
             this.facing = c.getU8() * 2 * Math.PI / 255;
@@ -63,6 +63,10 @@
         throw new Error('Unit: render() is abstract');
     }
 
+    render_minimap(game: Game, layers: { x: number, y: number, ref: string }[][]): void {
+        throw new Error('Unit: render() is abstract');
+    }
+
     renderDeath(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
         throw new Error('Unit: render() is abstract');
     }
@@ -82,8 +86,19 @@
         this.facing = Misc.turnTowards(this.facing, f2, turn);
         this.x = this.x + (newUnit.x - oldUnit.x) * timeDelta;
         this.y = this.y + (newUnit.y - oldUnit.y) * timeDelta;
-        this.health = this.health + (newUnit.health - oldUnit.health) * timeDelta;
-        this.progress = this.progress + (newUnit.progress - oldUnit.progress) * timeDelta;
+        if (newUnit.progress === oldUnit.progress) {
+            this.progress = newUnit.progress;
+        }
+        else {
+            this.progress = this.progress + (newUnit.progress - oldUnit.progress) * timeDelta;
+        }
+
+        if (newUnit.health === oldUnit.health) {
+            this.health = newUnit.health;
+        }
+        else {
+            this.health = this.health + (newUnit.health - oldUnit.health) * timeDelta;
+        }
     }
 
     static decodeUnit(data: Cereal, time: number, frame: number): Unit {

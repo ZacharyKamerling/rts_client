@@ -23,6 +23,8 @@ class Game {
     public lastDrawTime: number = 0;
     public lastLogicFrameTime: number = 0;
     public teamColors: TeamColor[];
+    public mapWidth: number = 0;
+    public mapHeight: number = 0;
     public team: number = 0;
     public prime: number = 0;
     public energy: number = 0;
@@ -45,6 +47,11 @@ class Game {
         this.teamColors = Array();
 
         let tc = new TeamColor();
+        tc.name = "green";
+        tc.red = 0.0;
+        tc.green = 0.9;
+        tc.blue = 0.0;
+        this.teamColors.push(tc.clone());
         tc.name = "white";
         tc.red = 1.0;
         tc.green = 1.0;
@@ -60,11 +67,7 @@ class Game {
         tc.green = 0.0;
         tc.blue = 1.0;
         this.teamColors.push(tc.clone());
-        tc.name = "green";
-        tc.red = 0.0;
-        tc.green = 0.8;
-        tc.blue = 0.0;
-        this.teamColors.push(tc.clone());
+        
     }
 
     public reset() {
@@ -174,7 +177,33 @@ class Game {
     }
 
     private drawMinimap() {
+        let layers: { x: number; y: number; teamColor: TeamColor; ref: string }[][] = new Array(10);
 
+        for (let i = 0; i < layers.length; i++) {
+            layers[i] = new Array();
+        }
+
+        // Render units
+        for (let i = 0; i < this.souls.length; i++) {
+            let soul = this.souls[i];
+
+            if (soul) {
+                soul.current.render_minimap(this, layers);
+            }
+        }
+
+        let flattened: { x: number; y: number; teamColor: TeamColor; ref: string }[] = new Array();
+
+        for (let i = 0; i < layers.length; i++) {
+            for (let n = 0; n < layers[i].length; n++) {
+                let tmp = layers[i][n];
+                tmp.x = tmp.x / Game.TILESIZE / this.mapWidth;
+                tmp.y = tmp.y / Game.TILESIZE / this.mapHeight;
+                flattened.push(tmp);
+            }
+        }
+
+        this.minimapDrawer.draw(flattened);
     }
 
     private drawUnitsAndMissiles() {
@@ -295,7 +324,7 @@ class Game {
                 let w = soul.current.radius() * Game.TILESIZE;
                 let h = 2;
 
-                if (soul.current.progress < 255) {
+                if (soul.current.progress < 254.99) {
                     let v = soul.current.progress / 255;
                     let r = 175;
                     let g = 175;
@@ -303,7 +332,7 @@ class Game {
                     let a = 255;
                     bars.push({ x: x, y: y - 2, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
                 }
-                if (soul.current.health < 255) {
+                if (soul.current.health < 254.99) {
                     let v = soul.current.health / 255;
                     let r = (255 - soul.current.health);
                     let g = (255 - soul.current.health);

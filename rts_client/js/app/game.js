@@ -21,6 +21,8 @@ var Game = (function () {
         this.logicFrame = 0;
         this.lastDrawTime = 0;
         this.lastLogicFrameTime = 0;
+        this.mapWidth = 0;
+        this.mapHeight = 0;
         this.team = 0;
         this.prime = 0;
         this.energy = 0;
@@ -35,6 +37,11 @@ var Game = (function () {
         }
         this.teamColors = Array();
         var tc = new TeamColor();
+        tc.name = "green";
+        tc.red = 0.0;
+        tc.green = 0.9;
+        tc.blue = 0.0;
+        this.teamColors.push(tc.clone());
         tc.name = "white";
         tc.red = 1.0;
         tc.green = 1.0;
@@ -49,11 +56,6 @@ var Game = (function () {
         tc.red = 0.8;
         tc.green = 0.0;
         tc.blue = 1.0;
-        this.teamColors.push(tc.clone());
-        tc.name = "green";
-        tc.red = 0.0;
-        tc.green = 0.8;
-        tc.blue = 0.0;
         this.teamColors.push(tc.clone());
     }
     Game.prototype.reset = function () {
@@ -151,6 +153,26 @@ var Game = (function () {
         }
     };
     Game.prototype.drawMinimap = function () {
+        var layers = new Array(10);
+        for (var i = 0; i < layers.length; i++) {
+            layers[i] = new Array();
+        }
+        for (var i = 0; i < this.souls.length; i++) {
+            var soul = this.souls[i];
+            if (soul) {
+                soul.current.render_minimap(this, layers);
+            }
+        }
+        var flattened = new Array();
+        for (var i = 0; i < layers.length; i++) {
+            for (var n = 0; n < layers[i].length; n++) {
+                var tmp = layers[i][n];
+                tmp.x = tmp.x / Game.TILESIZE / this.mapWidth;
+                tmp.y = tmp.y / Game.TILESIZE / this.mapHeight;
+                flattened.push(tmp);
+            }
+        }
+        this.minimapDrawer.draw(flattened);
     };
     Game.prototype.drawUnitsAndMissiles = function () {
         var layers = new Array(10);
@@ -250,7 +272,7 @@ var Game = (function () {
                 var y = soul.current.y + radius * Game.TILESIZE;
                 var w = soul.current.radius() * Game.TILESIZE;
                 var h = 2;
-                if (soul.current.progress < 255) {
+                if (soul.current.progress < 254.99) {
                     var v = soul.current.progress / 255;
                     var r = 175;
                     var g = 175;
@@ -258,7 +280,7 @@ var Game = (function () {
                     var a = 255;
                     bars.push({ x: x, y: y - 2, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
                 }
-                if (soul.current.health < 255) {
+                if (soul.current.health < 254.99) {
                     var v = soul.current.health / 255;
                     var r = (255 - soul.current.health);
                     var g = (255 - soul.current.health);
