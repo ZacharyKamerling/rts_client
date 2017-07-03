@@ -41,9 +41,9 @@ var BasicStructure = (function (_super) {
     BasicStructure.prototype.render = function (game, layers) {
         var tc = game.teamColors[this.team];
         layers[0].push({ x: this.x, y: this.y, ang: this.facing, ref: "artillery_platform1" + tc.name });
-        layers[3].push({ x: this.x, y: this.y, ang: this.wpn_facing, ref: "artillery_wpn1" + tc.name });
+        layers[3].push({ x: this.x, y: this.y, ang: this.wpn_facing, ref: "artillery_wpn2" + tc.name });
     };
-    BasicStructure.prototype.render_minimap = function (game, layers) {
+    BasicStructure.prototype.renderMinimap = function (game, layers) {
         var tc = game.teamColors[this.team];
         layers[1].push({ x: this.x, y: this.y, ang: this.facing, ref: "minimap_unit" + tc.name });
     };

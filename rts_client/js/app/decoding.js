@@ -5,10 +5,12 @@ var Decoding;
         ClientMessage[ClientMessage["UnitMove"] = 0] = "UnitMove";
         ClientMessage[ClientMessage["UnitDeath"] = 1] = "UnitDeath";
         ClientMessage[ClientMessage["OrderCompleted"] = 2] = "OrderCompleted";
-        ClientMessage[ClientMessage["MissileMove"] = 3] = "MissileMove";
-        ClientMessage[ClientMessage["MissileExplode"] = 4] = "MissileExplode";
-        ClientMessage[ClientMessage["TeamInfo"] = 5] = "TeamInfo";
-        ClientMessage[ClientMessage["MapInfo"] = 6] = "MapInfo";
+        ClientMessage[ClientMessage["MeleeSmack"] = 3] = "MeleeSmack";
+        ClientMessage[ClientMessage["MissileMove"] = 4] = "MissileMove";
+        ClientMessage[ClientMessage["MissileExplode"] = 5] = "MissileExplode";
+        ClientMessage[ClientMessage["Construction"] = 6] = "Construction";
+        ClientMessage[ClientMessage["TeamInfo"] = 7] = "TeamInfo";
+        ClientMessage[ClientMessage["MapInfo"] = 8] = "MapInfo";
     })(ClientMessage || (ClientMessage = {}));
     function processPacket(game, data) {
         var currentTime = Date.now();
@@ -78,12 +80,15 @@ var Decoding;
                     game.energy = data.getU32();
                     console.log("Prime: " + game.prime + ", Energy: " + game.energy);
                     break msg_switch;
+                case ClientMessage.Construction:
+                    var builder = data.getU16();
+                    var buildee = data.getU16();
+                    break msg_switch;
                 case ClientMessage.OrderCompleted:
                     var unitID = data.getU16();
                     var orderID = data.getU16();
                     break msg_switch;
                 case ClientMessage.MapInfo:
-                    console.log("Received map data. " + data.dv.byteLength);
                     var width = data.getU16();
                     var height = data.getU16();
                     game.mapWidth = width;

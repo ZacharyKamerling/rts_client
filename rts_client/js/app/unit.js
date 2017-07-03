@@ -42,7 +42,7 @@ var Unit = (function () {
     Unit.prototype.render = function (game, layers) {
         throw new Error('Unit: render() is abstract');
     };
-    Unit.prototype.render_minimap = function (game, layers) {
+    Unit.prototype.renderMinimap = function (game, layers) {
         throw new Error('Unit: render() is abstract');
     };
     Unit.prototype.renderDeath = function (game, layers) {

@@ -14,6 +14,7 @@
 
     export class InputState {
         private _elements: HTMLElement[] = new Array();
+        private _listener: HTMLElement = null;
         private _shift: boolean;
         private _ctrl: boolean;
         private _alt: boolean;

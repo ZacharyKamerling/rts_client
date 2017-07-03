@@ -53,7 +53,7 @@
         layers[2].push({ x: this.x, y: this.y, ang: this.wpn_facing, ref: "basic_wpn" + tc.name });
     }
 
-    render_minimap(game: Game, layers: { x: number, y: number, ref: string }[][]): void {
+    renderMinimap(game: Game, layers: { x: number, y: number, ref: string }[][]): void {
         let tc = game.teamColors[this.team];
         layers[1].push({ x: this.x, y: this.y, ref: "minimap_unit" + tc.name });
     }

@@ -4,8 +4,10 @@
         UnitMove,
         UnitDeath,
         OrderCompleted,
+        MeleeSmack,
         MissileMove,
         MissileExplode,
+        Construction,
         TeamInfo,
         MapInfo,
     }
@@ -91,16 +93,17 @@
                     game.team = data.getU8();
                     game.prime = data.getU32();
                     game.energy = data.getU32();
-
                     console.log("Prime: " + game.prime + ", Energy: " + game.energy);
                     break msg_switch;
-                // Player Info
+                case ClientMessage.Construction:
+                    let builder = data.getU16();
+                    let buildee = data.getU16();
+                    break msg_switch;
                 case ClientMessage.OrderCompleted:
                     let unitID = data.getU16();
                     let orderID = data.getU16();
                     break msg_switch;
                 case ClientMessage.MapInfo:
-                    console.log("Received map data. " + data.dv.byteLength);
                     let width = data.getU16();
                     let height = data.getU16();
                     game.mapWidth = width;

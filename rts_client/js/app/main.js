@@ -20,11 +20,13 @@ function main() {
     game.fowDrawer = new FOWDrawer(fowCanvas);
     game.selectionDrawer = new SelectionDrawer(drawCanvas);
     game.selectionBoxDrawer = new SelectionBoxDrawer(drawCanvas);
+    game.minimapBoxDrawer = new MinimapBoxDrawer(minimapCanvas);
     game.statusBarDrawer = new StatusBarDrawer(drawCanvas);
     game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
     var spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e) {
         game.inputState.addListener(ctrlDiv, Interaction.Core.interact(game));
+        game.inputState.addListener(minimapCanvas, Interaction.Minimap.interact(game));
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
         game.minimapDrawer = new MinimapDrawer(minimapCanvas, spritemap);
         game.buildPlacementDrawer = new BuildPlacementDrawer(drawCanvas, spritemap);

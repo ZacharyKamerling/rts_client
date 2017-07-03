@@ -63,7 +63,7 @@
         throw new Error('Unit: render() is abstract');
     }
 
-    render_minimap(game: Game, layers: { x: number, y: number, ref: string }[][]): void {
+    renderMinimap(game: Game, layers: { x: number, y: number, ref: string }[][]): void {
         throw new Error('Unit: render() is abstract');
     }
 

@@ -15,6 +15,7 @@ var UserInput;
     var InputState = (function () {
         function InputState() {
             this._elements = new Array();
+            this._listener = null;
             document.addEventListener('contextmenu', function (e) {
                 e.preventDefault();
             }, false);

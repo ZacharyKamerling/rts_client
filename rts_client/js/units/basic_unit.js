@@ -47,7 +47,7 @@ var BasicUnit = (function (_super) {
         layers[1].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_unit" + tc.name });
         layers[2].push({ x: this.x, y: this.y, ang: this.wpn_facing, ref: "basic_wpn" + tc.name });
     };
-    BasicUnit.prototype.render_minimap = function (game, layers) {
+    BasicUnit.prototype.renderMinimap = function (game, layers) {
         var tc = game.teamColors[this.team];
         layers[1].push({ x: this.x, y: this.y, ref: "minimap_unit" + tc.name });
     };

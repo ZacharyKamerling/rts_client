@@ -13,6 +13,7 @@
     <script src="js/libs/view/selection_drawer.js"></script>
     <script src="js/libs/view/minimap_drawer.js"></script>
     <script src="js/libs/view/select_box_drawer.js"></script>
+    <script src="js/libs/view/minimap_box_drawer.js"></script>
     <script src="js/libs/view/status_bar_drawer.js"></script>
     <script src="js/libs/view/command_panel.js"></script>
     <script src="js/libs/view/team_color.js"></script>
@@ -28,6 +29,7 @@
     <script src="js/app/interaction/build_order.js"></script>
     <script src="js/app/interaction/moving_camera.js"></script>
     <script src="js/app/interaction/selecting_units.js"></script>
+    <script src="js/app/interaction/minimap.js"></script>
     <script src="js/app/game.js"></script>
     <script src="js/app/decoding.js"></script>
     <script src="js/app/missile.js"></script>
@@ -54,7 +56,7 @@
         <canvas style="height: 100%; width: 100%; position: absolute; z-index: 0;" id="drawCanvas"></canvas>
         <canvas style="height: 100%; width: 100%; position: absolute; z-index: 1;" id="fowCanvas" ></canvas>
         <div    style="height: 100%; width: 100%; position: absolute; z-index: 2;" id="controlDiv"></div>
-        <canvas style="height: 256px; width: 256px; position: absolute; z-index: 3; padding: 10px; background-color: #222222" id="minimapCanvas"></canvas>
+        <canvas style="height: 256px; width: 256px; position: absolute; z-index: 3; border: 10px solid #222222; background-color: #000000" id="minimapCanvas"></canvas>
         <div    style="list-style-type:none; padding: 10px; position: fixed; bottom: 0;  z-index: 3" id="commandDiv"></div>
     </div>
 

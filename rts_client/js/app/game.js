@@ -7,6 +7,7 @@ var Game = (function () {
         this.tileDrawer = null;
         this.unitDrawer = null;
         this.minimapDrawer = null;
+        this.minimapBoxDrawer = null;
         this.fowDrawer = null;
         this.commandPanel = null;
         this.selectionDrawer = null;
@@ -147,7 +148,7 @@ var Game = (function () {
                 x: x, y: y, ang: 0.0, ref: "artillery_platform1" + this.teamColors[this.team].name
             });
             layers.push({
-                x: x, y: y, ang: 0.0, ref: "artillery_wpn1" + this.teamColors[this.team].name
+                x: x, y: y, ang: 0.0, ref: "artillery_wpn2" + this.teamColors[this.team].name
             });
             this.buildPlacementDrawer.draw(this.camera.x, this.camera.y, 1, layers);
         }
@@ -160,7 +161,7 @@ var Game = (function () {
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul) {
-                soul.current.render_minimap(this, layers);
+                soul.current.renderMinimap(this, layers);
             }
         }
         var flattened = new Array();
@@ -172,7 +173,21 @@ var Game = (function () {
                 flattened.push(tmp);
             }
         }
+        var mapW = this.mapWidth * Game.TILESIZE;
+        var mapH = this.mapHeight * Game.TILESIZE;
+        var drawCanvas = document.getElementById('drawCanvas');
+        var w = drawCanvas.clientWidth;
+        var h = drawCanvas.clientHeight;
+        var hw = w / 2;
+        var hh = h / 2;
+        var cx = this.camera.x;
+        var cy = this.camera.y;
+        var x1 = (cx - hw) / mapW * 2 - 1;
+        var y1 = (cy - hh) / mapH * 2 - 1;
+        var x2 = (cx + hw) / mapW * 2 - 1;
+        var y2 = (cy + hh) / mapH * 2 - 1;
         this.minimapDrawer.draw(flattened);
+        this.minimapBoxDrawer.draw(x1, y1, x2, y2);
     };
     Game.prototype.drawUnitsAndMissiles = function () {
         var layers = new Array(10);

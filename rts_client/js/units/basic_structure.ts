@@ -46,10 +46,10 @@
     render(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
         let tc = game.teamColors[this.team];
         layers[0].push({ x: this.x, y: this.y, ang: this.facing, ref: "artillery_platform1" + tc.name });
-        layers[3].push({ x: this.x, y: this.y, ang: this.wpn_facing, ref: "artillery_wpn1" + tc.name });
+        layers[3].push({ x: this.x, y: this.y, ang: this.wpn_facing, ref: "artillery_wpn2" + tc.name });
     }
 
-    render_minimap(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
+    renderMinimap(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
         let tc = game.teamColors[this.team];
         layers[1].push({ x: this.x, y: this.y, ang: this.facing, ref: "minimap_unit" + tc.name });
     }

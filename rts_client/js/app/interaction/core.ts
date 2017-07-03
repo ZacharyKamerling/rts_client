@@ -53,7 +53,7 @@
                     else {
                         Interaction.MoveOrder.issue(game);
                     }
-                    
+
                 }
                 else if (event === UserInput.InputEvent.KeyDown) {
                     const A = 65;

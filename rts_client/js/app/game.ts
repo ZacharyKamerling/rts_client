@@ -8,6 +8,7 @@ class Game {
     public tileDrawer: TileDrawer = null;
     public unitDrawer: UnitDrawer = null;
     public minimapDrawer: MinimapDrawer = null;
+    public minimapBoxDrawer: MinimapBoxDrawer = null;
     public fowDrawer: FOWDrawer = null;
     public commandPanel: CommandPanel = null;
     public selectionDrawer: SelectionDrawer = null;
@@ -170,7 +171,7 @@ class Game {
                 x: x, y: y, ang: 0.0, ref: "artillery_platform1" + this.teamColors[this.team].name
             });
             layers.push({
-                x: x, y: y, ang: 0.0, ref: "artillery_wpn1" + this.teamColors[this.team].name
+                x: x, y: y, ang: 0.0, ref: "artillery_wpn2" + this.teamColors[this.team].name
             });
             this.buildPlacementDrawer.draw(this.camera.x, this.camera.y, 1, layers);
         }
@@ -188,7 +189,7 @@ class Game {
             let soul = this.souls[i];
 
             if (soul) {
-                soul.current.render_minimap(this, layers);
+                soul.current.renderMinimap(this, layers);
             }
         }
 
@@ -202,8 +203,21 @@ class Game {
                 flattened.push(tmp);
             }
         }
-
+        let mapW = this.mapWidth * Game.TILESIZE;
+        let mapH = this.mapHeight * Game.TILESIZE;
+        let drawCanvas = <HTMLCanvasElement>document.getElementById('drawCanvas');
+        let w = drawCanvas.clientWidth;
+        let h = drawCanvas.clientHeight;
+        let hw = w / 2;
+        let hh = h / 2;
+        let cx = this.camera.x;
+        let cy = this.camera.y;
+        let x1 = (cx - hw) / mapW * 2 - 1;
+        let y1 = (cy - hh) / mapH * 2 - 1;
+        let x2 = (cx + hw) / mapW * 2 - 1;
+        let y2 = (cy + hh) / mapH * 2 - 1;
         this.minimapDrawer.draw(flattened);
+        this.minimapBoxDrawer.draw(x1, y1, x2, y2);
     }
 
     private drawUnitsAndMissiles() {
