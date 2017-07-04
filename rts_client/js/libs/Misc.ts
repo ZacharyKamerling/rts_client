@@ -59,4 +59,11 @@
 
         return { x: x, y: y };
     }
+
+    export function rotatePoint(x: number, y: number, angle: number): { x: number, y: number } {
+        let cos = Math.cos(angle);
+        let sin = Math.sin(angle);
+
+        return { x: x * cos - y * sin, y: x * sin + y * cos };
+    }
 }

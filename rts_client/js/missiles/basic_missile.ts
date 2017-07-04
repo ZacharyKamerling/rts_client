@@ -15,7 +15,7 @@
 
     render(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
         let tc = game.teamColors[this.team];
-        layers[3].push({ x: this.x, y: this.y, ang: this.facing, ref: "basic_missile" + tc.name });
+        layers[3].push({ x: this.x, y: this.y, ang: this.facing, ref: "fast_msl1" + tc.name });
     }
 
     renderExplosion(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {

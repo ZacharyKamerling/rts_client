@@ -126,6 +126,10 @@ function spriteRefs(colors: TeamColor[]): { src: string, ref: string, color: Tea
             ref: "artillery_wpn1"
         },
         {
+            src: "img/artillery_wpn2.png",
+            ref: "artillery_wpn2"
+        },
+        {
             src: "img/missile1.png",
             ref: "missile1"
         },
@@ -136,6 +140,18 @@ function spriteRefs(colors: TeamColor[]): { src: string, ref: string, color: Tea
         {
             src: "img/basic_wpn.png",
             ref: "basic_wpn"
+        },
+        {
+            src: "img/fast1.png",
+            ref: "fast1"
+        },
+        {
+            src: "img/fast_wpn1.png",
+            ref: "fast_wpn1"
+        },
+        {
+            src: "img/fast_msl1.png",
+            ref: "fast_msl1"
         },
         {
             src: "img/fighter1.png",

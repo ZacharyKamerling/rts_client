@@ -74,6 +74,7 @@
     <TypeScriptCompile Include="js\missiles\basic_missile.ts" />
     <TypeScriptCompile Include="js\units\basic_structure.ts" />
     <TypeScriptCompile Include="js\units\basic_unit.ts" />
+    <TypeScriptCompile Include="js\units\fast1.ts" />
   </ItemGroup>
   <ItemGroup>
     <None Include="File System.pubxml" />

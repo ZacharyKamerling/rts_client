@@ -1,4 +1,10 @@
-﻿class Missile {
+﻿enum MissileType {
+    Fast1,
+    TestUnit,
+    TestStructure,
+}
+
+class Missile {
     misl_ID: number;
     x: number;
     y: number;
@@ -66,9 +72,11 @@
     static decodeMissile(data: Cereal, time: number, frame: number, exploding: boolean): Missile {
         let mislType = data.getU8();
         switch (mislType) {
-            case 0:
+            case MissileType.TestUnit:
                 return new BasicMissile(data, time, frame, exploding);
-            case 1:
+            case MissileType.TestStructure:
+                return new BasicMissile(data, time, frame, exploding);
+            case MissileType.Fast1:
                 return new BasicMissile(data, time, frame, exploding);
             default:
                 console.log("No missile of type " + mislType + " exists.");

@@ -93,7 +93,7 @@ class Game {
                     game.control = new Interaction.AttackMoveOrder.BeingIssued();
                     break;
                 case "build":
-                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, 1, "building");
+                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.TestStructure, "building");
                     break;
                 default:
                     console.log('commandPanelHandler couldn\'t handle: ' + name);

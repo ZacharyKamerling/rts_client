@@ -52,4 +52,10 @@ var Misc;
         return { x: x, y: y };
     }
     Misc.rotateAroundOrigin = rotateAroundOrigin;
+    function rotatePoint(x, y, angle) {
+        var cos = Math.cos(angle);
+        var sin = Math.sin(angle);
+        return { x: x * cos - y * sin, y: x * sin + y * cos };
+    }
+    Misc.rotatePoint = rotatePoint;
 })(Misc || (Misc = {}));
