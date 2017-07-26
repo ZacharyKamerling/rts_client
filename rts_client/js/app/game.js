@@ -167,6 +167,7 @@ var Game = (function () {
         for (var i = 0; i < layers.length; i++) {
             layers[i] = new Array();
         }
+        // Render units
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul) {
@@ -204,12 +205,14 @@ var Game = (function () {
         for (var i = 0; i < layers.length; i++) {
             layers[i] = new Array();
         }
+        // Render units
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul) {
                 soul.current.render(this, layers);
             }
         }
+        // Render missiles
         for (var i = 0; i < this.missileSouls.length; i++) {
             var soul = this.missileSouls[i];
             if (soul) {
@@ -237,6 +240,7 @@ var Game = (function () {
         var enemy_dashed = new Array();
         var onlyEnemyIsBeingSelected = true;
         var onlyEnemyIsSelected = true;
+        // Render units
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul) {
@@ -289,6 +293,7 @@ var Game = (function () {
     };
     Game.prototype.drawStatusBars = function () {
         var bars = new Array();
+        // Render units
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul && soul.current) {
@@ -342,3 +347,4 @@ var Camera = (function () {
     }
     return Camera;
 }());
+//# sourceMappingURL=game.js.map

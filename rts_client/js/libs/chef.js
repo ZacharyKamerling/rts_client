@@ -1,3 +1,4 @@
+// Cooks up binary data
 var Chef = (function () {
     function Chef() {
         this.ab = new ArrayBuffer(4096);
@@ -15,6 +16,7 @@ var Chef = (function () {
             this.ab = newAB;
         }
     };
+    // Trim empty space and get array buffer
     Chef.prototype.done = function () {
         var newAB = new ArrayBuffer(this.offset);
         var newDV = new DataView(newAB);
@@ -87,6 +89,9 @@ var Chef = (function () {
             }
             else {
                 i++;
+                // UTF-16 encodes 0x10000-0x10FFFF by
+                // subtracting 0x10000 and splitting the
+                // 20 bits of 0x0-0xFFFFF into two halves
                 charcode = 0x10000 + (((charcode & 0x3ff) << 10)
                     | (str.charCodeAt(i) & 0x3ff));
                 utf8.push(0xf0 | (charcode >> 18), 0x80 | ((charcode >> 12) & 0x3f), 0x80 | ((charcode >> 6) & 0x3f), 0x80 | (charcode & 0x3f));
@@ -96,3 +101,4 @@ var Chef = (function () {
     };
     return Chef;
 }());
+//# sourceMappingURL=chef.js.map

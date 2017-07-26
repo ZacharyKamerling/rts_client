@@ -37,3 +37,4 @@ var Interaction;
         BuildOrder.issue = issue;
     })(BuildOrder = Interaction.BuildOrder || (Interaction.BuildOrder = {}));
 })(Interaction || (Interaction = {}));
+//# sourceMappingURL=build_order.js.map

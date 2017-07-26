@@ -14,6 +14,9 @@ var MinimapDrawer = (function () {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
     }
+    // (x,y) = minimap location on screen
+    // (w,h) = size of minimap on screen
+    // sprites = list of coords and spritemap ref { x: [0.0,1.0], y: [0.0,1.0], ref: 'wee_little_icon' }
     MinimapDrawer.prototype.draw = function (sprites) {
         if (this.canvas.width !== this.canvas.offsetWidth || this.canvas.height !== this.canvas.offsetHeight) {
             this.canvas.width = this.canvas.offsetWidth;
@@ -27,14 +30,18 @@ var MinimapDrawer = (function () {
         for (var i = 0, n = 0; n < sprites.length; n++) {
             var sprite = sprites[n];
             var xywh = this.spriteMap.coords(sprite.ref);
-            var hw = xywh.w;
-            var hh = xywh.h;
+            var hw = xywh.w; // Half width
+            var hh = xywh.h; // Half height
+            // Normalize X & Y
+            // ScrnX = x * 2 - 1
             var normX = sprite.x * 2 - 1;
             var normY = sprite.y * 2 - 1;
+            // Coordinates of each corner on the sprite
             var east = normX + hw;
             var north = normY + hh;
             var west = normX - hw;
             var south = normY - hh;
+            // Fill array with scaled vertices
             drawData[i++] = normX - (normX - west) * xm;
             drawData[i++] = normY - (normY - south) * ym;
             drawData[i++] = xywh.x;
@@ -99,3 +106,4 @@ var MinimapDrawer = (function () {
     ].join("\n");
     return MinimapDrawer;
 }());
+//# sourceMappingURL=minimap_drawer.js.map

@@ -37,8 +37,10 @@ var Decoding;
         var _loop_1 = function() {
             var msg_type = data.getU8();
             msg_switch: switch (msg_type) {
+                // Unit
                 case ClientMessage.UnitMove:
                     var new_unit = Unit.decodeUnit(data, currentTime, logicFrame);
+                    // If unit_soul exists, update it with new_unit
                     if (new_unit) {
                         var soul = game.souls[new_unit.unit_ID];
                         if (soul) {
@@ -52,6 +54,7 @@ var Decoding;
                         }
                     }
                     break msg_switch;
+                // Missile
                 case ClientMessage.MissileMove:
                 case ClientMessage.MissileExplode:
                     var exploding = msg_type === ClientMessage.MissileExplode;
@@ -69,11 +72,13 @@ var Decoding;
                         }
                     }
                     break msg_switch;
+                // Unit death
                 case ClientMessage.UnitDeath:
                     var unit_ID = data.getU16();
                     var dmg_type = data.getU8();
                     game.souls[unit_ID].current.isDead = true;
                     break msg_switch;
+                // Player Info
                 case ClientMessage.TeamInfo:
                     game.team = data.getU8();
                     game.prime = data.getU32();
@@ -94,7 +99,7 @@ var Decoding;
                     game.mapWidth = width;
                     game.mapHeight = height;
                     var canvas = document.createElement('canvas');
-                    var mmCanvas = document.createElement('canvas');
+                    var mmCanvas = document.createElement('canvas'); //minimap
                     canvas.width = width;
                     canvas.height = height;
                     mmCanvas.width = width;
@@ -147,3 +152,4 @@ var Decoding;
     }
     Decoding.processPacket = processPacket;
 })(Decoding || (Decoding = {}));
+//# sourceMappingURL=decoding.js.map

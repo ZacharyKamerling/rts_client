@@ -28,3 +28,4 @@ var CommandPanel = (function () {
     };
     return CommandPanel;
 }());
+//# sourceMappingURL=command_panel.js.map

@@ -32,9 +32,7 @@ var UserInput;
         InputState.prototype.MouseRightDown = function () { return this._mouseRight; };
         InputState.prototype.lastKeyPressed = function () { return this._lastKeyPressed; };
         InputState.prototype.wheelChange = function () { return this._wheelChange; };
-        InputState.prototype.wtf = function () {
-            console.log('Is it over?');
-        };
+        InputState.prototype.wtf = function () { console.log('Is it over?'); };
         InputState.prototype.addListener = function (parent, handler) {
             console.log('Is it over?');
             var self = this;
@@ -133,6 +131,37 @@ var UserInput;
                 handler(self, InputEvent.KeyUp);
                 pauseEvent(e);
             });
+            /*
+            parent.addEventListener("touchstart", function (e: TouchEvent) {
+                that.addTouches(e.touches);
+                handler(that);
+                pauseEvent(e);
+            });
+    
+            parent.addEventListener("touchend", function (e: TouchEvent) {
+                that.addTouches(e.touches);
+                handler(that);
+                pauseEvent(e);
+            });
+    
+            parent.addEventListener("touchcancel", function (e: TouchEvent) {
+                that.addTouches(e.touches);
+                handler(that);
+                pauseEvent(e);
+            });
+    
+            parent.addEventListener("touchleave", function (e: TouchEvent) {
+                that.addTouches(e.touches);
+                handler(that);
+                pauseEvent(e);
+            });
+    
+            parent.addEventListener("touchmove", function (e: TouchEvent) {
+                that.addTouches(e.touches);
+                handler(that);
+                pauseEvent(e);
+            });
+            */
         };
         return InputState;
     }());
@@ -148,3 +177,4 @@ var UserInput;
         return false;
     }
 })(UserInput || (UserInput = {}));
+//# sourceMappingURL=user_input.js.map

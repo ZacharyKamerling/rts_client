@@ -1,4 +1,5 @@
 "use strict";
+// Consumes binary data
 var Cereal = (function () {
     function Cereal(dv) {
         this.offset = 0;
@@ -52,3 +53,4 @@ var Cereal = (function () {
 function uintToString(uintArray) {
     return decodeURIComponent(encodeURI(atob(String.fromCharCode.apply(null, uintArray))));
 }
+//# sourceMappingURL=cereal.js.map

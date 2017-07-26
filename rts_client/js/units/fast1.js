@@ -54,3 +54,4 @@ var Fast1 = (function (_super) {
     };
     return Fast1;
 }(Unit));
+//# sourceMappingURL=fast1.js.map

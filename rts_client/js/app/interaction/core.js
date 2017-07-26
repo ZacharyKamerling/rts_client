@@ -65,6 +65,10 @@ var Interaction;
                             game.control = new Interaction.MoveOrder.BeingIssued();
                         }
                     }
+                    else if (event === UserInput.InputEvent.MouseWheel) {
+                        console.log("Wheely");
+                        game.camera.scale += 0.1 * game.inputState.wheelChange();
+                    }
                 }
                 else if (control instanceof Interaction.MovingCamera) {
                     if (event === UserInput.InputEvent.MouseMiddleUp) {
@@ -73,6 +77,9 @@ var Interaction;
                     else if (event === UserInput.InputEvent.MouseMove) {
                         game.camera.x = control.cameraX + control.clickX - state.mouseX();
                         game.camera.y = control.cameraY - (control.clickY - state.mouseY());
+                    }
+                    else if (event === UserInput.InputEvent.MouseWheel) {
+                        game.camera.scale += 0.1 * game.inputState.wheelChange();
                     }
                 }
                 else if (control instanceof Interaction.SelectingUnits.CurrentAction) {
@@ -126,3 +133,4 @@ var Interaction;
         Core.interact = interact;
     })(Core = Interaction.Core || (Interaction.Core = {}));
 })(Interaction || (Interaction = {}));
+//# sourceMappingURL=core.js.map

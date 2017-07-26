@@ -8,6 +8,7 @@
         MouseLeftUp,
         MouseMiddleUp,
         MouseRightUp,
+        MouseWheel,
         KeyDown,
         KeyUp,
     }
@@ -26,6 +27,7 @@
         private _mouseMiddle: boolean;
         private _mouseRight: boolean;
         private _lastKeyPressed: number;
+        private _wheelChange: number;
 
         public elements() { return this._elements; }
         public shiftDown() { return this._shift; }
@@ -37,6 +39,8 @@
         public mouseMiddleDown() { return this._mouseMiddle; }
         public MouseRightDown() { return this._mouseRight; }
         public lastKeyPressed() { return this._lastKeyPressed; }
+        public wheelChange() { return this._wheelChange; }
+        public wtf() { console.log('Is it over?'); }
 
         constructor() {
             document.addEventListener('contextmenu', function (e) {
@@ -44,10 +48,21 @@
             }, false);
         }
 
-        addListener(parent: HTMLElement, handler: (state: InputState, event: InputEvent) => void) {
+        public addListener(parent: HTMLElement, handler: (state: InputState, event: InputEvent) => void) {
+            console.log('Is it over?');
             let self = this;
             self._elements.push(parent);
             parent.draggable = false;
+
+            parent.addEventListener("wheel", function (e) {
+                let event = InputEvent.MouseWheel;
+                self._shift = e.shiftKey;
+                self._ctrl = e.ctrlKey;
+                self._alt = e.altKey;
+                self._wheelChange = e.deltaY;
+                handler(self, event);
+                pauseEvent(e);
+            });
 
             parent.addEventListener("mousedown", function (e) {
                 let event: InputEvent;
