@@ -15,7 +15,7 @@ var Game = (function () {
         this.statusBarDrawer = null;
         this.buildPlacementDrawer = null;
         this.control = new Interaction.Core.DoingNothing();
-        this.camera = new Camera(0, 0, 2);
+        this.camera = new Camera(0, 0, 0.8);
         this.connection = null;
         this.souls = null;
         this.missileSouls = null;
@@ -182,13 +182,14 @@ var Game = (function () {
                 flattened.push(tmp);
             }
         }
+        var scale = this.camera.scale;
         var mapW = this.mapWidth * Game.TILESIZE;
         var mapH = this.mapHeight * Game.TILESIZE;
         var drawCanvas = document.getElementById('drawCanvas');
         var w = drawCanvas.clientWidth;
         var h = drawCanvas.clientHeight;
-        var hw = w / 2;
-        var hh = h / 2;
+        var hw = w / 2 / scale;
+        var hh = h / 2 / scale;
         var cx = this.camera.x;
         var cy = this.camera.y;
         var x1 = (cx - hw) / mapW * 2 - 1;

@@ -16,7 +16,7 @@ class Game {
     public statusBarDrawer: StatusBarDrawer = null;
     public buildPlacementDrawer: BuildPlacementDrawer = null;
     public control: Interaction.Core.Control = new Interaction.Core.DoingNothing();
-    public camera: Camera = new Camera(0, 0, 2);
+    public camera: Camera = new Camera(0, 0, 0.8);
     public connection: WebSocket = null;
     public souls: { old: Unit, current: Unit, new: Unit }[] = null;
     public missileSouls: { old: Missile, current: Missile, new: Missile }[] = null;
@@ -212,13 +212,14 @@ class Game {
                 flattened.push(tmp);
             }
         }
+        let scale = this.camera.scale;
         let mapW = this.mapWidth * Game.TILESIZE;
         let mapH = this.mapHeight * Game.TILESIZE;
         let drawCanvas = <HTMLCanvasElement>document.getElementById('drawCanvas');
         let w = drawCanvas.clientWidth;
         let h = drawCanvas.clientHeight;
-        let hw = w / 2;
-        let hh = h / 2;
+        let hw = w / 2 / scale;
+        let hh = h / 2 / scale;
         let cx = this.camera.x;
         let cy = this.camera.y;
         let x1 = (cx - hw) / mapW * 2 - 1;
