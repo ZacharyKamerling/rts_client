@@ -13,9 +13,8 @@
     }
 
     public draw(x: number, y: number, scale: number, bars: { x: number, y: number, w: number, h: number, v: number, r: number, g: number, b: number, a: number }[]) {
-        x = Math.floor(x);
-        y = Math.floor(y);
-        scale = scale / 4;
+        x = Math.floor(x * scale);
+        y = Math.floor(y * scale);
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
         let xm = 1 / this.canvas.width;
@@ -28,10 +27,12 @@
 
         for (let n = 0; n < bars.length; n++) {
             let bar = bars[n];
+            bar.x *= scale;
+            bar.y *= scale;
             // GL Coords go from -1 to 1
-            // If they went from 0 to 1 we wouldn't need to double the radius
-            bar.w = bar.w * 2;
-            bar.h = bar.h * 2;
+            // If they went from 0 to 1 we wouldn't need to double the width/height
+            bar.w *= scale * 2;
+            bar.h *= scale * 2;
 
             // Normalize X & Y
             // ScrnX = ((x - ScrnL) / ScrnW) * 2 - 1

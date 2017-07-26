@@ -79,14 +79,19 @@
     export function configUnitSelections(game: Game) {
         let control = game.control;
         if (control instanceof Interaction.SelectingUnits.CurrentAction) {
-            configureUnitsBeingSelected(game, control.clickX, control.clickY, control.currentX, control.currentY);
+            let x1 = control.clickX;
+            let x2 = control.currentX;
+            let y1 = control.clickY;
+            let y2 = control.currentY;
+            configureUnitsBeingSelected(game, x1, y1, x2, y2);
         }
         if (control instanceof Interaction.Core.DoingNothing) {
             let input = game.inputState;
             let width = game.unitDrawer.width();
             let height = game.unitDrawer.height();
-            let x = game.camera.x + input.mouseX() - width / 2;
-            let y = game.camera.y - (input.mouseY() - height / 2);
+            let scale = game.camera.scale;
+            let x = game.camera.x + (input.mouseX() - width / 2) / scale;
+            let y = game.camera.y - (input.mouseY() - height / 2) / scale;
             configureUnitsBeingSelected(game, x, y, x, y);
         }
     }
@@ -161,11 +166,12 @@
     }
 
     export function begin(game: Game) {
+        let scale = game.camera.scale;
         let input = game.inputState;
         let width = game.unitDrawer.width();
         let height = game.unitDrawer.height();
-        let x = game.camera.x + input.mouseX() - width / 2;
-        let y = game.camera.y - (input.mouseY() - height / 2);
+        let x = game.camera.x + (input.mouseX() - width / 2) / scale;
+        let y = game.camera.y - (input.mouseY() - height / 2) / scale;
         game.control = new Interaction.SelectingUnits.CurrentAction(x, y, x, y, game.inputState.shiftDown());
 
         if (!input.shiftDown()) {

@@ -21,8 +21,8 @@ var UnitDrawer = (function () {
         return this.canvas.offsetHeight;
     };
     UnitDrawer.prototype.draw = function (x, y, scale, sprites) {
-        x = Math.floor(x);
-        y = Math.floor(y);
+        x = Math.floor(x * scale);
+        y = Math.floor(y * scale);
         if (this.canvas.width !== this.canvas.offsetWidth || this.canvas.height !== this.canvas.offsetHeight) {
             this.canvas.width = this.canvas.offsetWidth;
             this.canvas.height = this.canvas.offsetHeight;
@@ -35,8 +35,10 @@ var UnitDrawer = (function () {
         for (var i = 0, n = 0; n < sprites.length; n++) {
             var sprite = sprites[n];
             var xywh = this.spriteMap.coords(sprite.ref);
-            var hw = xywh.w;
-            var hh = xywh.h;
+            var hw = xywh.w * scale;
+            var hh = xywh.h * scale;
+            sprite.x *= scale;
+            sprite.y *= scale;
             var normX = ((sprite.x - (x - this.canvas.width / 2)) / this.canvas.width) * 2 - 1;
             var normY = ((sprite.y - (y - this.canvas.height / 2)) / this.canvas.height) * 2 - 1;
             var east = normX + hw;

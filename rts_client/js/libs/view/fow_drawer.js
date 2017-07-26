@@ -9,9 +9,8 @@ var FOWDrawer = (function () {
     }
     FOWDrawer.prototype.draw = function (x, y, scale, circles) {
         var QUALITY = 1 / 4;
-        x = Math.floor(x * QUALITY);
-        y = Math.floor(y * QUALITY);
-        scale = scale * QUALITY;
+        x = Math.floor(x * QUALITY * scale);
+        y = Math.floor(y * QUALITY * scale);
         this.canvas.width = Math.floor(this.canvas.offsetWidth * QUALITY);
         this.canvas.height = Math.floor(this.canvas.offsetHeight * QUALITY);
         var FLOATS_PER_UNIT = 30;
@@ -20,9 +19,9 @@ var FOWDrawer = (function () {
         var ym = Game.TILESIZE / this.canvas.height;
         for (var i = 0, n = 0; n < circles.length; n++) {
             var circle = circles[n];
-            circle.r = (circle.r * QUALITY) * 2;
-            circle.x = circle.x * QUALITY;
-            circle.y = circle.y * QUALITY;
+            circle.r = (circle.r * QUALITY) * 2 * scale;
+            circle.x = circle.x * QUALITY * scale;
+            circle.y = circle.y * QUALITY * scale;
             var normX = ((circle.x - (x - this.canvas.width / 2)) / this.canvas.width) * 2 - 1;
             var normY = ((circle.y - (y - this.canvas.height / 2)) / this.canvas.height) * 2 - 1;
             var east = normX + circle.r * xm;

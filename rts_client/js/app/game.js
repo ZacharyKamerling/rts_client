@@ -15,7 +15,7 @@ var Game = (function () {
         this.statusBarDrawer = null;
         this.buildPlacementDrawer = null;
         this.control = new Interaction.Core.DoingNothing();
-        this.camera = new Camera(0, 0);
+        this.camera = new Camera(0, 0, 2);
         this.connection = null;
         this.souls = null;
         this.missileSouls = null;
@@ -93,7 +93,7 @@ var Game = (function () {
         Interaction.SelectingUnits.configUnitSelections(this);
         this.stepUnits(timeDelta);
         this.stepMissiles(timeDelta);
-        this.tileDrawer.draw(this.camera.x, this.camera.y, 1);
+        this.tileDrawer.draw(this.camera.x, this.camera.y, this.camera.scale);
         this.drawSelections();
         this.drawUnitsAndMissiles();
         this.drawBuildPlacement();
@@ -122,35 +122,44 @@ var Game = (function () {
     Game.prototype.drawSelectBox = function () {
         var control = this.control;
         if (control instanceof Interaction.SelectingUnits.CurrentAction) {
-            var minX = Math.min(control.clickX, control.currentX);
-            var minY = Math.min(control.clickY, control.currentY);
-            var maxX = Math.max(control.clickX, control.currentX);
-            var maxY = Math.max(control.clickY, control.currentY);
-            var minBoxX = minX - this.camera.x;
-            var minBoxY = minY - this.camera.y;
-            var maxBoxX = maxX - this.camera.x;
-            var maxBoxY = maxY - this.camera.y;
-            this.selectionBoxDrawer.draw(minBoxX, minBoxY, maxBoxX, maxBoxY);
+            var scale = this.camera.scale;
+            var width = this.unitDrawer.width();
+            var height = this.unitDrawer.height();
+            var x1 = (control.clickX - this.camera.x) * scale;
+            var y1 = (control.clickY - this.camera.y) * scale;
+            var x2 = (control.currentX - this.camera.x) * scale;
+            var y2 = (control.currentY - this.camera.y) * scale;
+            var minX = Math.min(x1, x2);
+            var minY = Math.min(y1, y2);
+            var maxX = Math.max(x1, x2);
+            var maxY = Math.max(y1, y2);
+            this.selectionBoxDrawer.draw(minX, minY, maxX, maxY);
         }
+    };
+    Game.prototype.gameXY = function () {
+        var self = this;
+        return {
+            x: (self.camera.x + (self.inputState.mouseX() - self.unitDrawer.width() / 2) / self.camera.scale) / Game.TILESIZE,
+            y: (self.camera.y - (self.inputState.mouseY() - self.unitDrawer.height() / 2) / self.camera.scale) / Game.TILESIZE,
+        };
     };
     Game.prototype.drawBuildPlacement = function () {
         var control = this.control;
         var input = this.inputState;
         if (control instanceof Interaction.BuildOrder.BeingIssued) {
             var layers = new Array();
-            var norm_x = (this.camera.x + (input.mouseX() - this.unitDrawer.width() / 2)) / Game.TILESIZE;
-            var norm_y = (this.camera.y - (input.mouseY() - this.unitDrawer.height() / 2)) / Game.TILESIZE;
-            var half_w = 4.0 / 2.0;
-            var half_h = 4.0 / 2.0;
-            var x = (Math.floor(norm_x - half_w + 0.00001) + half_w) * Game.TILESIZE;
-            var y = (Math.floor(norm_y - half_h + 0.00001) + half_h) * Game.TILESIZE;
+            var xy = this.gameXY();
+            var half_w = control.width / 2;
+            var half_h = control.height / 2;
+            var x = (Math.floor(xy.x - half_w + 0.00001) + half_w) * Game.TILESIZE;
+            var y = (Math.floor(xy.y - half_h + 0.00001) + half_h) * Game.TILESIZE;
             layers.push({
                 x: x, y: y, ang: 0.0, ref: "artillery_platform1" + this.teamColors[this.team].name
             });
             layers.push({
                 x: x, y: y, ang: 0.0, ref: "artillery_wpn2" + this.teamColors[this.team].name
             });
-            this.buildPlacementDrawer.draw(this.camera.x, this.camera.y, 1, layers);
+            this.buildPlacementDrawer.draw(this.camera.x, this.camera.y, this.camera.scale, layers);
         }
     };
     Game.prototype.drawMinimap = function () {
@@ -218,7 +227,7 @@ var Game = (function () {
                 flattened.push(layers[i][n]);
             }
         }
-        this.unitDrawer.draw(this.camera.x, this.camera.y, 1, flattened);
+        this.unitDrawer.draw(this.camera.x, this.camera.y, this.camera.scale, flattened);
     };
     Game.prototype.drawSelections = function () {
         var selections = new Array();
@@ -265,16 +274,16 @@ var Game = (function () {
             }
         }
         if (onlyEnemyIsSelected) {
-            this.selectionDrawer.draw(false, this.camera.x, this.camera.y, enemy_selections);
+            this.selectionDrawer.draw(false, this.camera.x, this.camera.y, this.camera.scale, enemy_selections);
         }
         else {
-            this.selectionDrawer.draw(false, this.camera.x, this.camera.y, selections);
+            this.selectionDrawer.draw(false, this.camera.x, this.camera.y, this.camera.scale, selections);
         }
         if (onlyEnemyIsBeingSelected) {
-            this.selectionDrawer.draw(true, this.camera.x, this.camera.y, enemy_dashed);
+            this.selectionDrawer.draw(true, this.camera.x, this.camera.y, this.camera.scale, enemy_dashed);
         }
         else {
-            this.selectionDrawer.draw(true, this.camera.x, this.camera.y, dashed);
+            this.selectionDrawer.draw(true, this.camera.x, this.camera.y, this.camera.scale, dashed);
         }
     };
     Game.prototype.drawStatusBars = function () {
@@ -305,7 +314,7 @@ var Game = (function () {
                 }
             }
         }
-        this.statusBarDrawer.draw(this.camera.x, this.camera.y, 1, bars);
+        this.statusBarDrawer.draw(this.camera.x, this.camera.y, this.camera.scale, bars);
     };
     Game.prototype.drawFogOfWar = function () {
         var circles = new Array();
@@ -317,7 +326,7 @@ var Game = (function () {
                 }
             }
         }
-        this.fowDrawer.draw(this.camera.x, this.camera.y, 1, circles);
+        this.fowDrawer.draw(this.camera.x, this.camera.y, this.camera.scale, circles);
     };
     Game.MAX_UNITS = 4096;
     Game.TILESIZE = 20;
@@ -325,9 +334,10 @@ var Game = (function () {
     return Game;
 }());
 var Camera = (function () {
-    function Camera(x, y) {
+    function Camera(x, y, scale) {
         this.x = x;
         this.y = y;
+        this.scale = scale;
     }
     return Camera;
 }());

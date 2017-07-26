@@ -8,9 +8,9 @@ var SelectionDrawer = (function () {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
     }
-    SelectionDrawer.prototype.draw = function (dashed, x, y, circles) {
-        x = Math.floor(x);
-        y = Math.floor(y);
+    SelectionDrawer.prototype.draw = function (dashed, x, y, scale, circles) {
+        x = Math.floor(x * scale);
+        y = Math.floor(y * scale);
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
         var xm = 1 / this.canvas.width;
@@ -21,7 +21,9 @@ var SelectionDrawer = (function () {
         var uint8View = new Uint8Array(drawData);
         for (var n = 0; n < circles.length; n++) {
             var circle = circles[n];
-            circle.radius = circle.radius * 2;
+            circle.x *= scale;
+            circle.y *= scale;
+            circle.radius *= 2 * scale;
             var normX = ((circle.x - (x - this.canvas.width / 2)) / this.canvas.width) * 2 - 1;
             var normY = ((circle.y - (y - this.canvas.height / 2)) / this.canvas.height) * 2 - 1;
             var east = normX + circle.radius * xm;

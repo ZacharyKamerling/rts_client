@@ -8,9 +8,8 @@ var StatusBarDrawer = (function () {
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
     }
     StatusBarDrawer.prototype.draw = function (x, y, scale, bars) {
-        x = Math.floor(x);
-        y = Math.floor(y);
-        scale = scale / 4;
+        x = Math.floor(x * scale);
+        y = Math.floor(y * scale);
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
         var xm = 1 / this.canvas.width;
@@ -21,8 +20,10 @@ var StatusBarDrawer = (function () {
         var uint8View = new Uint8Array(drawData);
         for (var n = 0; n < bars.length; n++) {
             var bar = bars[n];
-            bar.w = bar.w * 2;
-            bar.h = bar.h * 2;
+            bar.x *= scale;
+            bar.y *= scale;
+            bar.w *= scale * 2;
+            bar.h *= scale * 2;
             var normX = ((bar.x - (x - this.canvas.width / 2)) / this.canvas.width) * 2 - 1;
             var normY = ((bar.y - (y - this.canvas.height / 2)) / this.canvas.height) * 2 - 1;
             var east = normX + bar.w * xm;

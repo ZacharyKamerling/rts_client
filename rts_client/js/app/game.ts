@@ -16,7 +16,7 @@ class Game {
     public statusBarDrawer: StatusBarDrawer = null;
     public buildPlacementDrawer: BuildPlacementDrawer = null;
     public control: Interaction.Core.Control = new Interaction.Core.DoingNothing();
-    public camera: Camera = new Camera(0, 0);
+    public camera: Camera = new Camera(0, 0, 2);
     public connection: WebSocket = null;
     public souls: { old: Unit, current: Unit, new: Unit }[] = null;
     public missileSouls: { old: Missile, current: Missile, new: Missile }[] = null;
@@ -109,7 +109,7 @@ class Game {
         Interaction.SelectingUnits.configUnitSelections(this);
         this.stepUnits(timeDelta);
         this.stepMissiles(timeDelta);
-        this.tileDrawer.draw(this.camera.x, this.camera.y, 1);
+        this.tileDrawer.draw(this.camera.x, this.camera.y, this.camera.scale);
         this.drawSelections();
         this.drawUnitsAndMissiles();
         this.drawBuildPlacement();
@@ -141,16 +141,27 @@ class Game {
     private drawSelectBox() {
         let control = this.control;
         if (control instanceof Interaction.SelectingUnits.CurrentAction) {
-            let minX = Math.min(control.clickX, control.currentX);
-            let minY = Math.min(control.clickY, control.currentY);
-            let maxX = Math.max(control.clickX, control.currentX);
-            let maxY = Math.max(control.clickY, control.currentY);
-            let minBoxX = minX - this.camera.x;
-            let minBoxY = minY - this.camera.y;
-            let maxBoxX = maxX - this.camera.x;
-            let maxBoxY = maxY - this.camera.y;
-            this.selectionBoxDrawer.draw(minBoxX, minBoxY, maxBoxX, maxBoxY);
+            let scale = this.camera.scale;
+            let width = this.unitDrawer.width();
+            let height = this.unitDrawer.height();
+            let x1 = (control.clickX - this.camera.x) * scale;
+            let y1 = (control.clickY - this.camera.y) * scale;
+            let x2 = (control.currentX - this.camera.x) * scale;
+            let y2 = (control.currentY - this.camera.y) * scale;
+            let minX = Math.min(x1, x2);
+            let minY = Math.min(y1, y2);
+            let maxX = Math.max(x1, x2);
+            let maxY = Math.max(y1, y2);
+            this.selectionBoxDrawer.draw(minX, minY, maxX, maxY);
         }
+    }
+
+    public gameXY(): { x: number, y: number } {
+        let self = this;
+        return {
+            x: (self.camera.x + (self.inputState.mouseX() - self.unitDrawer.width() / 2) / self.camera.scale) / Game.TILESIZE,
+            y: (self.camera.y - (self.inputState.mouseY() - self.unitDrawer.height() / 2) / self.camera.scale) / Game.TILESIZE,
+        };
     }
 
     private drawBuildPlacement() {
@@ -159,13 +170,11 @@ class Game {
 
         if (control instanceof Interaction.BuildOrder.BeingIssued) {
             let layers: { x: number; y: number; ang: number, ref: string }[] = new Array();
-
-            let norm_x = (this.camera.x + (input.mouseX() - this.unitDrawer.width() / 2)) / Game.TILESIZE;
-            let norm_y = (this.camera.y - (input.mouseY() - this.unitDrawer.height() / 2)) / Game.TILESIZE;
-            let half_w = 4.0 / 2.0;
-            let half_h = 4.0 / 2.0;
-            let x = (Math.floor(norm_x - half_w + 0.00001) + half_w) * Game.TILESIZE;
-            let y = (Math.floor(norm_y - half_h + 0.00001) + half_h) * Game.TILESIZE;
+            let xy = this.gameXY();
+            let half_w = control.width / 2;
+            let half_h = control.height / 2;
+            let x = (Math.floor(xy.x - half_w + 0.00001) + half_w) * Game.TILESIZE;
+            let y = (Math.floor(xy.y - half_h + 0.00001) + half_h) * Game.TILESIZE;
 
             layers.push({
                 x: x, y: y, ang: 0.0, ref: "artillery_platform1" + this.teamColors[this.team].name
@@ -173,7 +182,7 @@ class Game {
             layers.push({
                 x: x, y: y, ang: 0.0, ref: "artillery_wpn2" + this.teamColors[this.team].name
             });
-            this.buildPlacementDrawer.draw(this.camera.x, this.camera.y, 1, layers);
+            this.buildPlacementDrawer.draw(this.camera.x, this.camera.y, this.camera.scale, layers);
         }
     }
 
@@ -259,7 +268,7 @@ class Game {
             }
         }
 
-        this.unitDrawer.draw(this.camera.x, this.camera.y, 1, flattened);
+        this.unitDrawer.draw(this.camera.x, this.camera.y, this.camera.scale, flattened);
     }
 
     private drawSelections() {
@@ -311,17 +320,17 @@ class Game {
         }
 
         if (onlyEnemyIsSelected) {
-            this.selectionDrawer.draw(false, this.camera.x, this.camera.y, enemy_selections);
+            this.selectionDrawer.draw(false, this.camera.x, this.camera.y, this.camera.scale, enemy_selections);
         }
         else {
-            this.selectionDrawer.draw(false, this.camera.x, this.camera.y, selections);
+            this.selectionDrawer.draw(false, this.camera.x, this.camera.y, this.camera.scale, selections);
         }
 
         if (onlyEnemyIsBeingSelected) {
-            this.selectionDrawer.draw(true, this.camera.x, this.camera.y, enemy_dashed);
+            this.selectionDrawer.draw(true, this.camera.x, this.camera.y, this.camera.scale, enemy_dashed);
         }
         else {
-            this.selectionDrawer.draw(true, this.camera.x, this.camera.y, dashed);
+            this.selectionDrawer.draw(true, this.camera.x, this.camera.y, this.camera.scale, dashed);
         }
     }
 
@@ -357,7 +366,7 @@ class Game {
             }
         }
 
-        this.statusBarDrawer.draw(this.camera.x, this.camera.y, 1, bars);
+        this.statusBarDrawer.draw(this.camera.x, this.camera.y, this.camera.scale, bars);
     }
 
     private drawFogOfWar() {
@@ -373,16 +382,18 @@ class Game {
             }
         }
 
-        this.fowDrawer.draw(this.camera.x, this.camera.y, 1, circles);
+        this.fowDrawer.draw(this.camera.x, this.camera.y, this.camera.scale, circles);
     }
 }
 
 class Camera {
     x: number;
     y: number;
+    scale: number;
 
-    constructor(x: number, y: number) {
+    constructor(x: number, y: number, scale: number) {
         this.x = x;
         this.y = y;
+        this.scale = scale;
     }
 }

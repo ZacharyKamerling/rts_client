@@ -14,9 +14,8 @@
 
     public draw(x: number, y: number, scale: number, circles: { x: number, y: number, r: number }[]) {
         const QUALITY = 1/4;
-        x = Math.floor(x * QUALITY);
-        y = Math.floor(y * QUALITY);
-        scale = scale * QUALITY;
+        x = Math.floor(x * QUALITY * scale);
+        y = Math.floor(y * QUALITY * scale);
         this.canvas.width = Math.floor(this.canvas.offsetWidth * QUALITY);
         this.canvas.height = Math.floor(this.canvas.offsetHeight * QUALITY);
 
@@ -30,9 +29,9 @@
             // Scale all coords to 1/4th their size (to match small canvas)
             // GL Coords go from -1 to 1
             // If they went from 0 to 1 we wouldn't need to double the radius
-            circle.r = (circle.r * QUALITY) * 2;
-            circle.x = circle.x * QUALITY;
-            circle.y = circle.y * QUALITY;
+            circle.r = (circle.r * QUALITY) * 2 * scale;
+            circle.x = circle.x * QUALITY * scale;
+            circle.y = circle.y * QUALITY * scale;
 
             // Normalize X & Y
             // ScrnX = ((x - ScrnL) / ScrnW) * 2 - 1

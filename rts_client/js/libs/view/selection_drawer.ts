@@ -14,9 +14,9 @@
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
     }
 
-    public draw(dashed: boolean, x: number, y: number, circles: { x: number, y: number, radius: number, r: number, g: number, b: number, a: number }[]) {
-        x = Math.floor(x);
-        y = Math.floor(y);
+    public draw(dashed: boolean, x: number, y: number, scale: number, circles: { x: number, y: number, radius: number, r: number, g: number, b: number, a: number }[]) {
+        x = Math.floor(x * scale);
+        y = Math.floor(y * scale);
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
         let xm = 1 / this.canvas.width;
@@ -29,9 +29,11 @@
 
         for (let n = 0; n < circles.length; n++) {
             let circle = circles[n];
+            circle.x *= scale;
+            circle.y *= scale;
             // GL Coords go from -1 to 1
             // If they went from 0 to 1 we wouldn't need to double the radius
-            circle.radius = circle.radius * 2;
+            circle.radius *= 2 * scale;
 
             // Normalize X & Y
             // ScrnX = ((x - ScrnL) / ScrnW) * 2 - 1

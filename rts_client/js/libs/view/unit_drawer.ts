@@ -32,8 +32,8 @@
     }
 
     public draw(x: number, y: number, scale: number, sprites: { x: number, y: number, ang: number, ref: string }[]) {
-        x = Math.floor(x);
-        y = Math.floor(y);
+        x = Math.floor(x * scale);
+        y = Math.floor(y * scale);
         if (this.canvas.width !== this.canvas.offsetWidth || this.canvas.height !== this.canvas.offsetHeight) {
             this.canvas.width = this.canvas.offsetWidth;
             this.canvas.height = this.canvas.offsetHeight;
@@ -48,8 +48,10 @@
         for (let i = 0, n = 0; n < sprites.length; n++) {
             let sprite = sprites[n];
             let xywh = this.spriteMap.coords(sprite.ref);
-            let hw = xywh.w; // Half width
-            let hh = xywh.h; // Half height
+            let hw = xywh.w * scale; // Half width
+            let hh = xywh.h * scale; // Half height
+            sprite.x *= scale;
+            sprite.y *= scale;
 
             // Normalize X & Y
             // ScrnX = ((x - ScrnL) / ScrnW) * 2 - 1

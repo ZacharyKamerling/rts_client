@@ -10,9 +10,9 @@
 
         game.chef.put8(Interaction.Core.ServerMessage.AttackMove);
         game.chef.putU32(game.orderID++);
-
-        game.chef.putF64((game.camera.x + (input.mouseX() - width / 2)) / Game.TILESIZE);
-        game.chef.putF64((game.camera.y - (input.mouseY() - height / 2)) / Game.TILESIZE);
+        let xy = game.gameXY();
+        game.chef.putF64(xy.x);
+        game.chef.putF64(xy.y);
 
         if (input.shiftDown()) {
             game.chef.put8(Interaction.Core.QueueOrder.Append);

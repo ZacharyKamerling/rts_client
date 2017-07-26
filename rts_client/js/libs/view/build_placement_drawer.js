@@ -15,8 +15,8 @@ var BuildPlacementDrawer = (function () {
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
     }
     BuildPlacementDrawer.prototype.draw = function (x, y, scale, sprites) {
-        x = Math.floor(x);
-        y = Math.floor(y);
+        x = Math.floor(x * scale);
+        y = Math.floor(y * scale);
         if (this.canvas.width !== this.canvas.offsetWidth || this.canvas.height !== this.canvas.offsetHeight) {
             this.canvas.width = this.canvas.offsetWidth;
             this.canvas.height = this.canvas.offsetHeight;
@@ -33,8 +33,10 @@ var BuildPlacementDrawer = (function () {
                 console.log(sprite.ref);
                 return;
             }
-            var hw = xywh.w;
-            var hh = xywh.h;
+            var hw = xywh.w * scale;
+            var hh = xywh.h * scale;
+            sprite.x *= scale;
+            sprite.y *= scale;
             var normX = ((sprite.x - (x - this.canvas.width / 2)) / this.canvas.width) * 2 - 1;
             var normY = ((sprite.y - (y - this.canvas.height / 2)) / this.canvas.height) * 2 - 1;
             var east = normX + hw;
