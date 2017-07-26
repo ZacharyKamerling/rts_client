@@ -40,7 +40,6 @@
         public MouseRightDown() { return this._mouseRight; }
         public lastKeyPressed() { return this._lastKeyPressed; }
         public wheelChange() { return this._wheelChange; }
-        public wtf() { console.log('Is it over?'); }
 
         constructor() {
             document.addEventListener('contextmenu', function (e) {
@@ -49,7 +48,6 @@
         }
 
         public addListener(parent: HTMLElement, handler: (state: InputState, event: InputEvent) => void) {
-            console.log('Is it over?');
             let self = this;
             self._elements.push(parent);
             parent.draggable = false;
@@ -60,6 +58,7 @@
                 self._ctrl = e.ctrlKey;
                 self._alt = e.altKey;
                 self._wheelChange = e.deltaY;
+                console.log(e);
                 handler(self, event);
                 pauseEvent(e);
             });

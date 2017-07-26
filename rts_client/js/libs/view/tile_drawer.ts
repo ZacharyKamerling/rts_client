@@ -125,8 +125,8 @@ class TileDrawer {
     draw(x: number, y: number, scale: number) {
         let ss = scale * scale;
         y = this.mapHeight * this.tileSize - y;
-        x = x / scale - (this.canvas.offsetWidth / 2) / ss;
-        y = y / scale - (this.canvas.offsetHeight / 2) / ss;
+        x = Math.floor(x / scale - (this.canvas.offsetWidth / 2) / ss);
+        y = Math.floor(y / scale - (this.canvas.offsetHeight / 2) / ss);
 
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;

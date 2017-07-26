@@ -55,7 +55,7 @@
     <TypeScriptCompile Include="js\libs\cereal.ts" />
     <TypeScriptCompile Include="js\libs\chef.ts" />
     <TypeScriptCompile Include="js\libs\grid.ts" />
-    <TypeScriptCompile Include="js\app\user_input.ts" />
+    <TypeScriptCompile Include="js\libs\user_input.ts" />
     <TypeScriptCompile Include="js\libs\view\command_panel.ts" />
     <TypeScriptCompile Include="js\libs\view\selection_drawer.ts" />
     <TypeScriptCompile Include="js\libs\view\fow_drawer.ts" />

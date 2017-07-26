@@ -67,21 +67,19 @@
                     }
                 }
                 else if (event === UserInput.InputEvent.MouseWheel) {
-                    console.log("Wheely");
-                    game.camera.scale += 0.1 * game.inputState.wheelChange();
+                    game.camera.scale = Math.max(0.5, Math.min(2, game.camera.scale - 0.002 * game.inputState.wheelChange()));
                 }
-                
             }
             else if (control instanceof Interaction.MovingCamera) {
                 if (event === UserInput.InputEvent.MouseMiddleUp) {
                     game.control = new DoingNothing();
                 }
                 else if (event === UserInput.InputEvent.MouseMove) {
-                    game.camera.x = control.cameraX + control.clickX - state.mouseX();
-                    game.camera.y = control.cameraY - (control.clickY - state.mouseY());
+                    game.camera.x = control.cameraX + (control.clickX - state.mouseX()) / game.camera.scale;
+                    game.camera.y = control.cameraY - (control.clickY - state.mouseY()) / game.camera.scale;
                 }
                 else if (event === UserInput.InputEvent.MouseWheel) {
-                    game.camera.scale += 0.1 * game.inputState.wheelChange();
+                    game.camera.scale = Math.max(0.5, Math.min(2, game.camera.scale - 0.002 * game.inputState.wheelChange()));
                 }
             }
             else if (control instanceof Interaction.SelectingUnits.CurrentAction) {

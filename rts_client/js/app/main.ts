@@ -28,10 +28,7 @@ function main() {
 
     let spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e: Event) {
-        console.log("Ok...");
         game.inputState.addListener(minimapCanvas, Interaction.Minimap.interact(game));
-        console.log("Ok...");
-        game.inputState.wtf();
         game.inputState.addListener(ctrlDiv, Interaction.Core.interact(game));
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
         game.minimapDrawer = new MinimapDrawer(minimapCanvas, spritemap);

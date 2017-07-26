@@ -8,13 +8,18 @@ var UserInput;
         InputEvent[InputEvent["MouseLeftUp"] = 4] = "MouseLeftUp";
         InputEvent[InputEvent["MouseMiddleUp"] = 5] = "MouseMiddleUp";
         InputEvent[InputEvent["MouseRightUp"] = 6] = "MouseRightUp";
-        InputEvent[InputEvent["KeyDown"] = 7] = "KeyDown";
-        InputEvent[InputEvent["KeyUp"] = 8] = "KeyUp";
+        InputEvent[InputEvent["MouseWheel"] = 7] = "MouseWheel";
+        InputEvent[InputEvent["KeyDown"] = 8] = "KeyDown";
+        InputEvent[InputEvent["KeyUp"] = 9] = "KeyUp";
     })(UserInput.InputEvent || (UserInput.InputEvent = {}));
     var InputEvent = UserInput.InputEvent;
     var InputState = (function () {
         function InputState() {
             this._elements = new Array();
+            this._listener = null;
+            document.addEventListener('contextmenu', function (e) {
+                e.preventDefault();
+            }, false);
         }
         InputState.prototype.elements = function () { return this._elements; };
         InputState.prototype.shiftDown = function () { return this._shift; };
@@ -26,13 +31,21 @@ var UserInput;
         InputState.prototype.mouseMiddleDown = function () { return this._mouseMiddle; };
         InputState.prototype.MouseRightDown = function () { return this._mouseRight; };
         InputState.prototype.lastKeyPressed = function () { return this._lastKeyPressed; };
+        InputState.prototype.wheelChange = function () { return this._wheelChange; };
         InputState.prototype.addListener = function (parent, handler) {
             var self = this;
             self._elements.push(parent);
             parent.draggable = false;
-            document.addEventListener('contextmenu', function (e) {
-                e.preventDefault();
-            }, false);
+            parent.addEventListener("wheel", function (e) {
+                var event = InputEvent.MouseWheel;
+                self._shift = e.shiftKey;
+                self._ctrl = e.ctrlKey;
+                self._alt = e.altKey;
+                self._wheelChange = e.deltaY;
+                console.log(e);
+                handler(self, event);
+                pauseEvent(e);
+            });
             parent.addEventListener("mousedown", function (e) {
                 var event;
                 self._shift = e.shiftKey;
@@ -62,7 +75,7 @@ var UserInput;
                 handler(self, event);
                 pauseEvent(e);
             });
-            window.addEventListener("mouseup", function (e) {
+            parent.addEventListener("mouseup", function (e) {
                 var event;
                 self._shift = e.shiftKey;
                 self._ctrl = e.ctrlKey;
@@ -89,7 +102,7 @@ var UserInput;
                 handler(self, event);
                 pauseEvent(e);
             });
-            window.addEventListener("mousemove", function (e) {
+            parent.addEventListener("mousemove", function (e) {
                 self._shift = e.shiftKey;
                 self._ctrl = e.ctrlKey;
                 self._alt = e.altKey;
@@ -98,7 +111,7 @@ var UserInput;
                 handler(self, InputEvent.MouseMove);
                 pauseEvent(e);
             });
-            window.addEventListener("keydown", function (e) {
+            parent.addEventListener("keydown", function (e) {
                 if (e.keyCode === 122 || e.keyCode === 123) {
                     return true;
                 }
@@ -109,7 +122,7 @@ var UserInput;
                 handler(self, InputEvent.KeyDown);
                 pauseEvent(e);
             });
-            window.addEventListener("keyup", function (e) {
+            parent.addEventListener("keyup", function (e) {
                 self._shift = e.shiftKey;
                 self._ctrl = e.ctrlKey;
                 self._alt = e.altKey;
@@ -155,6 +168,8 @@ var UserInput;
     function pauseEvent(e) {
         if (e.stopPropagation)
             e.stopPropagation();
+        if (e.stopImmediatePropagation)
+            e.stopImmediatePropagation;
         if (e.preventDefault)
             e.preventDefault();
         e.cancelBubble = true;
