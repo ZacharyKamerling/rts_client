@@ -3,11 +3,11 @@ var Interaction;
     var BuildOrder;
     (function (BuildOrder) {
         var BeingIssued = (function () {
-            function BeingIssued(width, height, type, img) {
+            function BeingIssued(width, height, type, imgs) {
                 this.width = width;
                 this.height = height;
                 this.type = type;
-                this.img = img;
+                this.imgs = imgs;
             }
             return BeingIssued;
         }());
@@ -37,4 +37,3 @@ var Interaction;
         BuildOrder.issue = issue;
     })(BuildOrder = Interaction.BuildOrder || (Interaction.BuildOrder = {}));
 })(Interaction || (Interaction = {}));
-//# sourceMappingURL=build_order.js.map

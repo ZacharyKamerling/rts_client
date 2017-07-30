@@ -16,7 +16,7 @@ class Game {
     public statusBarDrawer: StatusBarDrawer = null;
     public buildPlacementDrawer: BuildPlacementDrawer = null;
     public control: Interaction.Core.Control = new Interaction.Core.DoingNothing();
-    public camera: Camera = new Camera(0, 0, 0.8);
+    public camera: Camera = new Camera(0, 0, 1);
     public connection: WebSocket = null;
     public souls: { old: Unit, current: Unit, new: Unit }[] = null;
     public missileSouls: { old: Missile, current: Missile, new: Missile }[] = null;
@@ -27,8 +27,14 @@ class Game {
     public mapWidth: number = 0;
     public mapHeight: number = 0;
     public team: number = 0;
+    public maxPrime: number = 0;
+    public maxEnergy: number = 0;
     public prime: number = 0;
     public energy: number = 0;
+    public primeOutput: number = 0;
+    public primeDrain: number = 0;
+    public energyOutput: number = 0;
+    public energyDrain: number = 0;
     public orderID: number = 0;
     public static FPS = 10;
 
@@ -48,6 +54,11 @@ class Game {
         this.teamColors = Array();
 
         let tc = new TeamColor();
+        tc.name = "purple";
+        tc.red = 0.8;
+        tc.green = 0.0;
+        tc.blue = 1.0;
+        this.teamColors.push(tc.clone());
         tc.name = "green";
         tc.red = 0.0;
         tc.green = 0.9;
@@ -63,12 +74,6 @@ class Game {
         tc.green = 1.0;
         tc.blue = 1.0;
         this.teamColors.push(tc.clone());
-        tc.name = "purple";
-        tc.red = 0.8;
-        tc.green = 0.0;
-        tc.blue = 1.0;
-        this.teamColors.push(tc.clone());
-        
     }
 
     public reset() {
@@ -92,8 +97,11 @@ class Game {
                 case "attack":
                     game.control = new Interaction.AttackMoveOrder.BeingIssued();
                     break;
-                case "build":
-                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.TestStructure, "building");
+                case "buildArtillery1":
+                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.Artillery1, ["artillery_platform1","artillery_wpn2"]);
+                    break;
+                case "buildExtractor1":
+                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.Extractor1, ["artillery_platform1", "extractor_blade1"]);
                     break;
                 default:
                     console.log('commandPanelHandler couldn\'t handle: ' + name);
@@ -118,6 +126,28 @@ class Game {
         this.drawSelectBox();
         this.drawMinimap();
         this.lastDrawTime = currentTime;
+
+        let primeBar = <HTMLDivElement>document.getElementById('primeBar');
+        let primeOutput = <HTMLLabelElement>document.getElementById('primeOutput');
+        let primeDrain = <HTMLLabelElement>document.getElementById('primeDrain');
+        let primeMaximum = <HTMLLabelElement>document.getElementById('primeMaximum');
+        let primeAmount = <HTMLLabelElement>document.getElementById('primeAmount');
+        primeBar.style.width = Math.max(0.5, this.prime / this.maxPrime * 256) + "px";
+        primeOutput.textContent = "+" + this.primeOutput.toFixed(1);
+        primeDrain.textContent = "-" + this.primeDrain.toFixed(1);
+        primeAmount.textContent = this.prime.toString();
+        primeMaximum.textContent = this.maxPrime.toString();
+
+        let energyBar = <HTMLDivElement>document.getElementById('energyBar');
+        let energyOutput = <HTMLLabelElement>document.getElementById('energyOutput');
+        let energyDrain = <HTMLLabelElement>document.getElementById('energyDrain');
+        let energyMaximum = <HTMLLabelElement>document.getElementById('energyMaximum');
+        let energyAmount = <HTMLLabelElement>document.getElementById('energyAmount');
+        energyBar.style.width = Math.max(0.5, this.energy / this.maxEnergy * 256) + "px";
+        energyOutput.textContent = "+" + this.energyOutput.toFixed(1);
+        energyDrain.textContent = "-" + this.energyDrain.toFixed(1);
+        energyAmount.textContent = this.energy.toString();
+        energyMaximum.textContent = this.maxEnergy.toString();
     }
 
     private stepUnits(timeDelta: number) {
@@ -171,17 +201,16 @@ class Game {
         if (control instanceof Interaction.BuildOrder.BeingIssued) {
             let layers: { x: number; y: number; ang: number, ref: string }[] = new Array();
             let xy = this.gameXY();
-            let half_w = control.width / 2;
-            let half_h = control.height / 2;
-            let x = (Math.floor(xy.x - half_w + 0.00001) + half_w) * Game.TILESIZE;
-            let y = (Math.floor(xy.y - half_h + 0.00001) + half_h) * Game.TILESIZE;
+            let hw = control.width * 0.5;
+            let hh = control.height * 0.5;
+            let x = (Math.floor(xy.x - hw + 0.0001) + hw) * Game.TILESIZE;
+            let y = (Math.floor(xy.y - hh + 0.0001) + hh) * Game.TILESIZE;
 
-            layers.push({
-                x: x, y: y, ang: 0.0, ref: "artillery_platform1" + this.teamColors[this.team].name
-            });
-            layers.push({
-                x: x, y: y, ang: 0.0, ref: "artillery_wpn2" + this.teamColors[this.team].name
-            });
+            for (let i = 0; i < control.imgs.length; i++) {
+                layers.push({
+                    x: x, y: y, ang: 0.0, ref: control.imgs[i] + this.teamColors[this.team].name
+                });
+            }
             this.buildPlacementDrawer.draw(this.camera.x, this.camera.y, this.camera.scale, layers);
         }
     }
@@ -350,9 +379,9 @@ class Game {
 
                 if (soul.current.progress < 254.99) {
                     let v = soul.current.progress / 255;
-                    let r = 175;
-                    let g = 175;
-                    let b = 175;
+                    let r = 225;
+                    let g = 225;
+                    let b = 225;
                     let a = 255;
                     bars.push({ x: x, y: y - 2, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
                 }

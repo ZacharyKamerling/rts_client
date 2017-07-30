@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title>RTS</title>
+    <link type="text/css" rel="stylesheet" href="css/draw_canvas.css" />
     <script src="js/libs/view/web_gl_help.js"></script>
     <script src="js/libs/view/tile_drawer.js"></script>
     <script src="js/libs/view/sprite_map.js"></script>
@@ -35,30 +36,48 @@
     <script src="js/app/missile.js"></script>
     <script src="js/app/unit.js"></script>
     <script src="js/missiles/basic_missile.js"></script>
-    <script src="js/units/basic_unit.js"></script>
+    <script src="js/units/medium1.js"></script>
     <script src="js/units/fast1.js"></script>
-    <script src="js/units/basic_structure.js"></script>
+    <script src="js/units/artillery1.js"></script>
+    <script src="js/units/extractor1.js"></script>
 </head>
 <body style="width: 100%; height: 100%; margin-left: 0px; margin-top: 0px; margin-bottom: 0px; margin-right: 0px; overflow: hidden">
 
     <div id="mainMenu" style="height: 100%; margin-left: 20px; margin-top: 20px" align="left">
-        <input type="text" id="nameField" placeholder="Username" value="p1" style="width: 200px; margin-bottom: 5px">
+        <input type="text" id="nameField" placeholder="Username" value="p1" style="width: 200px; margin-bottom: 4px">
         <br />
-        <input type="password" id="passField" placeholder="Password" value="p1" style="width: 200px; margin-bottom: 5px">
+        <input type="password" id="passField" placeholder="Password" value="p1" style="width: 200px; margin-bottom: 4px">
         <br />
-        <input type="text" id="addrField" placeholder="IP Address" value="localhost" style="width: 200px; margin-bottom: 5px">
+        <input type="text" id="addrField" placeholder="IP Address" value="localhost" style="width: 200px; margin-bottom: 4px">
         <br />
-        <input type="text" id="portField" placeholder="Port Number" value="4444" style="width: 200px; margin-bottom: 5px">
+        <input type="text" id="portField" placeholder="Port Number" value="4444" style="width: 200px; margin-bottom: 4px">
         <br />
         <button type="submit" id="connectBtn" style="width: 100px; height:25px">Connect</button>
     </div>
 
-    <div id="content" style="height: 100%; ">
-        <canvas style="height: 100%; width: 100%; position: absolute; z-index: 0;" id="drawCanvas"></canvas>
-        <canvas style="height: 100%; width: 100%; position: absolute; z-index: 1;" id="fowCanvas" ></canvas>
-        <div    style="height: 100%; width: 100%; position: absolute; z-index: 2;" id="controlDiv"></div>
-        <canvas style="height: 256px; width: 256px; position: absolute; z-index: 3; border: 10px solid #222222; background-color: #000000" id="minimapCanvas"></canvas>
-        <div    style="list-style-type:none; padding: 10px; position: fixed; bottom: 0;  z-index: 3" id="commandDiv"></div>
+    <div id="content" style="height: 100%;">
+        <canvas class="fullscreen" style="z-index: 0;" id="drawCanvas"></canvas>
+        <canvas class="fullscreen" style="z-index: 1;" id="fowCanvas" ></canvas>
+        <div    class="fullscreen" style="z-index: 2;" id="controlDiv"></div>
+        <canvas style="display: block; height: 256px; width: 256px; position: relative; border: 4px solid #222222; background-color: #000000; z-index: 3; font-size: 0px;" id="minimapCanvas"></canvas>
+
+        <div style="height: 32px; width: 256px; position: relative; background-color: #222222; padding: 0px 4px 4px 4px; z-index: 3;">
+            <div style="height: 16px; background-color: #448877;" id="primeBar"></div>
+            <label style="width: 54px; float: left; position: relative; font-size: 12px; color: white;" id="primeAmount">1000000</label>
+            <label style="width: 54px; float: left; position: relative; font-size: 12px; color: dodgerblue;" id="primeMaximum">1000000</label>'
+            <label style="width: 54px; float: right; position: relative; font-size: 12px; color: red;" id="primeDrain">-1000000</label>
+            <label style="width: 54px; float: right; position: relative; font-size: 12px; color: lightgreen;" id="primeOutput">+1000000</label>
+        </div>
+        
+        <div style="height: 32px; width: 256px; position: relative; background-color: #222222; padding: 0px 4px 4px 4px; z-index: 3; font-size: 0px">
+            <div style="height: 16px; background-color: #ffff00;" id="energyBar"></div>
+            <label style="width: 54px; float: left; position: relative; font-size: 12px; color: white;" id="energyAmount">1000000</label>
+            <label style="width: 54px; float: left; position: relative; font-size: 12px; color: dodgerblue;" id="energyMaximum">1000000</label>'
+            <label style="width: 54px; float: right; position: relative; font-size: 12px; color: red;" id="energyDrain">-1000000</label>
+            <label style="width: 54px; float: right; position: relative; font-size: 12px; color: lightgreen;" id="energyOutput">+1000000</label>
+        </div>
+
+        <div style="list-style-type:none; padding: 10px; position: fixed; bottom: 0;  z-index: 3" id="commandDiv"></div>
     </div>
 
     <script src="js/app/main.js"></script>

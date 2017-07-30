@@ -9,18 +9,15 @@ var BasicUnit = (function (_super) {
         if (c) {
             _super.call(this, c, time, frame);
             this.wpn_facing = c.getU8() * 2 * Math.PI / 255;
-            this.wpn_anim = c.getU8();
         }
     }
     BasicUnit.prototype.copycat = function (unit) {
         _super.prototype.copycat.call(this, unit);
-        unit.wpn_anim = this.wpn_anim;
         unit.wpn_facing = this.wpn_facing;
     };
     BasicUnit.prototype.clone = function () {
         var u = new BasicUnit(null, this.timeCreated, this.frameCreated);
         this.copycat(u);
-        u.wpn_anim = this.wpn_anim;
         u.wpn_facing = this.wpn_facing;
         return u;
     };
@@ -54,4 +51,3 @@ var BasicUnit = (function (_super) {
     };
     return BasicUnit;
 }(Unit));
-//# sourceMappingURL=basic_unit.js.map

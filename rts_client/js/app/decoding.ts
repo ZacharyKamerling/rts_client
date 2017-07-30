@@ -91,9 +91,15 @@
                 // Player Info
                 case ClientMessage.TeamInfo:
                     game.team = data.getU8();
+                    game.maxPrime = data.getU32();
                     game.prime = data.getU32();
+                    game.primeOutput = data.getF64();
+                    game.primeDrain = data.getF64();
+
+                    game.maxEnergy = data.getU32();
                     game.energy = data.getU32();
-                    console.log("Prime: " + game.prime + ", Energy: " + game.energy);
+                    game.energyOutput = data.getF64();
+                    game.energyDrain = data.getF64();
                     break msg_switch;
                 case ClientMessage.Construction:
                     let builder = data.getU16();
@@ -104,8 +110,10 @@
                     let orderID = data.getU16();
                     break msg_switch;
                 case ClientMessage.MapInfo:
+                    let team = data.getU8();
                     let width = data.getU16();
                     let height = data.getU16();
+                    game.team = team;
                     game.mapWidth = width;
                     game.mapHeight = height;
                     let canvas = document.createElement('canvas');
@@ -142,7 +150,12 @@
                     for (let n = 0; n < num_locations; n++) {
                         let x = data.getU16();
                         let y = data.getU16();
-                        console.log("x: " + x + ", y: " + y);
+
+                        if (n === team) {
+                            game.camera.x = x * Game.TILESIZE;
+                            game.camera.y = (height - y) * Game.TILESIZE;
+                            console.log("Set Map X & Y: " + x + ":" + y);
+                        }
                     }
 
                     console.log("Consumed map data. " + data.offset);

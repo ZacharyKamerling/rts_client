@@ -132,4 +132,3 @@ var Interaction;
         Core.interact = interact;
     })(Core = Interaction.Core || (Interaction.Core = {}));
 })(Interaction || (Interaction = {}));
-//# sourceMappingURL=core.js.map

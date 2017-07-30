@@ -1,25 +1,21 @@
-﻿class BasicUnit extends Unit {
+﻿class Medium1 extends Unit {
     private wpn_facing: number;
-    private wpn_anim: number;
 
     constructor(c: Cereal, time: number, frame: number) {
         if (c) {
             super(c, time, frame);
             this.wpn_facing = c.getU8() * 2 * Math.PI / 255;
-            this.wpn_anim = c.getU8();
         }
     }
 
-    copycat(unit: BasicUnit) {
+    copycat(unit: Medium1) {
         super.copycat(unit);
-        unit.wpn_anim = this.wpn_anim;
         unit.wpn_facing = this.wpn_facing;
     }
 
-    clone(): BasicUnit {
-        var u = new BasicUnit(null, this.timeCreated, this.frameCreated);
+    clone(): Medium1 {
+        var u = new Medium1(null, this.timeCreated, this.frameCreated);
         this.copycat(u);
-        u.wpn_anim = this.wpn_anim;
         u.wpn_facing = this.wpn_facing;
         return u;
     }
@@ -32,7 +28,7 @@
         return 0.96;
     }
 
-    step(timeDelta: number, oldUnit: BasicUnit, newUnit: BasicUnit) {
+    step(timeDelta: number, oldUnit: Medium1, newUnit: Medium1) {
         super.step.call(this, timeDelta, oldUnit, newUnit);
         let f1 = oldUnit.wpn_facing;
         let f2 = newUnit.wpn_facing;
@@ -42,7 +38,8 @@
     commands(cmds: { [index: string]: void }) {
         cmds['move'] = null;
         cmds['attack'] = null;
-        cmds['build'] = null;
+        cmds['buildArtillery1'] = null;
+        cmds['buildExtractor1'] = null;
     }
 
     buildables(blds: { [index: string]: void }) {}

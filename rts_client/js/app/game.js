@@ -15,7 +15,7 @@ var Game = (function () {
         this.statusBarDrawer = null;
         this.buildPlacementDrawer = null;
         this.control = new Interaction.Core.DoingNothing();
-        this.camera = new Camera(0, 0, 0.8);
+        this.camera = new Camera(0, 0, 1);
         this.connection = null;
         this.souls = null;
         this.missileSouls = null;
@@ -25,8 +25,14 @@ var Game = (function () {
         this.mapWidth = 0;
         this.mapHeight = 0;
         this.team = 0;
+        this.maxPrime = 0;
+        this.maxEnergy = 0;
         this.prime = 0;
         this.energy = 0;
+        this.primeOutput = 0;
+        this.primeDrain = 0;
+        this.energyOutput = 0;
+        this.energyDrain = 0;
         this.orderID = 0;
         this.souls = Array();
         for (var i = 0; i < Game.MAX_UNITS; i++) {
@@ -38,6 +44,11 @@ var Game = (function () {
         }
         this.teamColors = Array();
         var tc = new TeamColor();
+        tc.name = "purple";
+        tc.red = 0.8;
+        tc.green = 0.0;
+        tc.blue = 1.0;
+        this.teamColors.push(tc.clone());
         tc.name = "green";
         tc.red = 0.0;
         tc.green = 0.9;
@@ -51,11 +62,6 @@ var Game = (function () {
         tc.name = "aqua";
         tc.red = 0.0;
         tc.green = 1.0;
-        tc.blue = 1.0;
-        this.teamColors.push(tc.clone());
-        tc.name = "purple";
-        tc.red = 0.8;
-        tc.green = 0.0;
         tc.blue = 1.0;
         this.teamColors.push(tc.clone());
     }
@@ -77,8 +83,11 @@ var Game = (function () {
                 case "attack":
                     game.control = new Interaction.AttackMoveOrder.BeingIssued();
                     break;
-                case "build":
-                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.TestStructure, "building");
+                case "buildArtillery1":
+                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.Artillery1, ["artillery_platform1", "artillery_wpn2"]);
+                    break;
+                case "buildExtractor1":
+                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.Extractor1, ["artillery_platform1", "extractor_blade1"]);
                     break;
                 default:
                     console.log('commandPanelHandler couldn\'t handle: ' + name);
@@ -102,6 +111,26 @@ var Game = (function () {
         this.drawSelectBox();
         this.drawMinimap();
         this.lastDrawTime = currentTime;
+        var primeBar = document.getElementById('primeBar');
+        var primeOutput = document.getElementById('primeOutput');
+        var primeDrain = document.getElementById('primeDrain');
+        var primeMaximum = document.getElementById('primeMaximum');
+        var primeAmount = document.getElementById('primeAmount');
+        primeBar.style.width = Math.max(0.5, this.prime / this.maxPrime * 256) + "px";
+        primeOutput.textContent = "+" + this.primeOutput.toFixed(1);
+        primeDrain.textContent = "-" + this.primeDrain.toFixed(1);
+        primeAmount.textContent = this.prime.toString();
+        primeMaximum.textContent = this.maxPrime.toString();
+        var energyBar = document.getElementById('energyBar');
+        var energyOutput = document.getElementById('energyOutput');
+        var energyDrain = document.getElementById('energyDrain');
+        var energyMaximum = document.getElementById('energyMaximum');
+        var energyAmount = document.getElementById('energyAmount');
+        energyBar.style.width = Math.max(0.5, this.energy / this.maxEnergy * 256) + "px";
+        energyOutput.textContent = "+" + this.energyOutput.toFixed(1);
+        energyDrain.textContent = "-" + this.energyDrain.toFixed(1);
+        energyAmount.textContent = this.energy.toString();
+        energyMaximum.textContent = this.maxEnergy.toString();
     };
     Game.prototype.stepUnits = function (timeDelta) {
         for (var i = 0; i < this.souls.length; i++) {
@@ -149,16 +178,15 @@ var Game = (function () {
         if (control instanceof Interaction.BuildOrder.BeingIssued) {
             var layers = new Array();
             var xy = this.gameXY();
-            var half_w = control.width / 2;
-            var half_h = control.height / 2;
-            var x = (Math.floor(xy.x - half_w + 0.00001) + half_w) * Game.TILESIZE;
-            var y = (Math.floor(xy.y - half_h + 0.00001) + half_h) * Game.TILESIZE;
-            layers.push({
-                x: x, y: y, ang: 0.0, ref: "artillery_platform1" + this.teamColors[this.team].name
-            });
-            layers.push({
-                x: x, y: y, ang: 0.0, ref: "artillery_wpn2" + this.teamColors[this.team].name
-            });
+            var hw = control.width * 0.5;
+            var hh = control.height * 0.5;
+            var x = (Math.floor(xy.x - hw + 0.0001) + hw) * Game.TILESIZE;
+            var y = (Math.floor(xy.y - hh + 0.0001) + hh) * Game.TILESIZE;
+            for (var i = 0; i < control.imgs.length; i++) {
+                layers.push({
+                    x: x, y: y, ang: 0.0, ref: control.imgs[i] + this.teamColors[this.team].name
+                });
+            }
             this.buildPlacementDrawer.draw(this.camera.x, this.camera.y, this.camera.scale, layers);
         }
     };
@@ -167,7 +195,6 @@ var Game = (function () {
         for (var i = 0; i < layers.length; i++) {
             layers[i] = new Array();
         }
-        // Render units
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul) {
@@ -205,14 +232,12 @@ var Game = (function () {
         for (var i = 0; i < layers.length; i++) {
             layers[i] = new Array();
         }
-        // Render units
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul) {
                 soul.current.render(this, layers);
             }
         }
-        // Render missiles
         for (var i = 0; i < this.missileSouls.length; i++) {
             var soul = this.missileSouls[i];
             if (soul) {
@@ -240,7 +265,6 @@ var Game = (function () {
         var enemy_dashed = new Array();
         var onlyEnemyIsBeingSelected = true;
         var onlyEnemyIsSelected = true;
-        // Render units
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul) {
@@ -293,7 +317,6 @@ var Game = (function () {
     };
     Game.prototype.drawStatusBars = function () {
         var bars = new Array();
-        // Render units
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
             if (soul && soul.current) {
@@ -304,9 +327,9 @@ var Game = (function () {
                 var h = 2;
                 if (soul.current.progress < 254.99) {
                     var v = soul.current.progress / 255;
-                    var r = 175;
-                    var g = 175;
-                    var b = 175;
+                    var r = 225;
+                    var g = 225;
+                    var b = 225;
                     var a = 255;
                     bars.push({ x: x, y: y - 2, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
                 }
@@ -347,4 +370,3 @@ var Camera = (function () {
     }
     return Camera;
 }());
-//# sourceMappingURL=game.js.map

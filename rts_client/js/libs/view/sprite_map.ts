@@ -60,7 +60,7 @@
                                 let data = imgData.data;
 
                                 for (var i = 0; i < data.length; i += 4) {
-                                    if (data[i] === 255) {
+                                    if (data[i] === 255 && data[i + 3] !== 0) {
                                         let intensity = data[i + 1];
                                         data[i] = color.red * intensity;
                                         data[i + 1] = color.green * intensity;

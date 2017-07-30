@@ -22,21 +22,15 @@ var StatusBarDrawer = (function () {
             var bar = bars[n];
             bar.x *= scale;
             bar.y *= scale;
-            // GL Coords go from -1 to 1
-            // If they went from 0 to 1 we wouldn't need to double the width/height
             bar.w *= scale * 2;
             bar.h *= scale * 2;
-            // Normalize X & Y
-            // ScrnX = ((x - ScrnL) / ScrnW) * 2 - 1
             var normX = ((bar.x - (x - this.canvas.width / 2)) / this.canvas.width) * 2 - 1;
             var normY = ((bar.y - (y - this.canvas.height / 2)) / this.canvas.height) * 2 - 1;
-            // Coordinates of each corner on the sprite
             var east = normX + bar.w * xm;
             var north = normY + bar.h * ym;
             var west = normX - bar.w * xm;
             var south = normY - bar.h * ym;
             var value = west + (east - west) * bar.v;
-            // Fill array with scaled vertices
             var vertFloatOff = n * 6 * BYTES_PER_VERTEX / 4;
             var vertUInt8Off = n * 6 * BYTES_PER_VERTEX + 12;
             var floatOff = vertFloatOff + BYTES_PER_VERTEX / 4 * 0;
@@ -137,4 +131,3 @@ var StatusBarDrawer = (function () {
     ].join("\n");
     return StatusBarDrawer;
 }());
-//# sourceMappingURL=status_bar_drawer.js.map

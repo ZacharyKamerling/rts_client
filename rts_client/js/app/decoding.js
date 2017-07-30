@@ -37,10 +37,8 @@ var Decoding;
         var _loop_1 = function() {
             var msg_type = data.getU8();
             msg_switch: switch (msg_type) {
-                // Unit
                 case ClientMessage.UnitMove:
                     var new_unit = Unit.decodeUnit(data, currentTime, logicFrame);
-                    // If unit_soul exists, update it with new_unit
                     if (new_unit) {
                         var soul = game.souls[new_unit.unit_ID];
                         if (soul) {
@@ -54,7 +52,6 @@ var Decoding;
                         }
                     }
                     break msg_switch;
-                // Missile
                 case ClientMessage.MissileMove:
                 case ClientMessage.MissileExplode:
                     var exploding = msg_type === ClientMessage.MissileExplode;
@@ -72,18 +69,21 @@ var Decoding;
                         }
                     }
                     break msg_switch;
-                // Unit death
                 case ClientMessage.UnitDeath:
                     var unit_ID = data.getU16();
                     var dmg_type = data.getU8();
                     game.souls[unit_ID].current.isDead = true;
                     break msg_switch;
-                // Player Info
                 case ClientMessage.TeamInfo:
                     game.team = data.getU8();
+                    game.maxPrime = data.getU32();
                     game.prime = data.getU32();
+                    game.primeOutput = data.getF64();
+                    game.primeDrain = data.getF64();
+                    game.maxEnergy = data.getU32();
                     game.energy = data.getU32();
-                    console.log("Prime: " + game.prime + ", Energy: " + game.energy);
+                    game.energyOutput = data.getF64();
+                    game.energyDrain = data.getF64();
                     break msg_switch;
                 case ClientMessage.Construction:
                     var builder = data.getU16();
@@ -94,12 +94,14 @@ var Decoding;
                     var orderID = data.getU16();
                     break msg_switch;
                 case ClientMessage.MapInfo:
+                    var team = data.getU8();
                     var width = data.getU16();
                     var height = data.getU16();
+                    game.team = team;
                     game.mapWidth = width;
                     game.mapHeight = height;
                     var canvas = document.createElement('canvas');
-                    var mmCanvas = document.createElement('canvas'); //minimap
+                    var mmCanvas = document.createElement('canvas');
                     canvas.width = width;
                     canvas.height = height;
                     mmCanvas.width = width;
@@ -127,7 +129,11 @@ var Decoding;
                     for (var n = 0; n < num_locations; n++) {
                         var x = data.getU16();
                         var y = data.getU16();
-                        console.log("x: " + x + ", y: " + y);
+                        if (n === team) {
+                            game.camera.x = x * Game.TILESIZE;
+                            game.camera.y = (height - y) * Game.TILESIZE;
+                            console.log("Set Map X & Y: " + x + ":" + y);
+                        }
                     }
                     console.log("Consumed map data. " + data.offset);
                     ctx.putImageData(imgData, 0, 0);
@@ -152,4 +158,3 @@ var Decoding;
     }
     Decoding.processPacket = processPacket;
 })(Decoding || (Decoding = {}));
-//# sourceMappingURL=decoding.js.map

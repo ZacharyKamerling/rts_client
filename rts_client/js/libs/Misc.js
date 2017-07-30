@@ -20,7 +20,6 @@ var Misc;
         }
     }
     Misc.angularDistance = angularDistance;
-    // Angle to turn, angle to turn towards, amount to turn
     function turnTowards(a, b, turn) {
         var dist = angularDistance(a, b);
         if (a > b) {
@@ -42,15 +41,12 @@ var Misc;
     }
     Misc.turnTowards = turnTowards;
     function rotateAroundOrigin(cx, cy, x, y, ang) {
-        // translate point to origin
         var tempX = x - cx;
         var tempY = y - cy;
         var cos = Math.cos(ang);
         var sin = Math.sin(ang);
-        // now apply rotation
         var rotatedX = tempX * cos - tempY * sin;
         var rotatedY = tempX * sin + tempY * cos;
-        // translate back
         x = rotatedX + cx;
         y = rotatedY + cy;
         return { x: x, y: y };
@@ -63,4 +59,3 @@ var Misc;
     }
     Misc.rotatePoint = rotatePoint;
 })(Misc || (Misc = {}));
-//# sourceMappingURL=misc.js.map

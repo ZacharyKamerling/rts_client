@@ -125,8 +125,8 @@ class TileDrawer {
     draw(x: number, y: number, scale: number) {
         let ss = scale * scale;
         y = this.mapHeight * this.tileSize - y;
-        x = Math.floor(x / scale - (this.canvas.offsetWidth / 2) / ss);
-        y = Math.floor(y / scale - (this.canvas.offsetHeight / 2) / ss);
+        x = Math.floor(x / scale - this.canvas.offsetWidth / 2 / ss);
+        y = Math.floor(y / scale - this.canvas.offsetHeight / 2 / ss);
 
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
@@ -145,7 +145,7 @@ class TileDrawer {
         gl.vertexAttribPointer(this.program.attribute['position'], 2, gl.FLOAT, false, 16, 0);
         gl.vertexAttribPointer(this.program.attribute['texture'], 2, gl.FLOAT, false, 16, 8);
 
-        gl.uniform2f(this.program.uniform['viewportSize'], this.canvas.offsetWidth / scale, this.canvas.offsetHeight / scale);
+        gl.uniform2f(this.program.uniform['viewportSize'], Math.floor(this.canvas.offsetWidth / scale), Math.floor(this.canvas.offsetHeight / scale));
         gl.uniform2f(this.program.uniform['inverseSpriteTextureSize'], this.spriteSheetScaleX, this.spriteSheetScaleY);
         gl.uniform2f(this.program.uniform['viewOffset'], Math.floor(x * scale), Math.floor(y * scale));
         gl.uniform2f(this.program.uniform['inverseTileTextureSize'], this.tileTextureScaleX, this.tileTextureScaleY);

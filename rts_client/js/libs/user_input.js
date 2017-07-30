@@ -42,7 +42,6 @@ var UserInput;
                 self._ctrl = e.ctrlKey;
                 self._alt = e.altKey;
                 self._wheelChange = e.deltaY;
-                console.log(e);
                 handler(self, event);
                 pauseEvent(e);
             });
@@ -75,7 +74,7 @@ var UserInput;
                 handler(self, event);
                 pauseEvent(e);
             });
-            parent.addEventListener("mouseup", function (e) {
+            window.addEventListener("mouseup", function (e) {
                 var event;
                 self._shift = e.shiftKey;
                 self._ctrl = e.ctrlKey;
@@ -102,7 +101,7 @@ var UserInput;
                 handler(self, event);
                 pauseEvent(e);
             });
-            parent.addEventListener("mousemove", function (e) {
+            window.addEventListener("mousemove", function (e) {
                 self._shift = e.shiftKey;
                 self._ctrl = e.ctrlKey;
                 self._alt = e.altKey;
@@ -111,7 +110,7 @@ var UserInput;
                 handler(self, InputEvent.MouseMove);
                 pauseEvent(e);
             });
-            parent.addEventListener("keydown", function (e) {
+            window.addEventListener("keydown", function (e) {
                 if (e.keyCode === 122 || e.keyCode === 123) {
                     return true;
                 }
@@ -122,7 +121,7 @@ var UserInput;
                 handler(self, InputEvent.KeyDown);
                 pauseEvent(e);
             });
-            parent.addEventListener("keyup", function (e) {
+            window.addEventListener("keyup", function (e) {
                 self._shift = e.shiftKey;
                 self._ctrl = e.ctrlKey;
                 self._alt = e.altKey;
@@ -130,37 +129,6 @@ var UserInput;
                 handler(self, InputEvent.KeyUp);
                 pauseEvent(e);
             });
-            /*
-            parent.addEventListener("touchstart", function (e: TouchEvent) {
-                that.addTouches(e.touches);
-                handler(that);
-                pauseEvent(e);
-            });
-    
-            parent.addEventListener("touchend", function (e: TouchEvent) {
-                that.addTouches(e.touches);
-                handler(that);
-                pauseEvent(e);
-            });
-    
-            parent.addEventListener("touchcancel", function (e: TouchEvent) {
-                that.addTouches(e.touches);
-                handler(that);
-                pauseEvent(e);
-            });
-    
-            parent.addEventListener("touchleave", function (e: TouchEvent) {
-                that.addTouches(e.touches);
-                handler(that);
-                pauseEvent(e);
-            });
-    
-            parent.addEventListener("touchmove", function (e: TouchEvent) {
-                that.addTouches(e.touches);
-                handler(that);
-                pauseEvent(e);
-            });
-            */
         };
         return InputState;
     }());
@@ -176,4 +144,3 @@ var UserInput;
         return false;
     }
 })(UserInput || (UserInput = {}));
-//# sourceMappingURL=user_input.js.map

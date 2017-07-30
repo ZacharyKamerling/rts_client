@@ -48,7 +48,7 @@ var SpriteMap = (function () {
                                 var imgData = ctx.getImageData(x, y, w, h);
                                 var data = imgData.data;
                                 for (var i = 0; i < data.length; i += 4) {
-                                    if (data[i] === 255) {
+                                    if (data[i] === 255 && data[i + 3] !== 0) {
                                         var intensity = data[i + 1];
                                         data[i] = color.red * intensity;
                                         data[i + 1] = color.green * intensity;
@@ -82,4 +82,3 @@ var SpriteMap = (function () {
     SpriteMap.HEIGHT = 4096;
     return SpriteMap;
 }());
-//# sourceMappingURL=sprite_map.js.map

@@ -1,7 +1,8 @@
 ﻿enum UnitType {
     Fast1,
-    TestUnit,
-    TestStructure,
+    Medium1,
+    Artillery1,
+    Extractor1,
 }
 
 class Unit {
@@ -110,12 +111,14 @@ class Unit {
     static decodeUnit(data: Cereal, time: number, frame: number): Unit {
         let unitType = data.getU8();
         switch (unitType) {
-            case UnitType.TestUnit:
-                return new BasicUnit(data, time, frame);
-            case UnitType.TestStructure:
-                return new BasicStructure(data, time, frame);
+            case UnitType.Medium1:
+                return new Medium1(data, time, frame);
+            case UnitType.Artillery1:
+                return new Artillery1(data, time, frame);
             case UnitType.Fast1:
                 return new Fast1(data, time, frame);
+            case UnitType.Extractor1:
+                return new Extractor1(data, time, frame);
             default:
                 console.log("No unit of type " + unitType + " exists.");
                 return null;

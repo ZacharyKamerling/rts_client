@@ -28,8 +28,6 @@ function main() {
 
     let spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e: Event) {
-        game.inputState.addListener(minimapCanvas, Interaction.Minimap.interact(game));
-        game.inputState.addListener(ctrlDiv, Interaction.Core.interact(game));
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
         game.minimapDrawer = new MinimapDrawer(minimapCanvas, spritemap);
         game.buildPlacementDrawer = new BuildPlacementDrawer(drawCanvas, spritemap);
@@ -78,6 +76,8 @@ function main() {
             conn.send(chef.done());
 
             game.connected = true;
+            game.inputState.addListener(minimapCanvas, Interaction.Minimap.interact(game));
+            game.inputState.addListener(ctrlDiv, Interaction.Core.interact(game));
             playGame(game);
         }
 
@@ -106,7 +106,8 @@ function commands(): { [index: string]: { src: string, tooltip: string } } {
     let cmds: { [index: string]: { src: string, tooltip: string } } = {};
     cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
     cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
-    cmds["build"] = { src: "img/build.png", tooltip: "[B] Build" };
+    cmds["buildArtillery1"] = { src: "img/build.png", tooltip: "[B] Build T1 Artillery" };
+    cmds["buildExtractor1"] = { src: "img/build.png", tooltip: "[Q] Build T1 Extractor" };
 
     return cmds;
 }
@@ -122,8 +123,8 @@ function spriteRefs(colors: TeamColor[]): { src: string, ref: string, color: Tea
             ref: "artillery_platform1"
         },
         {
-            src: "img/artillery_wpn1.png",
-            ref: "artillery_wpn1"
+            src: "img/extractor_blade1.png",
+            ref: "extractor_blade1"
         },
         {
             src: "img/artillery_wpn2.png",

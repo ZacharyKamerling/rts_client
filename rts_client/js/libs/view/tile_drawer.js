@@ -1,26 +1,3 @@
-/*
- * Copyright (c) 2012 Brandon Jones
- *
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event will the authors be held liable for any damages
- * arising from the use of this software.
- *
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute it
- * freely, subject to the following restrictions:
- *
- *    1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software. If you use this software
- *    in a product, an acknowledgment in the product documentation would be
- *    appreciated but is not required.
- *
- *    2. Altered source versions must be plainly marked as such, and must not
- *    be misrepresented as being the original software.
- *
- *    3. This notice may not be removed or altered from any source
- *    distribution.
- */
-// Not original source.
 var TileDrawer = (function () {
     function TileDrawer(canvas, spriteSrc, tileSrc) {
         this.canvas = canvas;
@@ -64,7 +41,6 @@ var TileDrawer = (function () {
         };
         tiles.src = tileSrc;
         var buffer = [
-            //x  y  u  v
             -1, -1, 0, 1,
             1, -1, 1, 1,
             1, 1, 1, 0,
@@ -93,8 +69,8 @@ var TileDrawer = (function () {
     TileDrawer.prototype.draw = function (x, y, scale) {
         var ss = scale * scale;
         y = this.mapHeight * this.tileSize - y;
-        x = Math.floor(x / scale - (this.canvas.offsetWidth / 2) / ss);
-        y = Math.floor(y / scale - (this.canvas.offsetHeight / 2) / ss);
+        x = Math.floor(x / scale - this.canvas.offsetWidth / 2 / ss);
+        y = Math.floor(y / scale - this.canvas.offsetHeight / 2 / ss);
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
         var gl = this.ctx;
@@ -102,14 +78,13 @@ var TileDrawer = (function () {
         gl.clearColor(0, 0, 0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.enable(gl.BLEND);
-        //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.useProgram(this.program.program);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
         gl.enableVertexAttribArray(this.program.attribute['position']);
         gl.enableVertexAttribArray(this.program.attribute['texture']);
         gl.vertexAttribPointer(this.program.attribute['position'], 2, gl.FLOAT, false, 16, 0);
         gl.vertexAttribPointer(this.program.attribute['texture'], 2, gl.FLOAT, false, 16, 8);
-        gl.uniform2f(this.program.uniform['viewportSize'], this.canvas.offsetWidth / scale, this.canvas.offsetHeight / scale);
+        gl.uniform2f(this.program.uniform['viewportSize'], Math.floor(this.canvas.offsetWidth / scale), Math.floor(this.canvas.offsetHeight / scale));
         gl.uniform2f(this.program.uniform['inverseSpriteTextureSize'], this.spriteSheetScaleX, this.spriteSheetScaleY);
         gl.uniform2f(this.program.uniform['viewOffset'], Math.floor(x * scale), Math.floor(y * scale));
         gl.uniform2f(this.program.uniform['inverseTileTextureSize'], this.tileTextureScaleX, this.tileTextureScaleY);
@@ -159,4 +134,3 @@ var TileDrawer = (function () {
     ].join("\n");
     return TileDrawer;
 }());
-//# sourceMappingURL=tile_drawer.js.map

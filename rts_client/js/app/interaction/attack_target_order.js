@@ -28,4 +28,3 @@ var Interaction;
         AttackTargetOrder.issue = issue;
     })(AttackTargetOrder = Interaction.AttackTargetOrder || (Interaction.AttackTargetOrder = {}));
 })(Interaction || (Interaction = {}));
-//# sourceMappingURL=attack_target_order.js.map

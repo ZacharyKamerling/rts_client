@@ -13,7 +13,6 @@ var MinimapBoxDrawer = (function () {
         var east = Math.max(x, x2);
         var south = Math.min(y, y2);
         var north = Math.max(y, y2);
-        // Fill array with vertices
         drawData[0] = west;
         drawData[1] = south;
         drawData[2] = west;
@@ -46,4 +45,3 @@ var MinimapBoxDrawer = (function () {
     ].join("\n");
     return MinimapBoxDrawer;
 }());
-//# sourceMappingURL=minimap_box_drawer.js.map

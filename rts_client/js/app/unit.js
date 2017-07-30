@@ -1,8 +1,9 @@
 var UnitType;
 (function (UnitType) {
     UnitType[UnitType["Fast1"] = 0] = "Fast1";
-    UnitType[UnitType["TestUnit"] = 1] = "TestUnit";
-    UnitType[UnitType["TestStructure"] = 2] = "TestStructure";
+    UnitType[UnitType["Medium1"] = 1] = "Medium1";
+    UnitType[UnitType["Artillery1"] = 2] = "Artillery1";
+    UnitType[UnitType["Extractor1"] = 3] = "Extractor1";
 })(UnitType || (UnitType = {}));
 var Unit = (function () {
     function Unit(c, time, frame) {
@@ -83,12 +84,14 @@ var Unit = (function () {
     Unit.decodeUnit = function (data, time, frame) {
         var unitType = data.getU8();
         switch (unitType) {
-            case UnitType.TestUnit:
-                return new BasicUnit(data, time, frame);
-            case UnitType.TestStructure:
-                return new BasicStructure(data, time, frame);
+            case UnitType.Medium1:
+                return new Medium1(data, time, frame);
+            case UnitType.Artillery1:
+                return new Artillery1(data, time, frame);
             case UnitType.Fast1:
                 return new Fast1(data, time, frame);
+            case UnitType.Extractor1:
+                return new Extractor1(data, time, frame);
             default:
                 console.log("No unit of type " + unitType + " exists.");
                 return null;
@@ -96,4 +99,3 @@ var Unit = (function () {
     };
     return Unit;
 }());
-//# sourceMappingURL=unit.js.map

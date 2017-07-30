@@ -58,7 +58,6 @@
                 self._ctrl = e.ctrlKey;
                 self._alt = e.altKey;
                 self._wheelChange = e.deltaY;
-                console.log(e);
                 handler(self, event);
                 pauseEvent(e);
             });
@@ -95,7 +94,7 @@
                 pauseEvent(e);
             });
 
-            parent.addEventListener("mouseup", function (e) {
+            window.addEventListener("mouseup", function (e) {
                 let event: InputEvent;
                 self._shift = e.shiftKey;
                 self._ctrl = e.ctrlKey;
@@ -125,7 +124,7 @@
                 pauseEvent(e);
             });
 
-            parent.addEventListener("mousemove", function (e) {
+            window.addEventListener("mousemove", function (e) {
                 self._shift = e.shiftKey;
                 self._ctrl = e.ctrlKey;
                 self._alt = e.altKey;
@@ -136,7 +135,7 @@
                 pauseEvent(e);
             });
 
-            parent.addEventListener("keydown", function (e) {
+            window.addEventListener("keydown", function (e) {
                 if (e.keyCode === 122 || e.keyCode === 123) {
                     return true;
                 }
@@ -149,7 +148,7 @@
                 pauseEvent(e);
             });
 
-            parent.addEventListener("keyup", function (e) {
+            window.addEventListener("keyup", function (e) {
                 self._shift = e.shiftKey;
                 self._ctrl = e.ctrlKey;
                 self._alt = e.altKey;

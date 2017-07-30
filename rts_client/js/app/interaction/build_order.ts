@@ -4,13 +4,13 @@
         width: number;
         height: number;
         type: number;
-        img: string;
+        imgs: string[];
 
-        constructor(width: number, height: number, type: number, img: string) {
+        constructor(width: number, height: number, type: number, imgs: string[]) {
             this.width = width;
             this.height = height;
             this.type = type;
-            this.img = img;
+            this.imgs = imgs;
         }
     }
 

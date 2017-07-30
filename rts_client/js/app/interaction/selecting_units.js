@@ -38,7 +38,6 @@ var Interaction;
                     }
                 }
             }
-            // Configure command card
             var cmdSet = {};
             var bldSet = {};
             for (var i = 0; i < game.souls.length; i++) {
@@ -118,7 +117,6 @@ var Interaction;
                         }
                     }
                     else if (x > maxX) {
-                        // Northeast
                         if (y > maxY && (nDif * nDif + eDif * eDif) <= rSqrd) {
                             soul.current.isBeingSelected = true;
                         }
@@ -130,7 +128,6 @@ var Interaction;
                         }
                     }
                     else if (x < minX) {
-                        // Northwest
                         if (y > maxY && (nDif * nDif + wDif * wDif) <= rSqrd) {
                             soul.current.isBeingSelected = true;
                         }
@@ -167,4 +164,3 @@ var Interaction;
         SelectingUnits.begin = begin;
     })(SelectingUnits = Interaction.SelectingUnits || (Interaction.SelectingUnits = {}));
 })(Interaction || (Interaction = {}));
-//# sourceMappingURL=selecting_units.js.map

@@ -46,4 +46,3 @@ var Interaction;
         Minimap.interact = interact;
     })(Minimap = Interaction.Minimap || (Interaction.Minimap = {}));
 })(Interaction || (Interaction = {}));
-//# sourceMappingURL=minimap.js.map

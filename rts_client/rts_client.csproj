@@ -22,6 +22,7 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="css\draw_canvas.css" />
     <Content Include="img\artillery_platform1.png" />
     <Content Include="img\artillery_wpn1.png" />
     <Content Include="img\attack.png" />
@@ -32,6 +33,7 @@
     <Content Include="img\bomber1.png" />
     <Content Include="img\build.png" />
     <Content Include="img\dirt0.png" />
+    <Content Include="img\extractor_blade1.png" />
     <Content Include="img\fighter1.png" />
     <Content Include="img\move.png" />
     <Content Include="img\wall0.png" />
@@ -72,8 +74,9 @@
     <TypeScriptCompile Include="js\app\main.ts" />
     <TypeScriptCompile Include="js\libs\view\unit_drawer.ts" />
     <TypeScriptCompile Include="js\missiles\basic_missile.ts" />
-    <TypeScriptCompile Include="js\units\basic_structure.ts" />
-    <TypeScriptCompile Include="js\units\basic_unit.ts" />
+    <TypeScriptCompile Include="js\units\extractor1.ts" />
+    <TypeScriptCompile Include="js\units\artillery1.ts" />
+    <TypeScriptCompile Include="js\units\medium1.ts" />
     <TypeScriptCompile Include="js\units\fast1.ts" />
   </ItemGroup>
   <ItemGroup>
@@ -120,7 +123,8 @@
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
     <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
-    <TypeScriptOutFile />
+    <TypeScriptOutFile>
+    </TypeScriptOutFile>
     <TypeScriptOutDir />
     <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
     <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
@@ -132,6 +136,18 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
     <TypeScriptSourceMap>false</TypeScriptSourceMap>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
+    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
+    <TypeScriptOutFile>
+    </TypeScriptOutFile>
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
 </Project>

@@ -30,4 +30,3 @@ var Interaction;
         AssistOrder.issue = issue;
     })(AssistOrder = Interaction.AssistOrder || (Interaction.AssistOrder = {}));
 })(Interaction || (Interaction = {}));
-//# sourceMappingURL=assist_order.js.map
