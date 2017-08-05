@@ -104,7 +104,9 @@
         let gl = <WebGLRenderingContext>this.canvas.getContext('webgl');
         gl.viewport(0, 0, this.canvas.width, this.canvas.height);
         gl.enable(gl.BLEND);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); 
+        //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.useProgram(this.program.program);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);

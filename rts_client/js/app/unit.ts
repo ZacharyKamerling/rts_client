@@ -71,11 +71,11 @@ class Unit {
     }
 
     renderMinimap(game: Game, layers: { x: number, y: number, ref: string }[][]): void {
-        throw new Error('Unit: render() is abstract');
+        throw new Error('Unit: renderMinimap() is abstract');
     }
 
     renderDeath(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
-        throw new Error('Unit: render() is abstract');
+        throw new Error('Unit: renderDeath() is abstract');
     }
 
     commands(cmds: { [index: string]: void }) {
@@ -93,19 +93,8 @@ class Unit {
         this.facing = Misc.turnTowards(this.facing, f2, turn);
         this.x = this.x + (newUnit.x - oldUnit.x) * timeDelta;
         this.y = this.y + (newUnit.y - oldUnit.y) * timeDelta;
-        if (newUnit.progress === oldUnit.progress) {
-            this.progress = newUnit.progress;
-        }
-        else {
-            this.progress = this.progress + (newUnit.progress - oldUnit.progress) * timeDelta;
-        }
-
-        if (newUnit.health === oldUnit.health) {
-            this.health = newUnit.health;
-        }
-        else {
-            this.health = this.health + (newUnit.health - oldUnit.health) * timeDelta;
-        }
+        this.progress = newUnit.progress;
+        this.health = newUnit.health;
     }
 
     static decodeUnit(data: Cereal, time: number, frame: number): Unit {

@@ -29,18 +29,23 @@ var Extractor1 = (function (_super) {
     };
     Extractor1.prototype.step = function (timeDelta, oldUnit, newUnit) {
         _super.prototype.step.call(this, timeDelta, oldUnit, newUnit);
-        this.blade_facing += timeDelta * 0.5;
+        if (this.progress >= 255) {
+            this.blade_facing += timeDelta * 0.5;
+        }
     };
     Extractor1.prototype.commands = function (cmds) { };
     Extractor1.prototype.buildables = function (blds) { };
     Extractor1.prototype.render = function (game, layers) {
         var tc = game.teamColors[this.team];
-        layers[0].push({ x: this.x, y: this.y, ang: this.facing, ref: "artillery_platform1" + tc.name });
+        layers[0].push({ x: this.x, y: this.y, ang: this.facing, ref: "platform2" + tc.name });
         layers[3].push({ x: this.x, y: this.y, ang: this.blade_facing, ref: "extractor_blade1" + tc.name });
     };
     Extractor1.prototype.renderMinimap = function (game, layers) {
         var tc = game.teamColors[this.team];
         layers[1].push({ x: this.x, y: this.y, ang: this.facing, ref: "minimap_unit" + tc.name });
+    };
+    Extractor1.renderBuildPlacement = function () {
+        return ["platform2", "extractor_blade1"];
     };
     return Extractor1;
 }(Unit));

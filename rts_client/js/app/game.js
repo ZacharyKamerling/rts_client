@@ -44,6 +44,11 @@ var Game = (function () {
         }
         this.teamColors = Array();
         var tc = new TeamColor();
+        tc.name = "white";
+        tc.red = 1.0;
+        tc.green = 1.0;
+        tc.blue = 1.0;
+        this.teamColors.push(tc.clone());
         tc.name = "purple";
         tc.red = 0.8;
         tc.green = 0.0;
@@ -53,11 +58,6 @@ var Game = (function () {
         tc.red = 0.0;
         tc.green = 0.9;
         tc.blue = 0.0;
-        this.teamColors.push(tc.clone());
-        tc.name = "white";
-        tc.red = 1.0;
-        tc.green = 1.0;
-        tc.blue = 1.0;
         this.teamColors.push(tc.clone());
         tc.name = "aqua";
         tc.red = 0.0;
@@ -84,10 +84,10 @@ var Game = (function () {
                     game.control = new Interaction.AttackMoveOrder.BeingIssued();
                     break;
                 case "buildArtillery1":
-                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.Artillery1, ["artillery_platform1", "artillery_wpn2"]);
+                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.Artillery1, Artillery1.renderBuildPlacement());
                     break;
                 case "buildExtractor1":
-                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.Extractor1, ["artillery_platform1", "extractor_blade1"]);
+                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.Extractor1, Extractor1.renderBuildPlacement());
                     break;
                 default:
                     console.log('commandPanelHandler couldn\'t handle: ' + name);
@@ -319,25 +319,25 @@ var Game = (function () {
         var bars = new Array();
         for (var i = 0; i < this.souls.length; i++) {
             var soul = this.souls[i];
-            if (soul && soul.current) {
+            if (soul && soul.current && soul.old) {
                 var radius = soul.current.radius();
                 var x = soul.current.x;
                 var y = soul.current.y + radius * Game.TILESIZE;
                 var w = soul.current.radius() * Game.TILESIZE;
-                var h = 2;
-                if (soul.current.progress < 254.99) {
-                    var v = soul.current.progress / 255;
-                    var r = 225;
-                    var g = 225;
-                    var b = 225;
+                var h = 1;
+                if (soul.old.progress < 255) {
+                    var v = soul.old.progress / 255;
+                    var r = 125;
+                    var g = 125;
+                    var b = 125;
                     var a = 255;
                     bars.push({ x: x, y: y - 2, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
                 }
-                if (soul.current.health < 254.99) {
-                    var v = soul.current.health / 255;
-                    var r = (255 - soul.current.health);
-                    var g = (255 - soul.current.health);
-                    var b = soul.current.health;
+                if (soul.old.health < 255) {
+                    var v = soul.old.health / 255;
+                    var r = (255 - soul.old.health / 2);
+                    var g = 200;
+                    var b = soul.old.health;
                     var a = 255;
                     bars.push({ x: x, y: y, w: w, h: h, v: v, r: r, g: g, b: b, a: a });
                 }

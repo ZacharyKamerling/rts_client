@@ -37,12 +37,15 @@ var Artillery1 = (function (_super) {
     Artillery1.prototype.buildables = function (blds) { };
     Artillery1.prototype.render = function (game, layers) {
         var tc = game.teamColors[this.team];
-        layers[0].push({ x: this.x, y: this.y, ang: this.facing, ref: "artillery_platform1" + tc.name });
-        layers[3].push({ x: this.x, y: this.y, ang: this.wpn_facing, ref: "artillery_wpn2" + tc.name });
+        layers[0].push({ x: this.x, y: this.y, ang: this.facing, ref: "platform1" + tc.name });
+        layers[3].push({ x: this.x, y: this.y, ang: this.wpn_facing, ref: "artillery_wpn1" + tc.name });
     };
     Artillery1.prototype.renderMinimap = function (game, layers) {
         var tc = game.teamColors[this.team];
         layers[1].push({ x: this.x, y: this.y, ang: this.facing, ref: "minimap_unit" + tc.name });
+    };
+    Artillery1.renderBuildPlacement = function () {
+        return ["platform1", "artillery_wpn1"];
     };
     return Artillery1;
 }(Unit));

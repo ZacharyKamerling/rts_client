@@ -50,10 +50,10 @@ var Unit = (function () {
         throw new Error('Unit: render() is abstract');
     };
     Unit.prototype.renderMinimap = function (game, layers) {
-        throw new Error('Unit: render() is abstract');
+        throw new Error('Unit: renderMinimap() is abstract');
     };
     Unit.prototype.renderDeath = function (game, layers) {
-        throw new Error('Unit: render() is abstract');
+        throw new Error('Unit: renderDeath() is abstract');
     };
     Unit.prototype.commands = function (cmds) {
         throw new Error('Unit: commands() is abstract');
@@ -68,18 +68,8 @@ var Unit = (function () {
         this.facing = Misc.turnTowards(this.facing, f2, turn);
         this.x = this.x + (newUnit.x - oldUnit.x) * timeDelta;
         this.y = this.y + (newUnit.y - oldUnit.y) * timeDelta;
-        if (newUnit.progress === oldUnit.progress) {
-            this.progress = newUnit.progress;
-        }
-        else {
-            this.progress = this.progress + (newUnit.progress - oldUnit.progress) * timeDelta;
-        }
-        if (newUnit.health === oldUnit.health) {
-            this.health = newUnit.health;
-        }
-        else {
-            this.health = this.health + (newUnit.health - oldUnit.health) * timeDelta;
-        }
+        this.progress = newUnit.progress;
+        this.health = newUnit.health;
     };
     Unit.decodeUnit = function (data, time, frame) {
         var unitType = data.getU8();

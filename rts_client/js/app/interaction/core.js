@@ -78,7 +78,7 @@ var Interaction;
                         game.camera.y = control.cameraY - (control.clickY - state.mouseY()) / game.camera.scale;
                     }
                     else if (event === UserInput.InputEvent.MouseWheel) {
-                        game.camera.scale = Math.max(0.5, Math.min(2, game.camera.scale - 0.002 * game.inputState.wheelChange()));
+                        game.camera.scale = Math.max(1, Math.min(2, game.camera.scale - 0.002 * game.inputState.wheelChange()));
                     }
                 }
                 else if (control instanceof Interaction.SelectingUnits.CurrentAction) {

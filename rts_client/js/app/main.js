@@ -103,12 +103,20 @@ function spriteRefs(colors) {
             ref: "basic_missile"
         },
         {
-            src: "img/artillery_platform1.png",
-            ref: "artillery_platform1"
+            src: "img/platform1.png",
+            ref: "platform1"
+        },
+        {
+            src: "img/platform2.png",
+            ref: "platform2"
         },
         {
             src: "img/extractor_blade1.png",
             ref: "extractor_blade1"
+        },
+        {
+            src: "img/artillery_wpn1.png",
+            ref: "artillery_wpn1"
         },
         {
             src: "img/artillery_wpn2.png",
