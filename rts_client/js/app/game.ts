@@ -2,6 +2,7 @@
 class Game {
     public static MAX_UNITS = 4096;
     public static TILESIZE = 20;
+    public static PRIME_NODE_WIDTH = 3;
     public connected: boolean = true;
     public chef: Chef = null;
     public inputState: UserInput.InputState = null;
@@ -36,6 +37,7 @@ class Game {
     public energyOutput: number = 0;
     public energyDrain: number = 0;
     public orderID: number = 0;
+    public primeNodes: { x: number, y: number }[] = new Array();
     public static FPS = 10;
 
     constructor() {
@@ -118,6 +120,7 @@ class Game {
         this.stepUnits(timeDelta);
         this.stepMissiles(timeDelta);
         this.tileDrawer.draw(this.camera.x, this.camera.y, this.camera.scale);
+        this.drawPrimeNodes();
         this.drawSelections();
         this.drawUnitsAndMissiles();
         this.drawBuildPlacement();
@@ -166,6 +169,19 @@ class Game {
                 soul.current.step(Game.FPS, timeDelta, soul.old, soul.new);
             }
         }
+    }
+
+    private drawPrimeNodes() {
+        let nodes = new Array();
+        // Draw prime nodes
+        for (let i = 0; i < this.primeNodes.length; i++) {
+            let node = this.primeNodes[i];
+            let x = node.x;
+            let y = node.y;
+            nodes.push({ x: x, y: y, ang: 0, ref: 'prime_node' });
+        }
+
+        this.unitDrawer.draw(this.camera.x, this.camera.y, this.camera.scale, nodes);
     }
 
     private drawSelectBox() {
@@ -260,7 +276,7 @@ class Game {
     }
 
     private drawUnitsAndMissiles() {
-        let layers: { x: number; y: number; ang: number; teamColor: TeamColor; ref: string }[][] = new Array(10);
+        let layers: { x: number; y: number; ang: number; ref: string }[][] = new Array(10);
 
         for (let i = 0; i < layers.length; i++) {
             layers[i] = new Array();
@@ -290,7 +306,7 @@ class Game {
             }
         }
 
-        let flattened: { x: number; y: number; ang: number; teamColor: TeamColor; ref: string }[] = new Array();
+        let flattened: { x: number; y: number; ang: number; ref: string }[] = new Array();
 
         for (let i = 0; i < layers.length; i++) {
             for (let n = 0; n < layers[i].length; n++) {

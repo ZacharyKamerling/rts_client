@@ -34,6 +34,7 @@ var Game = (function () {
         this.energyOutput = 0;
         this.energyDrain = 0;
         this.orderID = 0;
+        this.primeNodes = new Array();
         this.souls = Array();
         for (var i = 0; i < Game.MAX_UNITS; i++) {
             this.souls.push(null);
@@ -103,6 +104,7 @@ var Game = (function () {
         this.stepUnits(timeDelta);
         this.stepMissiles(timeDelta);
         this.tileDrawer.draw(this.camera.x, this.camera.y, this.camera.scale);
+        this.drawPrimeNodes();
         this.drawSelections();
         this.drawUnitsAndMissiles();
         this.drawBuildPlacement();
@@ -147,6 +149,16 @@ var Game = (function () {
                 soul.current.step(Game.FPS, timeDelta, soul.old, soul.new);
             }
         }
+    };
+    Game.prototype.drawPrimeNodes = function () {
+        var nodes = new Array();
+        for (var i = 0; i < this.primeNodes.length; i++) {
+            var node = this.primeNodes[i];
+            var x = node.x;
+            var y = node.y;
+            nodes.push({ x: x, y: y, ang: 0, ref: 'prime_node' });
+        }
+        this.unitDrawer.draw(this.camera.x, this.camera.y, this.camera.scale, nodes);
     };
     Game.prototype.drawSelectBox = function () {
         var control = this.control;
@@ -359,6 +371,7 @@ var Game = (function () {
     };
     Game.MAX_UNITS = 4096;
     Game.TILESIZE = 20;
+    Game.PRIME_NODE_WIDTH = 3;
     Game.FPS = 10;
     return Game;
 }());

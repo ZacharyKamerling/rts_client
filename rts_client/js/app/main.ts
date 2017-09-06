@@ -187,6 +187,13 @@ function spriteRefs(colors: TeamColor[]): { src: string, ref: string, color: Tea
             list.push({ src: src, ref: ref, color: color });
         }
     }
+
+    list.push({
+        src: "img/Prime_deposit.png",
+        ref: "prime_node",
+        color: new TeamColor(),
+    });
+
     return list;
 }
 

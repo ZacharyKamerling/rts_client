@@ -135,6 +135,15 @@ var Decoding;
                             console.log("Set Map X & Y: " + x + ":" + y);
                         }
                     }
+                    var num_prime_nodes = data.getU32();
+                    var prime_nodes = new Array();
+                    for (var n = 0; n < num_prime_nodes; n++) {
+                        var x = data.getU16();
+                        var y = data.getU16();
+                        prime_nodes.push({ x: (x + Game.PRIME_NODE_WIDTH / 2) * Game.TILESIZE, y: (height - y - Game.PRIME_NODE_WIDTH / 2) * Game.TILESIZE });
+                        console.log("Node X & Y: " + x + ":" + y);
+                    }
+                    game.primeNodes = prime_nodes;
                     console.log("Consumed map data. " + data.offset);
                     ctx.putImageData(imgData, 0, 0);
                     var img_1 = new Image(width, height);

@@ -23,7 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\draw_canvas.css" />
-    <Content Include="img\artillery_platform1.png" />
     <Content Include="img\artillery_wpn1.png" />
     <Content Include="img\attack.png" />
     <Content Include="img\basic_missile.png" />

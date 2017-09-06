@@ -158,6 +158,18 @@
                         }
                     }
 
+                    let num_prime_nodes = data.getU32();
+                    let prime_nodes = new Array();
+
+                    for (let n = 0; n < num_prime_nodes; n++) {
+                        let x = data.getU16();
+                        let y = data.getU16();
+                        prime_nodes.push({ x: (x + Game.PRIME_NODE_WIDTH / 2) * Game.TILESIZE, y: (height - y - Game.PRIME_NODE_WIDTH / 2) * Game.TILESIZE });
+                        console.log("Node X & Y: " + x + ":" + y);
+                    }
+
+                    game.primeNodes = prime_nodes;
+
                     console.log("Consumed map data. " + data.offset);
 
                     ctx.putImageData(imgData, 0, 0);

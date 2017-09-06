@@ -168,6 +168,11 @@ function spriteRefs(colors) {
             list.push({ src: src, ref: ref, color: color });
         }
     }
+    list.push({
+        src: "img/Prime_deposit.png",
+        ref: "prime_node",
+        color: new TeamColor(),
+    });
     return list;
 }
 main();
