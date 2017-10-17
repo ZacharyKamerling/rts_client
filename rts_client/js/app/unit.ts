@@ -1,8 +1,8 @@
 ﻿enum UnitType {
-    Fast1,
     Medium1,
     Artillery1,
     Extractor1,
+    Fast1,
 }
 
 class Unit {

@@ -40,9 +40,9 @@
 
         while (!data.empty()) {
             let msg_type = data.getU8();
-
             msg_switch:
             switch (msg_type) {
+
                 // Unit
                 case ClientMessage.UnitMove:
                     let new_unit: Unit = Unit.decodeUnit(data, currentTime, logicFrame);
