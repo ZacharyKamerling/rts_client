@@ -1,6 +1,6 @@
 ﻿enum UnitType {
-    Medium1,
     Artillery1,
+    Medium1,
     Extractor1,
     Fast1,
 }

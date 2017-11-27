@@ -1,7 +1,7 @@
 var UnitType;
 (function (UnitType) {
-    UnitType[UnitType["Medium1"] = 0] = "Medium1";
-    UnitType[UnitType["Artillery1"] = 1] = "Artillery1";
+    UnitType[UnitType["Artillery1"] = 0] = "Artillery1";
+    UnitType[UnitType["Medium1"] = 1] = "Medium1";
     UnitType[UnitType["Extractor1"] = 2] = "Extractor1";
     UnitType[UnitType["Fast1"] = 3] = "Fast1";
 })(UnitType || (UnitType = {}));
