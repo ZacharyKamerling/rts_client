@@ -8,18 +8,6 @@
         }
     }
 
-    copycat(unit: Artillery1) {
-        super.copycat(unit);
-        unit.wpn_facing = this.wpn_facing;
-    }
-
-    clone(): Artillery1 {
-        var u = new Artillery1(null, this.timeCreated, this.frameCreated);
-        this.copycat(u);
-        u.wpn_facing = this.wpn_facing;
-        return u;
-    }
-
     sightRadius(): number {
         return 12;
     }

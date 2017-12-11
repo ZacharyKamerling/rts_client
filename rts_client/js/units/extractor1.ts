@@ -8,18 +8,6 @@
         }
     }
 
-    copycat(unit: Extractor1) {
-        super.copycat(unit);
-        unit.blade_facing = this.blade_facing;
-    }
-
-    clone(): Extractor1 {
-        var u = new Extractor1(null, this.timeCreated, this.frameCreated);
-        this.copycat(u);
-        u.blade_facing = this.blade_facing;
-        return u;
-    }
-
     sightRadius(): number {
         return 12;
     }
@@ -32,6 +20,10 @@
         super.step.call(this, timeDelta, oldUnit, newUnit);
         if (this.progress >= 255) {
             this.blade_facing += timeDelta * 0.5;
+
+            if (this.blade_facing > Math.PI * 2) {
+                this.blade_facing -= Math.PI * 2;
+            }
         }
     }
 

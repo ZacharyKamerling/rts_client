@@ -12,18 +12,6 @@ var Fast1 = (function (_super) {
             this.wpn_anim = c.getU8();
         }
     }
-    Fast1.prototype.copycat = function (unit) {
-        _super.prototype.copycat.call(this, unit);
-        unit.wpn_anim = this.wpn_anim;
-        unit.wpn_facing = this.wpn_facing;
-    };
-    Fast1.prototype.clone = function () {
-        var u = new Fast1(null, this.timeCreated, this.frameCreated);
-        this.copycat(u);
-        u.wpn_anim = this.wpn_anim;
-        u.wpn_facing = this.wpn_facing;
-        return u;
-    };
     Fast1.prototype.sightRadius = function () {
         return 16;
     };

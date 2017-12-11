@@ -10,20 +10,6 @@
         }
     }
 
-    copycat(unit: Fast1) {
-        super.copycat(unit);
-        unit.wpn_anim = this.wpn_anim;
-        unit.wpn_facing = this.wpn_facing;
-    }
-
-    clone(): Fast1 {
-        var u = new Fast1(null, this.timeCreated, this.frameCreated);
-        this.copycat(u);
-        u.wpn_anim = this.wpn_anim;
-        u.wpn_facing = this.wpn_facing;
-        return u;
-    }
-
     sightRadius(): number {
         return 16;
     }

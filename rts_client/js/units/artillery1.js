@@ -11,16 +11,6 @@ var Artillery1 = (function (_super) {
             this.wpn_facing = c.getU8() * 2 * Math.PI / 255;
         }
     }
-    Artillery1.prototype.copycat = function (unit) {
-        _super.prototype.copycat.call(this, unit);
-        unit.wpn_facing = this.wpn_facing;
-    };
-    Artillery1.prototype.clone = function () {
-        var u = new Artillery1(null, this.timeCreated, this.frameCreated);
-        this.copycat(u);
-        u.wpn_facing = this.wpn_facing;
-        return u;
-    };
     Artillery1.prototype.sightRadius = function () {
         return 12;
     };

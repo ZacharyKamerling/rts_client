@@ -24,15 +24,6 @@ var Chef = (function () {
         this.offset = 0;
         return newAB;
     };
-    Chef.prototype.putString = function (str) {
-        var strBuff = this.toUTF8Array(str);
-        this.resize(strBuff.length + 2);
-        this.dv.setUint16(this.offset, strBuff.length);
-        this.offset = this.offset + 2;
-        for (var i = 0; i < strBuff.length; i++) {
-            this.putU8(strBuff[i]);
-        }
-    };
     Chef.prototype.put8 = function (v) {
         this.resize(1);
         this.dv.setInt8(this.offset, v);
@@ -72,6 +63,15 @@ var Chef = (function () {
         this.resize(8);
         this.dv.setFloat64(this.offset, v);
         this.offset = this.offset + 8;
+    };
+    Chef.prototype.putString = function (str) {
+        var strBuff = this.toUTF8Array(str);
+        this.resize(strBuff.length + 2);
+        this.dv.setUint16(this.offset, strBuff.length);
+        this.offset = this.offset + 2;
+        for (var i = 0; i < strBuff.length; i++) {
+            this.putU8(strBuff[i]);
+        }
     };
     Chef.prototype.toUTF8Array = function (str) {
         var utf8 = [];

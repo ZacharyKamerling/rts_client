@@ -11,16 +11,6 @@ var Extractor1 = (function (_super) {
             this.blade_facing = 0;
         }
     }
-    Extractor1.prototype.copycat = function (unit) {
-        _super.prototype.copycat.call(this, unit);
-        unit.blade_facing = this.blade_facing;
-    };
-    Extractor1.prototype.clone = function () {
-        var u = new Extractor1(null, this.timeCreated, this.frameCreated);
-        this.copycat(u);
-        u.blade_facing = this.blade_facing;
-        return u;
-    };
     Extractor1.prototype.sightRadius = function () {
         return 12;
     };
@@ -31,6 +21,9 @@ var Extractor1 = (function (_super) {
         _super.prototype.step.call(this, timeDelta, oldUnit, newUnit);
         if (this.progress >= 255) {
             this.blade_facing += timeDelta * 0.5;
+            if (this.blade_facing > Math.PI * 2) {
+                this.blade_facing -= Math.PI * 2;
+            }
         }
     };
     Extractor1.prototype.commands = function (cmds) { };

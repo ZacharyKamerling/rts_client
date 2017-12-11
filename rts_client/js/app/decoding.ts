@@ -10,6 +10,7 @@
         Construction,
         TeamInfo,
         MapInfo,
+        UnitInfo,
     }
 
     export function processPacket(game: Game, data: Cereal): void {

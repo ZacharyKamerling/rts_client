@@ -8,14 +8,6 @@ var BasicMissile = (function (_super) {
     function BasicMissile(c, time, frame, exploding) {
         _super.call(this, c, time, frame, exploding);
     }
-    BasicMissile.prototype.copycat = function (misl) {
-        _super.prototype.copycat.call(this, misl);
-    };
-    BasicMissile.prototype.clone = function () {
-        var u = new BasicMissile(null, this.timeCreated, this.frameCreated, false);
-        this.copycat(u);
-        return u;
-    };
     BasicMissile.prototype.render = function (game, layers) {
         var tc = game.teamColors[this.team];
         layers[3].push({ x: this.x, y: this.y, ang: this.facing, ref: "fast_msl1" + tc.name });

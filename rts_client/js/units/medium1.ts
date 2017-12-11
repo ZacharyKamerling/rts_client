@@ -8,18 +8,6 @@
         }
     }
 
-    copycat(unit: Medium1) {
-        super.copycat(unit);
-        unit.wpn_facing = this.wpn_facing;
-    }
-
-    clone(): Medium1 {
-        var u = new Medium1(null, this.timeCreated, this.frameCreated);
-        this.copycat(u);
-        u.wpn_facing = this.wpn_facing;
-        return u;
-    }
-
     sightRadius(): number {
         return 16;
     }

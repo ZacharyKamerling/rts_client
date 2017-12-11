@@ -17,16 +17,7 @@ var Missile = (function () {
         }
     }
     Missile.prototype.clone = function () {
-        throw new Error('Missile: clone() is abstract');
-    };
-    Missile.prototype.copycat = function (misl) {
-        misl.misl_ID = this.misl_ID;
-        misl.x = this.x;
-        misl.y = this.y;
-        misl.team = this.team;
-        misl.exploding = this.exploding;
-        misl.frameCreated = this.frameCreated;
-        misl.timeCreated = this.timeCreated;
+        return Object.create(this);
     };
     Missile.prototype.render = function (game, layers) {
         throw new Error('Missile: render() is abstract');

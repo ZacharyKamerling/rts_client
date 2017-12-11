@@ -58,8 +58,20 @@ class Cereal {
     empty(): boolean {
         return (this.dv.byteLength === this.offset)
     }
-}
 
-function uintToString(uintArray: number[]): string {
-    return decodeURIComponent(encodeURI(atob(String.fromCharCode.apply(null, uintArray))));
+    string(): string {
+        let offset = this.offset;
+        let size = this.getU32();
+        this.offset += size;
+        return this.getUTF8String(offset, size);
+    }
+
+    getUTF8String(offset: number, length: number): string {
+        var utf16 = new ArrayBuffer(length * 2);
+        var utf16View = new Uint16Array(utf16);
+        for (var i = 0; i < length; ++i) {
+            utf16View[i] = this.dv.getUint8(offset + i);
+        }
+        return decodeURI(encodeURI(atob(String.fromCharCode.apply(null, utf16View))));
+    };
 }

@@ -47,8 +47,20 @@ var Cereal = (function () {
     Cereal.prototype.empty = function () {
         return (this.dv.byteLength === this.offset);
     };
+    Cereal.prototype.string = function () {
+        var offset = this.offset;
+        var size = this.getU32();
+        this.offset += size;
+        return this.getUTF8String(offset, size);
+    };
+    Cereal.prototype.getUTF8String = function (offset, length) {
+        var utf16 = new ArrayBuffer(length * 2);
+        var utf16View = new Uint16Array(utf16);
+        for (var i = 0; i < length; ++i) {
+            utf16View[i] = this.dv.getUint8(offset + i);
+        }
+        return decodeURI(encodeURI(atob(String.fromCharCode.apply(null, utf16View))));
+    };
+    ;
     return Cereal;
 }());
-function uintToString(uintArray) {
-    return decodeURIComponent(encodeURI(atob(String.fromCharCode.apply(null, uintArray))));
-}

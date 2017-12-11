@@ -27,17 +27,7 @@ class Missile {
     }
 
     clone(): Missile {
-        throw new Error('Missile: clone() is abstract');
-    }
-
-    copycat(misl: Missile) {
-        misl.misl_ID = this.misl_ID;
-        misl.x = this.x;
-        misl.y = this.y;
-        misl.team = this.team;
-        misl.exploding = this.exploding;
-        misl.frameCreated = this.frameCreated;
-        misl.timeCreated = this.timeCreated;
+        return Object.create(this);
     }
 
     render(game: Game, layers: { x: number, y: number, ang: number, ref: string }[][]): void {
