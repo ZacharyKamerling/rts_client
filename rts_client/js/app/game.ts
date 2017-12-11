@@ -19,6 +19,7 @@ class Game {
     public control: Interaction.Core.Control = new Interaction.Core.DoingNothing();
     public camera: Camera = new Camera(0, 0, 1);
     public connection: WebSocket = null;
+    public unitPrototypes: Unit[] = null;
     public souls: { old: Unit, current: Unit, new: Unit }[] = null;
     public missileSouls: { old: Missile, current: Missile, new: Missile }[] = null;
     public logicFrame: number = 0;
@@ -232,7 +233,7 @@ class Game {
     }
 
     private drawMinimap() {
-        let layers: { x: number; y: number; teamColor: TeamColor; ref: string }[][] = new Array(10);
+        let layers: { x: number; y: number; ang: number; ref: string }[][] = new Array(10);
 
         for (let i = 0; i < layers.length; i++) {
             layers[i] = new Array();
@@ -247,7 +248,7 @@ class Game {
             }
         }
 
-        let flattened: { x: number; y: number; teamColor: TeamColor; ref: string }[] = new Array();
+        let flattened: { x: number; y: number; ref: string }[] = new Array();
 
         for (let i = 0; i < layers.length; i++) {
             for (let n = 0; n < layers[i].length; n++) {

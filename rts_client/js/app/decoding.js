@@ -39,19 +39,7 @@ var Decoding;
             var msg_type = data.getU8();
             msg_switch: switch (msg_type) {
                 case ClientMessage.UnitMove:
-                    var new_unit = Unit.decodeUnit(data, currentTime, logicFrame);
-                    if (new_unit) {
-                        var soul = game.souls[new_unit.unit_ID];
-                        if (soul) {
-                            soul.old = soul.current.clone();
-                            soul.old.timeCreated = soul.new.timeCreated;
-                            soul.new = new_unit;
-                        }
-                        else {
-                            cur = new_unit.clone();
-                            game.souls[new_unit.unit_ID] = { old: null, current: cur, new: new_unit };
-                        }
-                    }
+                    Unit.decodeUnit(game, data, currentTime, logicFrame);
                     break msg_switch;
                 case ClientMessage.MissileMove:
                 case ClientMessage.MissileExplode:
@@ -65,8 +53,8 @@ var Decoding;
                             soul.new = new_misl;
                         }
                         else {
-                            var cur_1 = new_misl.clone();
-                            game.missileSouls[new_misl.misl_ID] = { old: null, current: cur_1, new: new_misl };
+                            var cur = new_misl.clone();
+                            game.missileSouls[new_misl.misl_ID] = { old: null, current: cur, new: new_misl };
                         }
                     }
                     break msg_switch;
@@ -160,7 +148,6 @@ var Decoding;
                     return { value: void 0 };
             }
         };
-        var cur;
         while (!data.empty()) {
             var state_1 = _loop_1();
             if (typeof state_1 === "object") return state_1.value;
