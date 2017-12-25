@@ -53,7 +53,6 @@
     <TypeScriptCompile Include="js\app\interaction\selecting_units.ts" />
     <TypeScriptCompile Include="js\app\missile.ts" />
     <TypeScriptCompile Include="js\app\unit_proto.ts" />
-    <TypeScriptCompile Include="js\app\unit.ts" />
     <TypeScriptCompile Include="js\libs\cereal.ts" />
     <TypeScriptCompile Include="js\libs\chef.ts" />
     <TypeScriptCompile Include="js\libs\grid.ts" />
@@ -136,7 +135,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
     <TypeScriptSourceMap>false</TypeScriptSourceMap>
-    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptTarget>ES6</TypeScriptTarget>
     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>

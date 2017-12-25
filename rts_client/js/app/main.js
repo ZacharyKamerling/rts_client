@@ -1,19 +1,107 @@
 "use strict";
 function main() {
-    var mainMenu = document.getElementById('mainMenu');
-    var content = document.getElementById('content');
-    var chef = new Chef();
-    var connectBtn = document.getElementById('connectBtn');
-    var connected = false;
-    var thingsLoaded = 0;
-    var conn = null;
-    var game = new Game();
-    var fowCanvas = document.getElementById('fowCanvas');
-    var drawCanvas = document.getElementById('drawCanvas');
-    var minimapCanvas = document.getElementById('minimapCanvas');
-    var ctrlDiv = document.getElementById('controlDiv');
-    var cmdDiv = document.getElementById('commandDiv');
-    var cmds = commands();
+    let mainMenu = document.getElementById('mainMenu');
+    let content = document.getElementById('content');
+    let chef = new Chef();
+    let connectBtn = document.getElementById('connectBtn');
+    let connected = false;
+    let thingsLoaded = 0;
+    let conn = null;
+    let game = new Game();
+    let fowCanvas = document.getElementById('fowCanvas');
+    let drawCanvas = document.getElementById('drawCanvas');
+    let minimapCanvas = document.getElementById('minimapCanvas');
+    let ctrlDiv = document.getElementById('controlDiv');
+    let cmdDiv = document.getElementById('commandDiv');
+    let cmds = commands();
+    let json = JSON.stringify({
+        "spriteGraphics": [{
+                "facing": 0,
+                "xOffset": 0,
+                "yOffset": 0,
+                "layer": 0,
+                "cycleRate": 0,
+                "cycleCurrent": 0,
+                "imgRef": "basic_unit"
+            }],
+        "name": "Medium1",
+        "radius": 0.64,
+        "collision_radius": 0.96,
+        "collision_ratio": 0.625,
+        "collision_resist": 0.8,
+        "width_and_height": null,
+        "weight": 1.0,
+        "top_speed": 2.0,
+        "acceleration": 1.0,
+        "deceleration": 3.0,
+        "turn_rate": 2.0,
+        "max_health": 125.0,
+        "health_regen": 0.0,
+        "build_cost": 100.0,
+        "prime_cost": 100.0,
+        "energy_cost": 100.0,
+        "prime_output": 0.0,
+        "energy_output": 0.0,
+        "prime_storage": 0.0,
+        "energy_storage": 0.0,
+        "build_rate": 5.0,
+        "build_range": 4.0,
+        "build_roster": ["extractor1", "artillery1"],
+        "train_rate": 0.0,
+        "train_roster": [],
+        "weapons": [{
+                "name": "KEB9",
+                "attack": {
+                    "attack_type": "missile",
+                    "missile_name": "Medium1"
+                },
+                "xy_offset": { "x": 0.0, "y": 0.0 },
+                "turn_rate": 3.14,
+                "lock_offset": 0.0,
+                "firing_arc": 4.0,
+                "range": 12.0,
+                "firing_offset": 0.75,
+                "fire_rate": 1.0,
+                "alternating": false,
+                "barrels": 1,
+                "barrel_spacing": 0.0,
+                "salvo_size": 1,
+                "salvo_fire_rate": 0.0,
+                "pellet_count": 1,
+                "pellet_spread": 0.01,
+                "target_type": ["ground"],
+                "missile_speed": 24.0,
+                "spriteGraphic": {
+                    "facing": 0,
+                    "xOffset": 0,
+                    "yOffset": 0,
+                    "layer": 0,
+                    "cycleRate": 0,
+                    "cycleCurrent": 0,
+                    "imgRef": "basic_wpn"
+                }
+            }],
+        "capacity": 0,
+        "size": 0,
+        "target_type": ["ground"],
+        "move_type": "ground",
+        "collision_type": ["ground"],
+        "is_structure": false,
+        "is_extractor": false,
+        "engagement_range": 16.0,
+        "sight_range": 16.0,
+        "sight_duration": 0.0,
+        "radar_range": 0.0,
+        "radar_duration": 0.0,
+        "stealth_range": 0.0,
+        "stealth_duration": 0.0
+    });
+    let unit_proto = new Unit();
+    unit_proto.jsonConfig(json);
+    game.unitPrototypes.push(unit_proto.clone());
+    game.unitPrototypes.push(unit_proto.clone());
+    game.unitPrototypes.push(unit_proto.clone());
+    game.unitPrototypes.push(unit_proto.clone());
     game.chef = chef;
     game.inputState = new UserInput.InputState();
     game.tileDrawer = new TileDrawer(drawCanvas, 'img/tileset.png', 'img/lttp-all.png');
@@ -23,7 +111,7 @@ function main() {
     game.minimapBoxDrawer = new MinimapBoxDrawer(minimapCanvas);
     game.statusBarDrawer = new StatusBarDrawer(drawCanvas);
     game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
-    var spritemap = new SpriteMap(spriteRefs(game.teamColors));
+    let spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e) {
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
         game.minimapDrawer = new MinimapDrawer(minimapCanvas, spritemap);
@@ -31,10 +119,10 @@ function main() {
         mainMenu.appendChild(spritemap.spriteSheet);
     };
     connectBtn.onclick = function () {
-        var nameFieldValue = document.getElementById('nameField').value;
-        var passFieldValue = document.getElementById('passField').value;
-        var addrFieldValue = document.getElementById('addrField').value;
-        var portFieldValue = document.getElementById('portField').value;
+        let nameFieldValue = document.getElementById('nameField').value;
+        let passFieldValue = document.getElementById('passField').value;
+        let addrFieldValue = document.getElementById('addrField').value;
+        let portFieldValue = document.getElementById('portField').value;
         console.log('Attempting connection...');
         if (addrFieldValue === "localhost") {
             conn = new WebSocket('ws://localhost:' + portFieldValue);
@@ -89,7 +177,7 @@ function playGame(game) {
     draw();
 }
 function commands() {
-    var cmds = {};
+    let cmds = {};
     cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
     cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
     cmds["buildArtillery1"] = { src: "img/build.png", tooltip: "[B] Build T1 Artillery" };
@@ -97,7 +185,7 @@ function commands() {
     return cmds;
 }
 function spriteRefs(colors) {
-    var tc_imgs = [
+    let tc_imgs = [
         {
             src: "img/basic_missile.png",
             ref: "basic_missile"
@@ -159,12 +247,12 @@ function spriteRefs(colors) {
             ref: "minimap_unit"
         },
     ];
-    var list = new Array();
-    for (var i = 0; i < colors.length; i++) {
-        var color = colors[i];
-        for (var n = 0; n < tc_imgs.length; n++) {
-            var src = tc_imgs[n].src;
-            var ref = tc_imgs[n].ref + color.name;
+    let list = new Array();
+    for (let i = 0; i < colors.length; i++) {
+        let color = colors[i];
+        for (let n = 0; n < tc_imgs.length; n++) {
+            let src = tc_imgs[n].src;
+            let ref = tc_imgs[n].ref + color.name;
             list.push({ src: src, ref: ref, color: color });
         }
     }

@@ -51,8 +51,13 @@
             let soul = game.souls[i];
 
             if (soul && soul.current.isSelected) {
-                soul.current.buildables(bldSet);
-                soul.current.commands(cmdSet);
+                for (let bld of soul.current.buildRoster) {
+                    bldSet[bld] = null;
+                }
+
+                for (let cmd of soul.current.commandRoster) {
+                    cmdSet[cmd] = null;
+                }
             }
         }
 
@@ -108,7 +113,7 @@
             if (soul && soul.new) {
                 let x = soul.current.x;
                 let y = soul.current.y;
-                let r = soul.current.radius() * Game.TILESIZE;
+                let r = soul.current.radius * Game.TILESIZE;
                 let rSqrd = r * r;
 
                 let nDif = y - maxY;

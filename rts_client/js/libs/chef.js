@@ -1,82 +1,82 @@
-var Chef = (function () {
-    function Chef() {
+class Chef {
+    constructor() {
         this.ab = new ArrayBuffer(4096);
         this.dv = new DataView(this.ab);
         this.offset = 0;
     }
-    Chef.prototype.resize = function (spaceNeeded) {
+    resize(spaceNeeded) {
         if (this.ab.byteLength < this.offset + spaceNeeded) {
-            var newAB = new ArrayBuffer((this.ab.byteLength + spaceNeeded) * 2);
-            var newDV = new DataView(newAB);
-            for (var i = 0; i < this.offset; i++) {
+            let newAB = new ArrayBuffer((this.ab.byteLength + spaceNeeded) * 2);
+            let newDV = new DataView(newAB);
+            for (let i = 0; i < this.offset; i++) {
                 newDV.setInt8(i, this.dv.getInt8(i));
             }
             this.dv = newDV;
             this.ab = newAB;
         }
-    };
-    Chef.prototype.done = function () {
-        var newAB = new ArrayBuffer(this.offset);
-        var newDV = new DataView(newAB);
-        for (var i = 0; i < this.offset; i++) {
+    }
+    done() {
+        let newAB = new ArrayBuffer(this.offset);
+        let newDV = new DataView(newAB);
+        for (let i = 0; i < this.offset; i++) {
             newDV.setInt8(i, this.dv.getInt8(i));
         }
         this.offset = 0;
         return newAB;
-    };
-    Chef.prototype.put8 = function (v) {
+    }
+    put8(v) {
         this.resize(1);
         this.dv.setInt8(this.offset, v);
         this.offset = this.offset + 1;
-    };
-    Chef.prototype.putU8 = function (v) {
+    }
+    putU8(v) {
         this.resize(1);
         this.dv.setUint8(this.offset, v);
         this.offset = this.offset + 1;
-    };
-    Chef.prototype.put16 = function (v) {
+    }
+    put16(v) {
         this.resize(2);
         this.dv.setInt16(this.offset, v);
         this.offset = this.offset + 2;
-    };
-    Chef.prototype.putU16 = function (v) {
+    }
+    putU16(v) {
         this.resize(2);
         this.dv.setUint16(this.offset, v);
         this.offset = this.offset + 2;
-    };
-    Chef.prototype.putU32 = function (v) {
+    }
+    putU32(v) {
         this.resize(4);
         this.dv.setUint32(this.offset, v);
         this.offset = this.offset + 4;
-    };
-    Chef.prototype.put32 = function (v) {
+    }
+    put32(v) {
         this.resize(4);
         this.dv.setInt32(this.offset, v);
         this.offset = this.offset + 4;
-    };
-    Chef.prototype.putF32 = function (v) {
+    }
+    putF32(v) {
         this.resize(4);
         this.dv.setFloat32(this.offset, v);
         this.offset = this.offset + 4;
-    };
-    Chef.prototype.putF64 = function (v) {
+    }
+    putF64(v) {
         this.resize(8);
         this.dv.setFloat64(this.offset, v);
         this.offset = this.offset + 8;
-    };
-    Chef.prototype.putString = function (str) {
-        var strBuff = this.toUTF8Array(str);
+    }
+    putString(str) {
+        let strBuff = this.toUTF8Array(str);
         this.resize(strBuff.length + 2);
         this.dv.setUint16(this.offset, strBuff.length);
         this.offset = this.offset + 2;
-        for (var i = 0; i < strBuff.length; i++) {
+        for (let i = 0; i < strBuff.length; i++) {
             this.putU8(strBuff[i]);
         }
-    };
-    Chef.prototype.toUTF8Array = function (str) {
-        var utf8 = [];
-        for (var i = 0; i < str.length; i++) {
-            var charcode = str.charCodeAt(i);
+    }
+    toUTF8Array(str) {
+        let utf8 = [];
+        for (let i = 0; i < str.length; i++) {
+            let charcode = str.charCodeAt(i);
             if (charcode < 0x80)
                 utf8.push(charcode);
             else if (charcode < 0x800) {
@@ -93,6 +93,5 @@ var Chef = (function () {
             }
         }
         return utf8;
-    };
-    return Chef;
-}());
+    }
+}

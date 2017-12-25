@@ -46,22 +46,7 @@
 
                 // Unit
                 case ClientMessage.UnitMove:
-                    let new_unit: Unit = Unit.decodeUnit(data, currentTime, logicFrame);
-
-                    // If unit_soul exists, update it with new_unit
-                    if (new_unit) {
-                        let soul = game.souls[new_unit.unit_ID];
-
-                        if (soul) {
-                            soul.old = soul.current.clone();
-                            soul.old.timeCreated = soul.new.timeCreated;
-                            soul.new = new_unit;
-                        }
-                        else {
-                            var cur = new_unit.clone();
-                            game.souls[new_unit.unit_ID] = { old: null, current: cur, new: new_unit };
-                        }
-                    }
+                    Unit.decodeUnit(game, data, currentTime, logicFrame);
                     break msg_switch;
                 // Missile
                 case ClientMessage.MissileMove:

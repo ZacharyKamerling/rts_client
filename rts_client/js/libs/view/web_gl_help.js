@@ -1,6 +1,6 @@
 function createProgram(ctx, vertShaderSrc, fragShaderSrc) {
-    var createShader = function (ctx, shaderSrc, shaderType) {
-        var shader = ctx.createShader(shaderType);
+    let createShader = function (ctx, shaderSrc, shaderType) {
+        let shader = ctx.createShader(shaderType);
         ctx.shaderSource(shader, shaderSrc);
         ctx.compileShader(shader);
         if (!ctx.getShaderParameter(shader, ctx.COMPILE_STATUS)) {
@@ -10,9 +10,9 @@ function createProgram(ctx, vertShaderSrc, fragShaderSrc) {
         }
         return shader;
     };
-    var program = ctx.createProgram();
-    var vertShader = createShader(ctx, vertShaderSrc, ctx.VERTEX_SHADER);
-    var fragShader = createShader(ctx, fragShaderSrc, ctx.FRAGMENT_SHADER);
+    let program = ctx.createProgram();
+    let vertShader = createShader(ctx, vertShaderSrc, ctx.VERTEX_SHADER);
+    let fragShader = createShader(ctx, fragShaderSrc, ctx.FRAGMENT_SHADER);
     ctx.attachShader(program, vertShader);
     ctx.attachShader(program, fragShader);
     ctx.linkProgram(program);
@@ -25,22 +25,21 @@ function createProgram(ctx, vertShaderSrc, fragShaderSrc) {
     }
     return program;
 }
-var MetaProgram = (function () {
-    function MetaProgram(gl, program) {
+class MetaProgram {
+    constructor(gl, program) {
         this.program = program;
         this.attribute = {};
         this.uniform = {};
-        var count = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
-        for (var i = 0; i < count; i++) {
-            var attrib = gl.getActiveAttrib(program, i);
+        let count = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
+        for (let i = 0; i < count; i++) {
+            let attrib = gl.getActiveAttrib(program, i);
             this.attribute[attrib.name] = gl.getAttribLocation(program, attrib.name);
         }
         count = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
-        for (var i = 0; i < count; i++) {
-            var uniform = gl.getActiveUniform(program, i);
-            var name_1 = uniform.name.replace("[0]", "");
-            this.uniform[name_1] = gl.getUniformLocation(program, name_1);
+        for (let i = 0; i < count; i++) {
+            let uniform = gl.getActiveUniform(program, i);
+            let name = uniform.name.replace("[0]", "");
+            this.uniform[name] = gl.getUniformLocation(program, name);
         }
     }
-    return MetaProgram;
-}());
+}

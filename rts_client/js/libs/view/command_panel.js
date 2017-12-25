@@ -1,17 +1,17 @@
-var CommandPanel = (function () {
-    function CommandPanel(parent, commands, handler) {
+class CommandPanel {
+    constructor(parent, commands, handler) {
         this.parent = parent;
         this.commands = commands;
         this.handler = handler;
     }
-    CommandPanel.prototype.renderCommands = function (cmds) {
+    renderCommands(cmds) {
         while (this.parent.firstChild) {
             this.parent.removeChild(this.parent.firstChild);
         }
-        for (var i = 0; i < cmds.length; i++) {
-            var self_1 = this;
-            var cmd = cmds[i];
-            var btn = document.createElement("input");
+        for (let i = 0; i < cmds.length; i++) {
+            let self = this;
+            let cmd = cmds[i];
+            let btn = document.createElement("input");
             btn.name = cmd;
             btn.type = "image";
             btn.title = this.commands[cmd].tooltip;
@@ -22,9 +22,8 @@ var CommandPanel = (function () {
                     event.stopImmediatePropagation();
                     handler(name);
                 };
-            }(btn.name, self_1.handler);
+            }(btn.name, self.handler);
             this.parent.appendChild(btn);
         }
-    };
-    return CommandPanel;
-}());
+    }
+}

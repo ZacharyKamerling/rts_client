@@ -1,4 +1,5 @@
-﻿class Fast1 extends Unit {
+﻿/*
+class Fast1 extends Unit {
     private wpn_facing: number;
     private wpn_anim: number;
 
@@ -45,3 +46,4 @@
         layers[1].push({ x: this.x, y: this.y, ref: "minimap_unit" + tc.name });
     }
 }
+*/

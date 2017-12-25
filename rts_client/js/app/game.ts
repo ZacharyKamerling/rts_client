@@ -19,7 +19,7 @@ class Game {
     public control: Interaction.Core.Control = new Interaction.Core.DoingNothing();
     public camera: Camera = new Camera(0, 0, 1);
     public connection: WebSocket = null;
-    public unitPrototypes: Unit[] = null;
+    public unitPrototypes: Unit[] = new Array();
     public souls: { old: Unit, current: Unit, new: Unit }[] = null;
     public missileSouls: { old: Missile, current: Missile, new: Missile }[] = null;
     public logicFrame: number = 0;
@@ -99,12 +99,6 @@ class Game {
                     break;
                 case "attack":
                     game.control = new Interaction.AttackMoveOrder.BeingIssued();
-                    break;
-                case "buildArtillery1":
-                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.Artillery1, Artillery1.renderBuildPlacement());
-                    break;
-                case "buildExtractor1":
-                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.Extractor1, Extractor1.renderBuildPlacement());
                     break;
                 default:
                     console.log('commandPanelHandler couldn\'t handle: ' + name);
@@ -334,7 +328,7 @@ class Game {
                 if (soul.current.team === this.team) {
                     let x = soul.current.x;
                     let y = soul.current.y;
-                    let radius = soul.current.radius();
+                    let radius = soul.current.radius;
                     let r = 0;
                     let g = 255;
                     let b = 100;
@@ -351,7 +345,7 @@ class Game {
                 else {
                     let x = soul.current.x;
                     let y = soul.current.y;
-                    let radius = soul.current.radius();
+                    let radius = soul.current.radius;
                     let r = 255;
                     let g = 0;
                     let b = 100;
@@ -388,10 +382,10 @@ class Game {
             let soul = this.souls[i];
 
             if (soul && soul.current && soul.old) {
-                let radius = soul.current.radius();
+                let radius = soul.current.radius;
                 let x = soul.current.x;
                 let y = soul.current.y + radius * Game.TILESIZE;
-                let w = soul.current.radius() * Game.TILESIZE;
+                let w = soul.current.radius * Game.TILESIZE;
                 let h = 1;
 
                 if (soul.old.progress < 255) {
@@ -424,7 +418,7 @@ class Game {
 
             if (soul) {
                 if (soul.current.team === this.team) {
-                    circles.push({ x: soul.current.x, y: soul.current.y, r: soul.current.sightRadius() });
+                    circles.push({ x: soul.current.x, y: soul.current.y, r: soul.current.sightRadius });
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿class Artillery1 extends Unit {
+﻿/*
+class Artillery1 extends Unit {
     private wpn_facing: number;
 
     constructor(c: Cereal, time: number, frame: number) {
@@ -42,3 +43,4 @@
         return ["platform1", "artillery_wpn1"];
     }
 }
+*/

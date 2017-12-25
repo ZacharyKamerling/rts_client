@@ -1,4 +1,5 @@
-﻿class Extractor1 extends Unit {
+﻿/*
+class Extractor1 extends Unit {
     private blade_facing: number;
 
     constructor(c: Cereal, time: number, frame: number) {
@@ -46,3 +47,4 @@
         return ["platform2", "extractor_blade1"];
     }
 }
+*/

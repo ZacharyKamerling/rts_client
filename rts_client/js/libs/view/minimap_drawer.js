@@ -1,8 +1,8 @@
-var MinimapDrawer = (function () {
-    function MinimapDrawer(canvas, spritemap) {
-        var self = this;
+class MinimapDrawer {
+    constructor(canvas, spritemap) {
+        let self = this;
         this.canvas = canvas;
-        var gl = this.canvas.getContext('webgl');
+        let gl = this.canvas.getContext('webgl');
         this.program = new MetaProgram(gl, createProgram(gl, MinimapDrawer.vertexShader, MinimapDrawer.fragmentShader));
         this.spriteTex = gl.createTexture();
         this.spriteMap = spritemap;
@@ -14,27 +14,27 @@ var MinimapDrawer = (function () {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
     }
-    MinimapDrawer.prototype.draw = function (sprites) {
+    draw(sprites) {
         if (this.canvas.width !== this.canvas.offsetWidth || this.canvas.height !== this.canvas.offsetHeight) {
             this.canvas.width = this.canvas.offsetWidth;
             this.canvas.height = this.canvas.offsetHeight;
         }
-        var xm = SpriteMap.WIDTH / this.canvas.width;
-        var ym = SpriteMap.HEIGHT / this.canvas.height;
-        var FLOATS_PER_VERT = 4;
-        var FLOATS_PER_UNIT = FLOATS_PER_VERT * 6;
-        var drawData = new Float32Array(FLOATS_PER_UNIT * sprites.length);
-        for (var i = 0, n = 0; n < sprites.length; n++) {
-            var sprite = sprites[n];
-            var xywh = this.spriteMap.coords(sprite.ref);
-            var hw = xywh.w;
-            var hh = xywh.h;
-            var normX = sprite.x * 2 - 1;
-            var normY = sprite.y * 2 - 1;
-            var east = normX + hw;
-            var north = normY + hh;
-            var west = normX - hw;
-            var south = normY - hh;
+        let xm = SpriteMap.WIDTH / this.canvas.width;
+        let ym = SpriteMap.HEIGHT / this.canvas.height;
+        const FLOATS_PER_VERT = 4;
+        const FLOATS_PER_UNIT = FLOATS_PER_VERT * 6;
+        let drawData = new Float32Array(FLOATS_PER_UNIT * sprites.length);
+        for (let i = 0, n = 0; n < sprites.length; n++) {
+            let sprite = sprites[n];
+            let xywh = this.spriteMap.coords(sprite.ref);
+            let hw = xywh.w;
+            let hh = xywh.h;
+            let normX = sprite.x * 2 - 1;
+            let normY = sprite.y * 2 - 1;
+            let east = normX + hw;
+            let north = normY + hh;
+            let west = normX - hw;
+            let south = normY - hh;
             drawData[i++] = normX - (normX - west) * xm;
             drawData[i++] = normY - (normY - south) * ym;
             drawData[i++] = xywh.x;
@@ -60,7 +60,7 @@ var MinimapDrawer = (function () {
             drawData[i++] = xywh.x;
             drawData[i++] = xywh.y;
         }
-        var gl = this.canvas.getContext('webgl');
+        let gl = this.canvas.getContext('webgl');
         gl.viewport(0, 0, this.canvas.width, this.canvas.height);
         gl.clearColor(0.1, 0.1, 0.1, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
@@ -78,24 +78,23 @@ var MinimapDrawer = (function () {
         gl.bindTexture(gl.TEXTURE_2D, this.spriteTex);
         gl.drawArrays(gl.TRIANGLES, 0, 6 * sprites.length);
         gl.disable(gl.BLEND);
-    };
-    MinimapDrawer.vertexShader = [
-        "precision highp float;",
-        "attribute vec2 a_position;",
-        "attribute vec2 a_texture_coord;",
-        "varying vec2 v_texture_coord;",
-        "void main() {",
-        "    gl_Position = vec4(a_position, 0.0, 1.0);",
-        "    v_texture_coord = a_texture_coord;",
-        "}",
-    ].join("\n");
-    MinimapDrawer.fragmentShader = [
-        "precision highp float;",
-        "varying vec2 v_texture_coord;",
-        "uniform sampler2D u_sampler;",
-        "void main() {",
-        "    gl_FragColor = texture2D(u_sampler, v_texture_coord);",
-        "}",
-    ].join("\n");
-    return MinimapDrawer;
-}());
+    }
+}
+MinimapDrawer.vertexShader = [
+    "precision highp float;",
+    "attribute vec2 a_position;",
+    "attribute vec2 a_texture_coord;",
+    "varying vec2 v_texture_coord;",
+    "void main() {",
+    "    gl_Position = vec4(a_position, 0.0, 1.0);",
+    "    v_texture_coord = a_texture_coord;",
+    "}",
+].join("\n");
+MinimapDrawer.fragmentShader = [
+    "precision highp float;",
+    "varying vec2 v_texture_coord;",
+    "uniform sampler2D u_sampler;",
+    "void main() {",
+    "    gl_FragColor = texture2D(u_sampler, v_texture_coord);",
+    "}",
+].join("\n");

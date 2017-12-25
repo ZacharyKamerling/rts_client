@@ -1,4 +1,5 @@
-﻿class Medium1 extends Unit {
+﻿/*
+class Medium1 extends Unit {
     private wpn_facing: number;
 
     constructor(c: Cereal, time: number, frame: number) {
@@ -44,3 +45,4 @@
         layers[1].push({ x: this.x, y: this.y, ref: "minimap_unit" + tc.name });
     }
 }
+*/
