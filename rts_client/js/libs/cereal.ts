@@ -59,9 +59,9 @@ class Cereal {
         return (this.dv.byteLength === this.offset)
     }
 
-    string(): string {
-        let offset = this.offset;
+    getString(): string {
         let size = this.getU32();
+        let offset = this.offset;
         this.offset += size;
         return this.getUTF8String(offset, size);
     }
@@ -72,6 +72,6 @@ class Cereal {
         for (var i = 0; i < length; ++i) {
             utf16View[i] = this.dv.getUint8(offset + i);
         }
-        return decodeURI(encodeURI(atob(String.fromCharCode.apply(null, utf16View))));
+        return decodeURI(encodeURI(String.fromCharCode.apply(null, utf16View)));
     };
 }

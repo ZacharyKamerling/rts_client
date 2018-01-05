@@ -7,6 +7,7 @@
         Build,
         Assist,
         MapInfoRequest,
+        UnitInfoRequest,
     }
 
     export enum QueueOrder {

@@ -82,6 +82,12 @@ var Decoding;
                     let unitID = data.getU16();
                     let orderID = data.getU16();
                     break msg_switch;
+                case ClientMessage.UnitInfo:
+                    let json = data.getString();
+                    let unit_proto = new Unit();
+                    unit_proto.jsonConfig(json);
+                    game.unitPrototypes.push(unit_proto.clone());
+                    break msg_switch;
                 case ClientMessage.MapInfo:
                     let team = data.getU8();
                     let width = data.getU16();

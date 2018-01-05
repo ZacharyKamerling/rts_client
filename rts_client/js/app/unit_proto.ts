@@ -111,7 +111,7 @@ class Unit {
             Object.assign(this.weapons[i], o.weapons[i].spriteGraphic);
         }
 
-        this.radius = o.radius;
+        this.radius = o.collision_radius;
         this.sightRadius = o.sight_range;
     }
 
