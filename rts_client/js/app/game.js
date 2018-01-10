@@ -107,7 +107,10 @@ class Game {
         this.drawStatusBars();
         this.drawSelectBox();
         this.drawMinimap();
+        this.drawResourceBars();
         this.lastDrawTime = currentTime;
+    }
+    drawResourceBars() {
         let primeBar = document.getElementById('primeBar');
         let primeOutput = document.getElementById('primeOutput');
         let primeDrain = document.getElementById('primeDrain');
@@ -283,11 +286,11 @@ class Game {
                     let g = 255;
                     let b = 100;
                     let a = 255;
-                    if (soul.current.isSelected) {
+                    if (soul.current.is_selected) {
                         onlyEnemyIsSelected = false;
                         selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
                     }
-                    else if (soul.current.isBeingSelected) {
+                    else if (soul.current.is_being_selected) {
                         onlyEnemyIsBeingSelected = false;
                         dashed.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
                     }
@@ -300,10 +303,10 @@ class Game {
                     let g = 0;
                     let b = 100;
                     let a = 255;
-                    if (soul.current.isSelected && onlyEnemyIsSelected) {
+                    if (soul.current.is_selected && onlyEnemyIsSelected) {
                         enemy_selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
                     }
-                    else if (soul.current.isBeingSelected && onlyEnemyIsBeingSelected) {
+                    else if (soul.current.is_being_selected && onlyEnemyIsBeingSelected) {
                         enemy_dashed.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
                     }
                 }
@@ -358,7 +361,7 @@ class Game {
             let soul = this.souls[i];
             if (soul) {
                 if (soul.current.team === this.team) {
-                    circles.push({ x: soul.current.x, y: soul.current.y, r: soul.current.sightRadius });
+                    circles.push({ x: soul.current.x, y: soul.current.y, r: soul.current.sight_range });
                 }
             }
         }

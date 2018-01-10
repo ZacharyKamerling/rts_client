@@ -23,7 +23,7 @@
 
             for (let i = 0; i < game.souls.length; i++) {
                 let soul = game.souls[i];
-                if (soul && (logicFrame - soul.new.frameCreated > 2)) {
+                if (soul && (logicFrame - soul.new.frame_created > 2)) {
                     game.souls[i] = null;
                 }
             }
@@ -72,7 +72,9 @@
                 case ClientMessage.UnitDeath:
                     let unit_ID = data.getU16();
                     let dmg_type = data.getU8();
-                    game.souls[unit_ID].current.isDead = true;
+                    if (game.souls[unit_ID]) {
+                        game.souls[unit_ID].current.is_dead = true;
+                    }
                     break msg_switch;
                 // Player Info
                 case ClientMessage.TeamInfo:

@@ -24,7 +24,7 @@
         for (let i = 0; i < game.souls.length; i++) {
             let soul = game.souls[i];
 
-            if (soul && soul.current.isBeingSelected) {
+            if (soul && soul.current.is_being_selected) {
                 return i;
             }
         }

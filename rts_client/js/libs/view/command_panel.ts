@@ -3,10 +3,14 @@
     private handler: (name: string) => void;
     private commands: { [index: string]: {src: string, tooltip: string} };
 
-    constructor(parent: HTMLElement, commands: { [index: string]: { src: string, tooltip: string } }, handler: (name: string) => void) {
+    constructor(parent: HTMLElement, handler: (name: string) => void) {
         this.parent = parent;
-        this.commands = commands;
         this.handler = handler;
+        this.commands = {};
+    }
+
+    addCommand(ref: string, command: { src: string, tooltip: string }) {
+        this.commands[ref] = command;
     }
 
     renderCommands(cmds: string[]) {
@@ -14,22 +18,24 @@
             this.parent.removeChild(this.parent.firstChild);
         }
 
-        for (let i = 0; i < cmds.length; i++) {
-            let self = this;
-            let cmd = cmds[i];
-            let btn = document.createElement("input");
-            btn.name = cmd;
-            btn.type = "image";
-            btn.title = this.commands[cmd].tooltip;
-            btn.src = this.commands[cmd].src;
-            btn.onclick = function (name: string, handler: (name: string) => void) {
-                return function (event: MouseEvent) {
-                    event.stopPropagation();
-                    event.stopImmediatePropagation();
-                    handler(name);
-                };
-            }(btn.name, self.handler);
-            this.parent.appendChild(btn);
+        let self = this;
+        for (let cmdRef of cmds) {
+            let cmd = this.commands[cmdRef];
+            if (cmd) {
+                let btn = document.createElement("input");
+                btn.name = cmdRef;
+                btn.type = "image";
+                btn.title = cmd.tooltip;
+                btn.src = cmd.src;
+                btn.onclick = function (name: string, handler: (name: string) => void) {
+                    return function (event: MouseEvent) {
+                        event.stopPropagation();
+                        event.stopImmediatePropagation();
+                        handler(name);
+                    };
+                } (btn.name, self.handler);
+                this.parent.appendChild(btn);
+            }
         }
     }
 }

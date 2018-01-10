@@ -13,8 +13,7 @@ function main() {
     let drawCanvas = <HTMLCanvasElement>document.getElementById('drawCanvas');
     let minimapCanvas = <HTMLCanvasElement>document.getElementById('minimapCanvas');
     let ctrlDiv = <HTMLElement>document.getElementById('controlDiv');
-    let cmdDiv = <HTMLElement>document.getElementById('commandDiv');
-    let cmds = commands();
+    
     
     game.chef = chef;
     game.inputState = new UserInput.InputState();
@@ -24,7 +23,7 @@ function main() {
     game.selectionBoxDrawer = new SelectionBoxDrawer(drawCanvas);
     game.minimapBoxDrawer = new MinimapBoxDrawer(minimapCanvas);
     game.statusBarDrawer = new StatusBarDrawer(drawCanvas);
-    game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
+    game.commandPanel = commands(game);
 
     let spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e: Event) {
@@ -106,12 +105,12 @@ function playGame(game: Game) {
     draw();
 }
 
-function commands(): { [index: string]: { src: string, tooltip: string } } {
-    let cmds: { [index: string]: { src: string, tooltip: string } } = {};
-    cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
-    cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
-    cmds["buildArtillery1"] = { src: "img/build.png", tooltip: "[B] Build T1 Artillery" };
-    cmds["buildExtractor1"] = { src: "img/build.png", tooltip: "[Q] Build T1 Extractor" };
+function commands(game: Game): CommandPanel {
+    let cmdDiv = <HTMLElement>document.getElementById('commandDiv');
+    let cmds = new CommandPanel(cmdDiv, game.commandPanelHandler());
+    cmds.addCommand("attack", { src: "img/attack.png", tooltip: "[A] Attack" });
+    cmds.addCommand("move", { src: "img/move.png", tooltip: "[M] Move" });
+    cmds.addCommand("stop", { src: "img/stop.png", tooltip: "[S] Stop" });
 
     return cmds;
 }

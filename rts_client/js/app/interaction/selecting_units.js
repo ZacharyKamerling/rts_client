@@ -15,7 +15,7 @@ var Interaction;
             let selected = new Array();
             for (let i = 0; i < game.souls.length; i++) {
                 let soul = game.souls[i];
-                if (soul && soul.current.isSelected) {
+                if (soul && soul.current.is_selected) {
                     selected.push(i);
                 }
             }
@@ -28,11 +28,11 @@ var Interaction;
                 for (let i = 0; i < game.souls.length; i++) {
                     let soul = game.souls[i];
                     if (soul) {
-                        if (soul.current.isBeingSelected) {
-                            soul.current.isSelected = true;
+                        if (soul.current.is_being_selected) {
+                            soul.current.is_selected = true;
                         }
                         else if (!game.inputState.shiftDown()) {
-                            soul.current.isSelected = false;
+                            soul.current.is_selected = false;
                         }
                     }
                 }
@@ -41,11 +41,11 @@ var Interaction;
             let bldSet = {};
             for (let i = 0; i < game.souls.length; i++) {
                 let soul = game.souls[i];
-                if (soul && soul.current.isSelected) {
-                    for (let bld of soul.current.buildRoster) {
+                if (soul && soul.current.is_selected) {
+                    for (let bld of soul.current.build_roster) {
                         bldSet[bld] = null;
                     }
-                    for (let cmd of soul.current.commandRoster) {
+                    for (let cmd of soul.current.command_roster) {
                         cmdSet[cmd] = null;
                     }
                 }
@@ -105,44 +105,44 @@ var Interaction;
                     let wDif = x - minX;
                     if (y >= minY && y <= maxY) {
                         if (x + r >= minX && x - r <= maxX) {
-                            soul.current.isBeingSelected = true;
+                            soul.current.is_being_selected = true;
                         }
                         else {
-                            soul.current.isBeingSelected = false;
+                            soul.current.is_being_selected = false;
                         }
                     }
                     else if (x >= minX && x <= maxX) {
                         if (y + r >= minY && y - r <= maxY) {
-                            soul.current.isBeingSelected = true;
+                            soul.current.is_being_selected = true;
                         }
                         else {
-                            soul.current.isBeingSelected = false;
+                            soul.current.is_being_selected = false;
                         }
                     }
                     else if (x > maxX) {
                         if (y > maxY && (nDif * nDif + eDif * eDif) <= rSqrd) {
-                            soul.current.isBeingSelected = true;
+                            soul.current.is_being_selected = true;
                         }
                         else if (y < minY && (sDif * sDif + eDif * eDif) <= rSqrd) {
-                            soul.current.isBeingSelected = true;
+                            soul.current.is_being_selected = true;
                         }
                         else {
-                            soul.current.isBeingSelected = false;
+                            soul.current.is_being_selected = false;
                         }
                     }
                     else if (x < minX) {
                         if (y > maxY && (nDif * nDif + wDif * wDif) <= rSqrd) {
-                            soul.current.isBeingSelected = true;
+                            soul.current.is_being_selected = true;
                         }
                         else if (y < minY && (sDif * sDif + wDif * wDif) <= rSqrd) {
-                            soul.current.isBeingSelected = true;
+                            soul.current.is_being_selected = true;
                         }
                         else {
-                            soul.current.isBeingSelected = false;
+                            soul.current.is_being_selected = false;
                         }
                     }
                     else {
-                        soul.current.isBeingSelected = false;
+                        soul.current.is_being_selected = false;
                     }
                 }
             }
@@ -159,7 +159,7 @@ var Interaction;
                 for (let i = 0; i < game.souls.length; i++) {
                     let soul = game.souls[i];
                     if (soul) {
-                        soul.current.isSelected = false;
+                        soul.current.is_selected = false;
                     }
                 }
             }
