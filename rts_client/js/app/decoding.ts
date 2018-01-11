@@ -102,6 +102,7 @@
                     let unit_proto = new Unit();
                     unit_proto.jsonConfig(json);
                     game.unitPrototypes.push(unit_proto.clone());
+                    game.commandPanel.addCommand("build_" + unit_proto.name, { src: unit_proto.icon_src, tooltip: unit_proto.tooltip });
                     break msg_switch;
                 case ClientMessage.MapInfo:
                     let team = data.getU8();

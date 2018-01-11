@@ -36,7 +36,7 @@ class Game {
         this.energyDrain = 0;
         this.orderID = 0;
         this.primeNodes = new Array();
-        this.souls = Array();
+        this.souls = Array(Game.MAX_UNITS);
         for (let i = 0; i < Game.MAX_UNITS; i++) {
             this.souls.push(null);
         }
@@ -86,11 +86,28 @@ class Game {
                     game.control = new Interaction.AttackMoveOrder.BeingIssued();
                     break;
                 default:
-                    console.log('commandPanelHandler couldn\'t handle: ' + name);
-                    game.control = new Interaction.Core.DoingNothing();
+                    if (name.startsWith("build_")) {
+                        game.buildOrderHandler(name.slice("build_".length));
+                    }
+                    else {
+                        console.log('commandPanelHandler couldn\'t handle: ' + name);
+                        game.control = new Interaction.Core.DoingNothing();
+                    }
                     break;
             }
         };
+    }
+    buildOrderHandler(name) {
+        for (let i = 0; i < this.unitPrototypes.length; i++) {
+            let proto = this.unitPrototypes[i];
+            if (proto.name === name) {
+                let imgs = new Array();
+                for (let img of proto.sprite_graphics) {
+                    imgs.push(img.img_ref);
+                }
+                this.control = new Interaction.BuildOrder.BeingIssued(proto.width_and_height.w, proto.width_and_height.h, i, imgs);
+            }
+        }
     }
     draw() {
         let currentTime = Date.now();
@@ -281,7 +298,7 @@ class Game {
                 if (soul.current.team === this.team) {
                     let x = soul.current.x;
                     let y = soul.current.y;
-                    let radius = soul.current.radius;
+                    let radius = soul.current.collision_radius;
                     let r = 0;
                     let g = 255;
                     let b = 100;
@@ -298,7 +315,7 @@ class Game {
                 else {
                     let x = soul.current.x;
                     let y = soul.current.y;
-                    let radius = soul.current.radius;
+                    let radius = soul.current.collision_radius;
                     let r = 255;
                     let g = 0;
                     let b = 100;
@@ -330,10 +347,10 @@ class Game {
         for (let i = 0; i < this.souls.length; i++) {
             let soul = this.souls[i];
             if (soul && soul.current && soul.old) {
-                let radius = soul.current.radius;
+                let radius = soul.current.collision_radius;
                 let x = soul.current.x;
                 let y = soul.current.y + radius * Game.TILESIZE;
-                let w = soul.current.radius * Game.TILESIZE;
+                let w = soul.current.collision_radius * Game.TILESIZE;
                 let h = 1;
                 if (soul.old.progress < 255) {
                     let v = soul.old.progress / 255;

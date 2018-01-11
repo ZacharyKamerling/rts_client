@@ -35,16 +35,22 @@ class Unit {
     build_roster: string[] = new Array();
     command_roster: string[] = new Array();
     passengers: number[] = new Array();
+
+    name: string;
+    icon_src: string;
+    tooltip: string;
     type_id: number;
     unit_id: number;
     anim_id: number;
     team: number;
     x: number;
     y: number;
+    width_and_height: { w: number, h: number };
+    height: number;
     facing: number;
     health: number;
     progress: number;
-    radius: number;
+    collision_radius: number;
     sight_range: number;
 
     frame_created: number;
@@ -77,16 +83,20 @@ class Unit {
             a.passengers.push(psg);
         }
 
+        a.name = this.name;
+        a.icon_src = this.icon_src;
+        a.tooltip = this.tooltip;
         a.type_id = this.type_id;
         a.unit_id = this.unit_id;
         a.anim_id = this.anim_id;
         a.team = this.team;
         a.x = this.x;
         a.y = this.y;
+        a.width_and_height = this.width_and_height;
         a.facing = this.facing;
         a.health = this.health;
         a.progress = this.progress;
-        a.radius = this.radius;
+        a.collision_radius = this.collision_radius;
         a.sight_range = this.sight_range;
         a.frame_created = this.frame_created;
         a.time_created = this.time_created;
@@ -120,7 +130,11 @@ class Unit {
             this.command_roster.push(cmd);
         }
 
-        this.radius = o.collision_radius;
+        this.name = o.name;
+        this.icon_src = o.icon_src;
+        this.tooltip = o.tooltip;
+        this.width_and_height = o.width_and_height;
+        this.collision_radius = o.collision_radius;
         this.sight_range = o.sight_range;
     }
 

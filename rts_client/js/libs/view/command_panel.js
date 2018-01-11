@@ -5,6 +5,7 @@ class CommandPanel {
         this.commands = {};
     }
     addCommand(ref, command) {
+        console.log("Added " + ref + " with src: " + command.src + " and tooltip: " + command.tooltip);
         this.commands[ref] = command;
     }
     renderCommands(cmds) {
@@ -28,6 +29,9 @@ class CommandPanel {
                     };
                 }(btn.name, self.handler);
                 this.parent.appendChild(btn);
+            }
+            else {
+                console.log("Couldn't render " + cmdRef);
             }
         }
     }

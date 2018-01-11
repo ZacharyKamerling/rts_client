@@ -10,6 +10,7 @@
     }
 
     addCommand(ref: string, command: { src: string, tooltip: string }) {
+        console.log("Added " + ref + " with src: " + command.src + " and tooltip: " + command.tooltip);
         this.commands[ref] = command;
     }
 
@@ -35,6 +36,9 @@
                     };
                 } (btn.name, self.handler);
                 this.parent.appendChild(btn);
+            }
+            else {
+                console.log("Couldn't render " + cmdRef);
             }
         }
     }

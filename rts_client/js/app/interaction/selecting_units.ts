@@ -73,7 +73,7 @@
         let blds: string[] = [];
         for (let bld in bldSet) {
             if (bldSet.hasOwnProperty(bld)) {
-                blds.push(bld);
+                blds.push("build_" + bld);
             }
         }
 
@@ -115,7 +115,7 @@
             if (soul && soul.new) {
                 let x = soul.current.x;
                 let y = soul.current.y;
-                let r = soul.current.radius * Game.TILESIZE;
+                let r = soul.current.collision_radius * Game.TILESIZE;
                 let rSqrd = r * r;
 
                 let nDif = y - maxY;

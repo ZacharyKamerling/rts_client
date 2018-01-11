@@ -59,7 +59,7 @@ var Interaction;
             let blds = [];
             for (let bld in bldSet) {
                 if (bldSet.hasOwnProperty(bld)) {
-                    blds.push(bld);
+                    blds.push("build_" + bld);
                 }
             }
             cmds.sort();
@@ -97,7 +97,7 @@ var Interaction;
                 if (soul && soul.new) {
                     let x = soul.current.x;
                     let y = soul.current.y;
-                    let r = soul.current.radius * Game.TILESIZE;
+                    let r = soul.current.collision_radius * Game.TILESIZE;
                     let rSqrd = r * r;
                     let nDif = y - maxY;
                     let sDif = y - minY;

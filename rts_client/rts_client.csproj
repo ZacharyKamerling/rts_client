@@ -73,10 +73,6 @@
     <TypeScriptCompile Include="js\app\main.ts" />
     <TypeScriptCompile Include="js\libs\view\unit_drawer.ts" />
     <TypeScriptCompile Include="js\missiles\basic_missile.ts" />
-    <TypeScriptCompile Include="js\units\extractor1.ts" />
-    <TypeScriptCompile Include="js\units\artillery1.ts" />
-    <TypeScriptCompile Include="js\units\medium1.ts" />
-    <TypeScriptCompile Include="js\units\fast1.ts" />
   </ItemGroup>
   <ItemGroup>
     <None Include="File System.pubxml" />
