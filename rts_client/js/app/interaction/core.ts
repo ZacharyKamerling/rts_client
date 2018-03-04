@@ -5,6 +5,7 @@
         AttackMove,
         AttackTarget,
         Build,
+        Train,
         Assist,
         MapInfoRequest,
         UnitInfoRequest,

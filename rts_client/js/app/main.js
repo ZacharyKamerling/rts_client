@@ -99,73 +99,29 @@ function commands(game) {
 }
 function spriteRefs(colors) {
     let tc_imgs = [
-        {
-            src: "img/basic_missile.png",
-            ref: "basic_missile"
-        },
-        {
-            src: "img/platform1.png",
-            ref: "platform1"
-        },
-        {
-            src: "img/platform2.png",
-            ref: "platform2"
-        },
-        {
-            src: "img/extractor_blade1.png",
-            ref: "extractor_blade1"
-        },
-        {
-            src: "img/artillery_wpn1.png",
-            ref: "artillery_wpn1"
-        },
-        {
-            src: "img/artillery_wpn2.png",
-            ref: "artillery_wpn2"
-        },
-        {
-            src: "img/missile1.png",
-            ref: "missile1"
-        },
-        {
-            src: "img/basic_unit.png",
-            ref: "basic_unit"
-        },
-        {
-            src: "img/basic_wpn.png",
-            ref: "basic_wpn"
-        },
-        {
-            src: "img/fast1.png",
-            ref: "fast1"
-        },
-        {
-            src: "img/fast_wpn1.png",
-            ref: "fast_wpn1"
-        },
-        {
-            src: "img/fast_msl1.png",
-            ref: "fast_msl1"
-        },
-        {
-            src: "img/fighter1.png",
-            ref: "fighter1"
-        },
-        {
-            src: "img/bomber1.png",
-            ref: "bomber1"
-        },
-        {
-            src: "img/minimap_unit.png",
-            ref: "minimap_unit"
-        },
+        "img/basic_missile.png",
+        "img/platform1.png",
+        "img/platform2.png",
+        "img/extractor_blade1.png",
+        "img/artillery_wpn1.png",
+        "img/artillery_wpn2.png",
+        "img/factory.png",
+        "img/missile1.png",
+        "img/basic_unit.png",
+        "img/basic_wpn.png",
+        "img/fast1.png",
+        "img/fast_wpn1.png",
+        "img/fast_msl1.png",
+        "img/fighter1.png",
+        "img/bomber1.png",
+        "img/minimap_unit.png"
     ];
     let list = new Array();
     for (let i = 0; i < colors.length; i++) {
         let color = colors[i];
         for (let n = 0; n < tc_imgs.length; n++) {
-            let src = tc_imgs[n].src;
-            let ref = tc_imgs[n].ref + color.name;
+            let src = tc_imgs[n];
+            let ref = color.name + '/' + src;
             list.push({ src: src, ref: ref, color: color });
         }
     }

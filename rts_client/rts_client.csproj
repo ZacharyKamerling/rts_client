@@ -33,6 +33,7 @@
     <Content Include="img\build.png" />
     <Content Include="img\dirt0.png" />
     <Content Include="img\extractor_blade1.png" />
+    <Content Include="img\factory.png" />
     <Content Include="img\fighter1.png" />
     <Content Include="img\move.png" />
     <Content Include="img\wall0.png" />

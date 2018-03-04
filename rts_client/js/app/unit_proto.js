@@ -68,20 +68,28 @@ class Unit {
     }
     jsonConfig(str) {
         let o = JSON.parse(str);
-        for (let i = 0; i < o.sprite_graphics.length; i++) {
-            this.sprite_graphics[i] = new SpriteGraphic();
-            Object.assign(this.sprite_graphics[i], o.sprite_graphics[i]);
+        if (o.sprite_graphics) {
+            for (let i = 0; i < o.sprite_graphics.length; i++) {
+                this.sprite_graphics[i] = new SpriteGraphic();
+                Object.assign(this.sprite_graphics[i], o.sprite_graphics[i]);
+            }
         }
-        for (let wpn of o.weapons) {
-            let tmp = new SpriteGraphic();
-            Object.assign(tmp, wpn.sprite_graphic);
-            this.weapons.push(tmp);
+        if (o.weapons) {
+            for (let wpn of o.weapons) {
+                let tmp = new SpriteGraphic();
+                Object.assign(tmp, wpn.sprite_graphic);
+                this.weapons.push(tmp);
+            }
         }
-        for (let bld of o.build_roster) {
-            this.build_roster.push(bld);
+        if (o.build_roster) {
+            for (let bld of o.build_roster) {
+                this.build_roster.push(bld);
+            }
         }
-        for (let cmd of o.command_roster) {
-            this.command_roster.push(cmd);
+        if (o.command_roster) {
+            for (let cmd of o.command_roster) {
+                this.command_roster.push(cmd);
+            }
         }
         this.name = o.name;
         this.icon_src = o.icon_src;
@@ -117,16 +125,16 @@ class Unit {
         for (let sg of this.sprite_graphics) {
             let ang = Misc.normalizeAngle(this.facing + sg.facing);
             let xy = Misc.rotateAroundOrigin(this.x, this.y, this.x + sg.x_offset, this.y + sg.y_offset, ang);
-            layers[sg.layer].push({ x: xy.x, y: xy.y, ang: ang, ref: sg.img_ref + tc.name });
+            layers[sg.layer].push({ x: xy.x, y: xy.y, ang: ang, ref: tc.name + '/' + sg.img_ref });
         }
         for (let sg of this.weapons) {
             let xy = Misc.rotateAroundOrigin(this.x, this.y, this.x + sg.x_offset, this.y + sg.y_offset, this.facing);
-            layers[sg.layer].push({ x: xy.x, y: xy.y, ang: sg.facing, ref: sg.img_ref + tc.name });
+            layers[sg.layer].push({ x: xy.x, y: xy.y, ang: sg.facing, ref: tc.name + '/' + sg.img_ref });
         }
     }
     renderMinimap(game, layers) {
         let tc = game.teamColors[this.team];
-        layers[1].push({ x: this.x, y: this.y, ang: this.facing, ref: "minimap_unit" + tc.name });
+        layers[1].push({ x: this.x, y: this.y, ang: this.facing, ref: tc.name + '/' + "img/minimap_unit.png" });
     }
     step(timeDelta, oldUnit, newUnit) {
         let f1 = oldUnit.facing;

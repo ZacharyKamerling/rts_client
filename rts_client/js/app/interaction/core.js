@@ -7,9 +7,10 @@ var Interaction;
             ServerMessage[ServerMessage["AttackMove"] = 1] = "AttackMove";
             ServerMessage[ServerMessage["AttackTarget"] = 2] = "AttackTarget";
             ServerMessage[ServerMessage["Build"] = 3] = "Build";
-            ServerMessage[ServerMessage["Assist"] = 4] = "Assist";
-            ServerMessage[ServerMessage["MapInfoRequest"] = 5] = "MapInfoRequest";
-            ServerMessage[ServerMessage["UnitInfoRequest"] = 6] = "UnitInfoRequest";
+            ServerMessage[ServerMessage["Train"] = 4] = "Train";
+            ServerMessage[ServerMessage["Assist"] = 5] = "Assist";
+            ServerMessage[ServerMessage["MapInfoRequest"] = 6] = "MapInfoRequest";
+            ServerMessage[ServerMessage["UnitInfoRequest"] = 7] = "UnitInfoRequest";
         })(Core.ServerMessage || (Core.ServerMessage = {}));
         var ServerMessage = Core.ServerMessage;
         (function (QueueOrder) {

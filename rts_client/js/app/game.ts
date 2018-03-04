@@ -240,7 +240,7 @@ class Game {
 
             for (let i = 0; i < control.imgs.length; i++) {
                 layers.push({
-                    x: x, y: y, ang: 0.0, ref: control.imgs[i] + this.teamColors[this.team].name
+                    x: x, y: y, ang: 0.0, ref: this.teamColors[this.team].name + '/' + control.imgs[i]
                 });
             }
             this.buildPlacementDrawer.draw(this.camera.x, this.camera.y, this.camera.scale, layers);

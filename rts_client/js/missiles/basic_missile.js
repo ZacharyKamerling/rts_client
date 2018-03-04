@@ -4,7 +4,7 @@ class BasicMissile extends Missile {
     }
     render(game, layers) {
         let tc = game.teamColors[this.team];
-        layers[3].push({ x: this.x, y: this.y, ang: this.facing, ref: "fast_msl1" + tc.name });
+        layers[3].push({ x: this.x, y: this.y, ang: this.facing, ref: tc.name + '/' + "img/fast_msl1.png" });
     }
     renderExplosion(game, layers) {
     }
