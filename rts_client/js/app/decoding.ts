@@ -11,6 +11,7 @@
         TeamInfo,
         MapInfo,
         UnitInfo,
+        MissileInfo,
     }
 
     export function processPacket(game: Game, data: Cereal): void {

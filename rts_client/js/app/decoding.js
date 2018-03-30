@@ -12,6 +12,7 @@ var Decoding;
         ClientMessage[ClientMessage["TeamInfo"] = 7] = "TeamInfo";
         ClientMessage[ClientMessage["MapInfo"] = 8] = "MapInfo";
         ClientMessage[ClientMessage["UnitInfo"] = 9] = "UnitInfo";
+        ClientMessage[ClientMessage["MissileInfo"] = 10] = "MissileInfo";
     })(ClientMessage || (ClientMessage = {}));
     function processPacket(game, data) {
         let currentTime = Date.now();
