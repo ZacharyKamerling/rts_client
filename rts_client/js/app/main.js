@@ -1,19 +1,17 @@
 "use strict";
 function main() {
-    var mainMenu = document.getElementById('mainMenu');
-    var content = document.getElementById('content');
-    var chef = new Chef();
-    var connectBtn = document.getElementById('connectBtn');
-    var connected = false;
-    var thingsLoaded = 0;
-    var conn = null;
-    var game = new Game();
-    var fowCanvas = document.getElementById('fowCanvas');
-    var drawCanvas = document.getElementById('drawCanvas');
-    var minimapCanvas = document.getElementById('minimapCanvas');
-    var ctrlDiv = document.getElementById('controlDiv');
-    var cmdDiv = document.getElementById('commandDiv');
-    var cmds = commands();
+    let mainMenu = document.getElementById('mainMenu');
+    let content = document.getElementById('content');
+    let chef = new Chef();
+    let connectBtn = document.getElementById('connectBtn');
+    let connected = false;
+    let thingsLoaded = 0;
+    let conn = null;
+    let game = new Game();
+    let fowCanvas = document.getElementById('fowCanvas');
+    let drawCanvas = document.getElementById('drawCanvas');
+    let minimapCanvas = document.getElementById('minimapCanvas');
+    let ctrlDiv = document.getElementById('controlDiv');
     game.chef = chef;
     game.inputState = new UserInput.InputState();
     game.tileDrawer = new TileDrawer(drawCanvas, 'img/tileset.png', 'img/lttp-all.png');
@@ -22,8 +20,8 @@ function main() {
     game.selectionBoxDrawer = new SelectionBoxDrawer(drawCanvas);
     game.minimapBoxDrawer = new MinimapBoxDrawer(minimapCanvas);
     game.statusBarDrawer = new StatusBarDrawer(drawCanvas);
-    game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
-    var spritemap = new SpriteMap(spriteRefs(game.teamColors));
+    game.commandPanel = commands(game);
+    let spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e) {
         game.unitDrawer = new UnitDrawer(drawCanvas, spritemap);
         game.minimapDrawer = new MinimapDrawer(minimapCanvas, spritemap);
@@ -31,10 +29,10 @@ function main() {
         mainMenu.appendChild(spritemap.spriteSheet);
     };
     connectBtn.onclick = function () {
-        var nameFieldValue = document.getElementById('nameField').value;
-        var passFieldValue = document.getElementById('passField').value;
-        var addrFieldValue = document.getElementById('addrField').value;
-        var portFieldValue = document.getElementById('portField').value;
+        let nameFieldValue = document.getElementById('nameField').value;
+        let passFieldValue = document.getElementById('passField').value;
+        let addrFieldValue = document.getElementById('addrField').value;
+        let portFieldValue = document.getElementById('portField').value;
         console.log('Attempting connection...');
         if (addrFieldValue === "localhost") {
             conn = new WebSocket('ws://localhost:' + portFieldValue);
@@ -64,6 +62,9 @@ function main() {
             chef.putU8(Interaction.Core.ServerMessage.MapInfoRequest);
             chef.putU32(game.orderID++);
             conn.send(chef.done());
+            chef.putU8(Interaction.Core.ServerMessage.UnitInfoRequest);
+            chef.putU32(game.orderID++);
+            conn.send(chef.done());
             game.connected = true;
             game.inputState.addListener(minimapCanvas, Interaction.Minimap.interact(game));
             game.inputState.addListener(ctrlDiv, Interaction.Core.interact(game));
@@ -88,83 +89,39 @@ function playGame(game) {
     }
     draw();
 }
-function commands() {
-    var cmds = {};
-    cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
-    cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
-    cmds["buildArtillery1"] = { src: "img/build.png", tooltip: "[B] Build T1 Artillery" };
-    cmds["buildExtractor1"] = { src: "img/build.png", tooltip: "[Q] Build T1 Extractor" };
+function commands(game) {
+    let cmdDiv = document.getElementById('commandDiv');
+    let cmds = new CommandPanel(cmdDiv, game.commandPanelHandler());
+    cmds.addCommand("attack", { src: "img/attack.png", tooltip: "[A] Attack" });
+    cmds.addCommand("move", { src: "img/move.png", tooltip: "[M] Move" });
+    cmds.addCommand("stop", { src: "img/stop.png", tooltip: "[S] Stop" });
     return cmds;
 }
 function spriteRefs(colors) {
-    var tc_imgs = [
-        {
-            src: "img/basic_missile.png",
-            ref: "basic_missile"
-        },
-        {
-            src: "img/platform1.png",
-            ref: "platform1"
-        },
-        {
-            src: "img/platform2.png",
-            ref: "platform2"
-        },
-        {
-            src: "img/extractor_blade1.png",
-            ref: "extractor_blade1"
-        },
-        {
-            src: "img/artillery_wpn1.png",
-            ref: "artillery_wpn1"
-        },
-        {
-            src: "img/artillery_wpn2.png",
-            ref: "artillery_wpn2"
-        },
-        {
-            src: "img/missile1.png",
-            ref: "missile1"
-        },
-        {
-            src: "img/basic_unit.png",
-            ref: "basic_unit"
-        },
-        {
-            src: "img/basic_wpn.png",
-            ref: "basic_wpn"
-        },
-        {
-            src: "img/fast1.png",
-            ref: "fast1"
-        },
-        {
-            src: "img/fast_wpn1.png",
-            ref: "fast_wpn1"
-        },
-        {
-            src: "img/fast_msl1.png",
-            ref: "fast_msl1"
-        },
-        {
-            src: "img/fighter1.png",
-            ref: "fighter1"
-        },
-        {
-            src: "img/bomber1.png",
-            ref: "bomber1"
-        },
-        {
-            src: "img/minimap_unit.png",
-            ref: "minimap_unit"
-        },
+    let tc_imgs = [
+        "img/basic_missile.png",
+        "img/platform1.png",
+        "img/platform2.png",
+        "img/extractor_blade1.png",
+        "img/artillery_wpn1.png",
+        "img/artillery_wpn2.png",
+        "img/factory.png",
+        "img/missile1.png",
+        "img/basic_unit.png",
+        "img/basic_wpn.png",
+        "img/fast1.png",
+        "img/fast_wpn1.png",
+        "img/fast_msl1.png",
+        "img/fighter1.png",
+        "img/bomber1.png",
+        "img/minimap_unit.png"
     ];
-    var list = new Array();
-    for (var i = 0; i < colors.length; i++) {
-        var color = colors[i];
-        for (var n = 0; n < tc_imgs.length; n++) {
-            var src = tc_imgs[n].src;
-            var ref = tc_imgs[n].ref + color.name;
+    let list = new Array();
+    for (let i = 0; i < colors.length; i++) {
+        let color = colors[i];
+        for (let n = 0; n < tc_imgs.length; n++) {
+            let src = tc_imgs[n];
+            let ref = color.name + '/' + src;
             list.push({ src: src, ref: ref, color: color });
         }
     }

@@ -2,21 +2,20 @@ var Interaction;
 (function (Interaction) {
     var SelectingUnits;
     (function (SelectingUnits) {
-        var CurrentAction = (function () {
-            function CurrentAction(mx, my, cx, cy, sd) {
+        class CurrentAction {
+            constructor(mx, my, cx, cy, sd) {
                 this.clickX = mx;
                 this.clickY = my;
                 this.currentX = cx;
                 this.currentY = cy;
             }
-            return CurrentAction;
-        }());
+        }
         SelectingUnits.CurrentAction = CurrentAction;
         function selectedUnitIDs(game) {
-            var selected = new Array();
-            for (var i = 0; i < game.souls.length; i++) {
-                var soul = game.souls[i];
-                if (soul && soul.current.isSelected) {
+            let selected = new Array();
+            for (let i = 0; i < game.souls.length; i++) {
+                let soul = game.souls[i];
+                if (soul && soul.current.is_selected) {
                     selected.push(i);
                 }
             }
@@ -24,39 +23,43 @@ var Interaction;
         }
         SelectingUnits.selectedUnitIDs = selectedUnitIDs;
         function selectUnits(game) {
-            var control = game.control;
+            let control = game.control;
             if (control instanceof Interaction.SelectingUnits.CurrentAction) {
-                for (var i = 0; i < game.souls.length; i++) {
-                    var soul = game.souls[i];
+                for (let i = 0; i < game.souls.length; i++) {
+                    let soul = game.souls[i];
                     if (soul) {
-                        if (soul.current.isBeingSelected) {
-                            soul.current.isSelected = true;
+                        if (soul.current.is_being_selected) {
+                            soul.current.is_selected = true;
                         }
                         else if (!game.inputState.shiftDown()) {
-                            soul.current.isSelected = false;
+                            soul.current.is_selected = false;
                         }
                     }
                 }
             }
-            var cmdSet = {};
-            var bldSet = {};
-            for (var i = 0; i < game.souls.length; i++) {
-                var soul = game.souls[i];
-                if (soul && soul.current.isSelected) {
-                    soul.current.buildables(bldSet);
-                    soul.current.commands(cmdSet);
+            let cmdSet = {};
+            let bldSet = {};
+            for (let i = 0; i < game.souls.length; i++) {
+                let soul = game.souls[i];
+                if (soul && soul.current.is_selected) {
+                    for (let bld of soul.current.build_roster) {
+                        bldSet[bld] = null;
+                    }
+                    for (let cmd of soul.current.command_roster) {
+                        cmdSet[cmd] = null;
+                    }
                 }
             }
-            var cmds = [];
-            for (var cmd in cmdSet) {
+            let cmds = [];
+            for (let cmd in cmdSet) {
                 if (cmdSet.hasOwnProperty(cmd)) {
                     cmds.push(cmd);
                 }
             }
-            var blds = [];
-            for (var bld in bldSet) {
+            let blds = [];
+            for (let bld in bldSet) {
                 if (bldSet.hasOwnProperty(bld)) {
-                    blds.push(bld);
+                    blds.push("build_" + bld);
                 }
             }
             cmds.sort();
@@ -65,98 +68,98 @@ var Interaction;
         }
         SelectingUnits.selectUnits = selectUnits;
         function configUnitSelections(game) {
-            var control = game.control;
+            let control = game.control;
             if (control instanceof Interaction.SelectingUnits.CurrentAction) {
-                var x1 = control.clickX;
-                var x2 = control.currentX;
-                var y1 = control.clickY;
-                var y2 = control.currentY;
+                let x1 = control.clickX;
+                let x2 = control.currentX;
+                let y1 = control.clickY;
+                let y2 = control.currentY;
                 configureUnitsBeingSelected(game, x1, y1, x2, y2);
             }
             if (control instanceof Interaction.Core.DoingNothing) {
-                var input = game.inputState;
-                var width = game.unitDrawer.width();
-                var height = game.unitDrawer.height();
-                var scale = game.camera.scale;
-                var x = game.camera.x + (input.mouseX() - width / 2) / scale;
-                var y = game.camera.y - (input.mouseY() - height / 2) / scale;
+                let input = game.inputState;
+                let width = game.unitDrawer.width();
+                let height = game.unitDrawer.height();
+                let scale = game.camera.scale;
+                let x = game.camera.x + (input.mouseX() - width / 2) / scale;
+                let y = game.camera.y - (input.mouseY() - height / 2) / scale;
                 configureUnitsBeingSelected(game, x, y, x, y);
             }
         }
         SelectingUnits.configUnitSelections = configUnitSelections;
         function configureUnitsBeingSelected(game, x1, y1, x2, y2) {
-            var minX = Math.min(x1, x2);
-            var minY = Math.min(y1, y2);
-            var maxX = Math.max(x1, x2);
-            var maxY = Math.max(y1, y2);
-            for (var i = 0; i < game.souls.length; i++) {
-                var soul = game.souls[i];
+            let minX = Math.min(x1, x2);
+            let minY = Math.min(y1, y2);
+            let maxX = Math.max(x1, x2);
+            let maxY = Math.max(y1, y2);
+            for (let i = 0; i < game.souls.length; i++) {
+                let soul = game.souls[i];
                 if (soul && soul.new) {
-                    var x = soul.current.x;
-                    var y = soul.current.y;
-                    var r = soul.current.radius() * Game.TILESIZE;
-                    var rSqrd = r * r;
-                    var nDif = y - maxY;
-                    var sDif = y - minY;
-                    var eDif = x - maxX;
-                    var wDif = x - minX;
+                    let x = soul.current.x;
+                    let y = soul.current.y;
+                    let r = soul.current.collision_radius * Game.TILESIZE;
+                    let rSqrd = r * r;
+                    let nDif = y - maxY;
+                    let sDif = y - minY;
+                    let eDif = x - maxX;
+                    let wDif = x - minX;
                     if (y >= minY && y <= maxY) {
                         if (x + r >= minX && x - r <= maxX) {
-                            soul.current.isBeingSelected = true;
+                            soul.current.is_being_selected = true;
                         }
                         else {
-                            soul.current.isBeingSelected = false;
+                            soul.current.is_being_selected = false;
                         }
                     }
                     else if (x >= minX && x <= maxX) {
                         if (y + r >= minY && y - r <= maxY) {
-                            soul.current.isBeingSelected = true;
+                            soul.current.is_being_selected = true;
                         }
                         else {
-                            soul.current.isBeingSelected = false;
+                            soul.current.is_being_selected = false;
                         }
                     }
                     else if (x > maxX) {
                         if (y > maxY && (nDif * nDif + eDif * eDif) <= rSqrd) {
-                            soul.current.isBeingSelected = true;
+                            soul.current.is_being_selected = true;
                         }
                         else if (y < minY && (sDif * sDif + eDif * eDif) <= rSqrd) {
-                            soul.current.isBeingSelected = true;
+                            soul.current.is_being_selected = true;
                         }
                         else {
-                            soul.current.isBeingSelected = false;
+                            soul.current.is_being_selected = false;
                         }
                     }
                     else if (x < minX) {
                         if (y > maxY && (nDif * nDif + wDif * wDif) <= rSqrd) {
-                            soul.current.isBeingSelected = true;
+                            soul.current.is_being_selected = true;
                         }
                         else if (y < minY && (sDif * sDif + wDif * wDif) <= rSqrd) {
-                            soul.current.isBeingSelected = true;
+                            soul.current.is_being_selected = true;
                         }
                         else {
-                            soul.current.isBeingSelected = false;
+                            soul.current.is_being_selected = false;
                         }
                     }
                     else {
-                        soul.current.isBeingSelected = false;
+                        soul.current.is_being_selected = false;
                     }
                 }
             }
         }
         function begin(game) {
-            var scale = game.camera.scale;
-            var input = game.inputState;
-            var width = game.unitDrawer.width();
-            var height = game.unitDrawer.height();
-            var x = game.camera.x + (input.mouseX() - width / 2) / scale;
-            var y = game.camera.y - (input.mouseY() - height / 2) / scale;
+            let scale = game.camera.scale;
+            let input = game.inputState;
+            let width = game.unitDrawer.width();
+            let height = game.unitDrawer.height();
+            let x = game.camera.x + (input.mouseX() - width / 2) / scale;
+            let y = game.camera.y - (input.mouseY() - height / 2) / scale;
             game.control = new Interaction.SelectingUnits.CurrentAction(x, y, x, y, game.inputState.shiftDown());
             if (!input.shiftDown()) {
-                for (var i = 0; i < game.souls.length; i++) {
-                    var soul = game.souls[i];
+                for (let i = 0; i < game.souls.length; i++) {
+                    let soul = game.souls[i];
                     if (soul) {
-                        soul.current.isSelected = false;
+                        soul.current.is_selected = false;
                     }
                 }
             }

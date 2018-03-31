@@ -13,31 +13,31 @@ var UserInput;
         InputEvent[InputEvent["KeyUp"] = 9] = "KeyUp";
     })(UserInput.InputEvent || (UserInput.InputEvent = {}));
     var InputEvent = UserInput.InputEvent;
-    var InputState = (function () {
-        function InputState() {
+    class InputState {
+        constructor() {
             this._elements = new Array();
             this._listener = null;
             document.addEventListener('contextmenu', function (e) {
                 e.preventDefault();
             }, false);
         }
-        InputState.prototype.elements = function () { return this._elements; };
-        InputState.prototype.shiftDown = function () { return this._shift; };
-        InputState.prototype.ctrlDown = function () { return this._ctrl; };
-        InputState.prototype.altDown = function () { return this._alt; };
-        InputState.prototype.mouseX = function () { return this._mouseX; };
-        InputState.prototype.mouseY = function () { return this._mouseY; };
-        InputState.prototype.mouseLeftDown = function () { return this._mouseLeft; };
-        InputState.prototype.mouseMiddleDown = function () { return this._mouseMiddle; };
-        InputState.prototype.MouseRightDown = function () { return this._mouseRight; };
-        InputState.prototype.lastKeyPressed = function () { return this._lastKeyPressed; };
-        InputState.prototype.wheelChange = function () { return this._wheelChange; };
-        InputState.prototype.addListener = function (parent, handler) {
-            var self = this;
+        elements() { return this._elements; }
+        shiftDown() { return this._shift; }
+        ctrlDown() { return this._ctrl; }
+        altDown() { return this._alt; }
+        mouseX() { return this._mouseX; }
+        mouseY() { return this._mouseY; }
+        mouseLeftDown() { return this._mouseLeft; }
+        mouseMiddleDown() { return this._mouseMiddle; }
+        MouseRightDown() { return this._mouseRight; }
+        lastKeyPressed() { return this._lastKeyPressed; }
+        wheelChange() { return this._wheelChange; }
+        addListener(parent, handler) {
+            let self = this;
             self._elements.push(parent);
             parent.draggable = false;
             parent.addEventListener("wheel", function (e) {
-                var event = InputEvent.MouseWheel;
+                let event = InputEvent.MouseWheel;
                 self._shift = e.shiftKey;
                 self._ctrl = e.ctrlKey;
                 self._alt = e.altKey;
@@ -46,7 +46,7 @@ var UserInput;
                 pauseEvent(e);
             });
             parent.addEventListener("mousedown", function (e) {
-                var event;
+                let event;
                 self._shift = e.shiftKey;
                 self._ctrl = e.ctrlKey;
                 self._alt = e.altKey;
@@ -75,7 +75,7 @@ var UserInput;
                 pauseEvent(e);
             });
             window.addEventListener("mouseup", function (e) {
-                var event;
+                let event;
                 self._shift = e.shiftKey;
                 self._ctrl = e.ctrlKey;
                 self._alt = e.altKey;
@@ -129,9 +129,8 @@ var UserInput;
                 handler(self, InputEvent.KeyUp);
                 pauseEvent(e);
             });
-        };
-        return InputState;
-    }());
+        }
+    }
     UserInput.InputState = InputState;
     function pauseEvent(e) {
         if (e.stopPropagation)

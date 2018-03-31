@@ -5,8 +5,10 @@
         AttackMove,
         AttackTarget,
         Build,
+        Train,
         Assist,
         MapInfoRequest,
+        UnitInfoRequest,
     }
 
     export enum QueueOrder {
@@ -19,14 +21,15 @@
 
     export class DoingNothing implements Control { }
 
-    function getTarget(game: Game): Unit {
+    function getTarget(game: Game): number {
         for (let i = 0; i < game.souls.length; i++) {
             let soul = game.souls[i];
 
-            if (soul && soul.current.isBeingSelected) {
-                return soul.current;
+            if (soul && soul.current.is_being_selected) {
+                return i;
             }
         }
+        return null;
     }
 
     export function interact(game: Game): ((state: UserInput.InputState, event: UserInput.InputEvent) => void) {
@@ -40,20 +43,19 @@
                     game.control = new MovingCamera(state.mouseX(), state.mouseY(), game.camera.x, game.camera.y);
                 }
                 else if (event === UserInput.InputEvent.MouseRightDown) {
-                    let target = getTarget(game);
+                    let targetID = getTarget(game);
 
-                    if (target) {
-                        if (target.team === game.team) {
-                            Interaction.AssistOrder.issue(game, target.unit_ID);
+                    if (targetID) {
+                        if (game.souls[targetID].new.team === game.team) {
+                            Interaction.AssistOrder.issue(game, targetID);
                         }
                         else {
-                            Interaction.AttackTargetOrder.issue(game, target.unit_ID);
+                            Interaction.AttackTargetOrder.issue(game, targetID);
                         }
                     }
                     else {
                         Interaction.MoveOrder.issue(game);
                     }
-
                 }
                 else if (event === UserInput.InputEvent.KeyDown) {
                     const A = 65;

@@ -2,15 +2,12 @@ var Interaction;
 (function (Interaction) {
     var AssistOrder;
     (function (AssistOrder) {
-        var BeingIssued = (function () {
-            function BeingIssued() {
-            }
-            return BeingIssued;
-        }());
+        class BeingIssued {
+        }
         AssistOrder.BeingIssued = BeingIssued;
         function issue(game, unitID) {
-            var selected = Interaction.SelectingUnits.selectedUnitIDs(game);
-            var input = game.inputState;
+            let selected = Interaction.SelectingUnits.selectedUnitIDs(game);
+            let input = game.inputState;
             game.chef.put8(Interaction.Core.ServerMessage.Assist);
             game.chef.putU32(game.orderID++);
             game.chef.putU16(unitID);
@@ -20,8 +17,8 @@ var Interaction;
             else {
                 game.chef.put8(Interaction.Core.QueueOrder.Replace);
             }
-            for (var i = 0; i < selected.length; i++) {
-                if (game.souls[selected[i]].new.unit_ID !== unitID) {
+            for (let i = 0; i < selected.length; i++) {
+                if (selected[i] !== unitID) {
                     game.chef.put16(selected[i]);
                 }
             }

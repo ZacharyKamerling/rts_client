@@ -19,7 +19,7 @@
         }
 
         for (let i = 0; i < selected.length; i++) {
-            if (game.souls[selected[i]].new.unit_ID !== unitID) {
+            if (selected[i] !== unitID) {
                 game.chef.put16(selected[i]);
             }
         }

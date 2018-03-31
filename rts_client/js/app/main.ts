@@ -13,8 +13,7 @@ function main() {
     let drawCanvas = <HTMLCanvasElement>document.getElementById('drawCanvas');
     let minimapCanvas = <HTMLCanvasElement>document.getElementById('minimapCanvas');
     let ctrlDiv = <HTMLElement>document.getElementById('controlDiv');
-    let cmdDiv = <HTMLElement>document.getElementById('commandDiv');
-    let cmds = commands();
+    
     
     game.chef = chef;
     game.inputState = new UserInput.InputState();
@@ -24,7 +23,7 @@ function main() {
     game.selectionBoxDrawer = new SelectionBoxDrawer(drawCanvas);
     game.minimapBoxDrawer = new MinimapBoxDrawer(minimapCanvas);
     game.statusBarDrawer = new StatusBarDrawer(drawCanvas);
-    game.commandPanel = new CommandPanel(cmdDiv, cmds, game.commandPanelHandler());
+    game.commandPanel = commands(game);
 
     let spritemap = new SpriteMap(spriteRefs(game.teamColors));
     spritemap.onload = function (e: Event) {
@@ -75,6 +74,10 @@ function main() {
             chef.putU32(game.orderID++);
             conn.send(chef.done());
 
+            chef.putU8(Interaction.Core.ServerMessage.UnitInfoRequest);
+            chef.putU32(game.orderID++);
+            conn.send(chef.done());
+
             game.connected = true;
             game.inputState.addListener(minimapCanvas, Interaction.Minimap.interact(game));
             game.inputState.addListener(ctrlDiv, Interaction.Core.interact(game));
@@ -102,78 +105,34 @@ function playGame(game: Game) {
     draw();
 }
 
-function commands(): { [index: string]: { src: string, tooltip: string } } {
-    let cmds: { [index: string]: { src: string, tooltip: string } } = {};
-    cmds["attack"] = { src: "img/attack.png", tooltip: "[A] Attack" };
-    cmds["move"] = { src: "img/move.png", tooltip: "[M] Move" };
-    cmds["buildArtillery1"] = { src: "img/build.png", tooltip: "[B] Build T1 Artillery" };
-    cmds["buildExtractor1"] = { src: "img/build.png", tooltip: "[Q] Build T1 Extractor" };
+function commands(game: Game): CommandPanel {
+    let cmdDiv = <HTMLElement>document.getElementById('commandDiv');
+    let cmds = new CommandPanel(cmdDiv, game.commandPanelHandler());
+    cmds.addCommand("attack", { src: "img/attack.png", tooltip: "[A] Attack" });
+    cmds.addCommand("move", { src: "img/move.png", tooltip: "[M] Move" });
+    cmds.addCommand("stop", { src: "img/stop.png", tooltip: "[S] Stop" });
 
     return cmds;
 }
 
 function spriteRefs(colors: TeamColor[]): { src: string, ref: string, color: TeamColor }[] {
     let tc_imgs = [
-        {
-            src: "img/basic_missile.png",
-            ref: "basic_missile"
-        },
-        {
-            src: "img/platform1.png",
-            ref: "platform1"
-        },
-        {
-            src: "img/platform2.png",
-            ref: "platform2"
-        },
-        {
-            src: "img/extractor_blade1.png",
-            ref: "extractor_blade1"
-        },
-        {
-            src: "img/artillery_wpn1.png",
-            ref: "artillery_wpn1"
-        },
-        {
-            src: "img/artillery_wpn2.png",
-            ref: "artillery_wpn2"
-        },
-        {
-            src: "img/missile1.png",
-            ref: "missile1"
-        },
-        {
-            src: "img/basic_unit.png",
-            ref: "basic_unit"
-        },
-        {
-            src: "img/basic_wpn.png",
-            ref: "basic_wpn"
-        },
-        {
-            src: "img/fast1.png",
-            ref: "fast1"
-        },
-        {
-            src: "img/fast_wpn1.png",
-            ref: "fast_wpn1"
-        },
-        {
-            src: "img/fast_msl1.png",
-            ref: "fast_msl1"
-        },
-        {
-            src: "img/fighter1.png",
-            ref: "fighter1"
-        },
-        {
-            src: "img/bomber1.png",
-            ref: "bomber1"
-        },
-        {
-            src: "img/minimap_unit.png",
-            ref: "minimap_unit"
-        },
+        "img/basic_missile.png",
+        "img/platform1.png",
+        "img/platform2.png",
+        "img/extractor_blade1.png",
+        "img/artillery_wpn1.png",
+        "img/artillery_wpn2.png",
+        "img/factory.png",
+        "img/missile1.png",
+        "img/basic_unit.png",
+        "img/basic_wpn.png",
+        "img/fast1.png",
+        "img/fast_wpn1.png",
+        "img/fast_msl1.png",
+        "img/fighter1.png",
+        "img/bomber1.png",
+        "img/minimap_unit.png"
     ];
 
     let list: { src: string, ref: string, color: TeamColor }[] = new Array();
@@ -182,8 +141,8 @@ function spriteRefs(colors: TeamColor[]): { src: string, ref: string, color: Tea
         let color = colors[i];
 
         for (let n = 0; n < tc_imgs.length; n++) {
-            let src = tc_imgs[n].src;
-            let ref = tc_imgs[n].ref + color.name;
+            let src = tc_imgs[n];
+            let ref = color.name + '/' + src;
             list.push({ src: src, ref: ref, color: color });
         }
     }

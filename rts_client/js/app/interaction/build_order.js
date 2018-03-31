@@ -2,25 +2,24 @@ var Interaction;
 (function (Interaction) {
     var BuildOrder;
     (function (BuildOrder) {
-        var BeingIssued = (function () {
-            function BeingIssued(width, height, type, imgs) {
+        class BeingIssued {
+            constructor(width, height, type, imgs) {
                 this.width = width;
                 this.height = height;
                 this.type = type;
                 this.imgs = imgs;
             }
-            return BeingIssued;
-        }());
+        }
         BuildOrder.BeingIssued = BeingIssued;
         function issue(game, build_type) {
-            var selected = Interaction.SelectingUnits.selectedUnitIDs(game);
-            var input = game.inputState;
-            var width = game.unitDrawer.width();
-            var height = game.unitDrawer.height();
+            let selected = Interaction.SelectingUnits.selectedUnitIDs(game);
+            let input = game.inputState;
+            let width = game.unitDrawer.width();
+            let height = game.unitDrawer.height();
             game.chef.put8(Interaction.Core.ServerMessage.Build);
             game.chef.putU32(game.orderID++);
             game.chef.put16(build_type);
-            var xy = game.gameXY();
+            let xy = game.gameXY();
             game.chef.putF64(xy.x);
             game.chef.putF64(xy.y);
             if (input.shiftDown()) {
@@ -29,7 +28,7 @@ var Interaction;
             else {
                 game.chef.put8(Interaction.Core.QueueOrder.Replace);
             }
-            for (var i = 0; i < selected.length; i++) {
+            for (let i = 0; i < selected.length; i++) {
                 game.chef.put16(selected[i]);
             }
             game.connection.send(game.chef.done());

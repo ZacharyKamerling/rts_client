@@ -1,19 +1,19 @@
-var SpriteMap = (function () {
-    function SpriteMap(stuff) {
+class SpriteMap {
+    constructor(stuff) {
         this.map = {};
-        var spriteSheet = document.createElement('canvas');
+        let spriteSheet = document.createElement('canvas');
         spriteSheet.width = SpriteMap.WIDTH;
         spriteSheet.height = SpriteMap.HEIGHT;
-        var ctx = spriteSheet.getContext('2d');
-        var that = this;
-        var x = 0;
-        var y = 0;
-        var max_h = 0;
-        var count = 0;
-        var imgs = Array(stuff.length);
-        for (var i = 0; i < stuff.length; i++) {
-            var sprite = stuff[i];
-            var img = document.createElement('img');
+        let ctx = spriteSheet.getContext('2d');
+        let that = this;
+        let x = 0;
+        let y = 0;
+        let max_h = 0;
+        let count = 0;
+        let imgs = Array(stuff.length);
+        for (let i = 0; i < stuff.length; i++) {
+            let sprite = stuff[i];
+            let img = document.createElement('img');
             imgs[i] = { ref: sprite.ref, img: img, color: sprite.color };
             img.src = sprite.src;
             img.onload = function () {
@@ -23,10 +23,10 @@ var SpriteMap = (function () {
                         imgs.sort(function (a, b) {
                             return b.img.width * b.img.height - a.img.width * a.img.height;
                         });
-                        for (var n = 0; n < imgs.length; n++) {
-                            var w = imgs[n].img.width;
-                            var h = imgs[n].img.height;
-                            var color = imgs[n].color;
+                        for (let n = 0; n < imgs.length; n++) {
+                            let w = imgs[n].img.width;
+                            let h = imgs[n].img.height;
+                            let color = imgs[n].color;
                             if (w > SpriteMap.WIDTH || h > SpriteMap.HEIGHT) {
                                 console.error('IMAGE LARGER THAN SPRITEMAP!');
                                 return;
@@ -45,11 +45,11 @@ var SpriteMap = (function () {
                             }
                             ctx.drawImage(imgs[n].img, x, y, w, h);
                             if (color) {
-                                var imgData = ctx.getImageData(x, y, w, h);
-                                var data = imgData.data;
+                                let imgData = ctx.getImageData(x, y, w, h);
+                                let data = imgData.data;
                                 for (var i = 0; i < data.length; i += 4) {
                                     if (data[i] === 255 && data[i + 3] !== 0) {
-                                        var intensity = data[i + 1];
+                                        let intensity = data[i + 1];
                                         data[i + 0] = color.red * intensity;
                                         data[i + 1] = color.green * intensity;
                                         data[i + 2] = color.blue * intensity;
@@ -75,10 +75,9 @@ var SpriteMap = (function () {
             }();
         }
     }
-    SpriteMap.prototype.coords = function (ref) {
+    coords(ref) {
         return this.map[ref];
-    };
-    SpriteMap.WIDTH = 4096;
-    SpriteMap.HEIGHT = 4096;
-    return SpriteMap;
-}());
+    }
+}
+SpriteMap.WIDTH = 4096;
+SpriteMap.HEIGHT = 4096;

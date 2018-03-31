@@ -19,6 +19,7 @@ class Game {
     public control: Interaction.Core.Control = new Interaction.Core.DoingNothing();
     public camera: Camera = new Camera(0, 0, 1);
     public connection: WebSocket = null;
+    public unitPrototypes: Unit[] = new Array();
     public souls: { old: Unit, current: Unit, new: Unit }[] = null;
     public missileSouls: { old: Missile, current: Missile, new: Missile }[] = null;
     public logicFrame: number = 0;
@@ -41,7 +42,7 @@ class Game {
     public static FPS = 10;
 
     constructor() {
-        this.souls = Array();
+        this.souls = Array(Game.MAX_UNITS);
 
         for (let i = 0; i < Game.MAX_UNITS; i++) {
             this.souls.push(null);
@@ -99,18 +100,30 @@ class Game {
                 case "attack":
                     game.control = new Interaction.AttackMoveOrder.BeingIssued();
                     break;
-                case "buildArtillery1":
-                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.Artillery1, Artillery1.renderBuildPlacement());
-                    break;
-                case "buildExtractor1":
-                    game.control = new Interaction.BuildOrder.BeingIssued(3, 3, UnitType.Extractor1, Extractor1.renderBuildPlacement());
-                    break;
                 default:
-                    console.log('commandPanelHandler couldn\'t handle: ' + name);
-                    game.control = new Interaction.Core.DoingNothing();
+                    if (name.startsWith("build_")) {
+                        game.buildOrderHandler(name.slice("build_".length));
+                    }
+                    else {
+                        console.log('commandPanelHandler couldn\'t handle: ' + name);
+                        game.control = new Interaction.Core.DoingNothing();
+                    }
                     break;
             }
         };
+    }
+
+    private buildOrderHandler(name: string) {
+        for (let i = 0; i < this.unitPrototypes.length; i++) {
+            let proto = this.unitPrototypes[i];
+            if (proto.name === name) {
+                let imgs = new Array();
+                for (let img of proto.sprite_graphics) {
+                    imgs.push(img.img_ref);
+                }
+                this.control = new Interaction.BuildOrder.BeingIssued(proto.width_and_height.w, proto.width_and_height.h, i, imgs);
+            }
+        }
     }
 
     public draw() {
@@ -128,8 +141,11 @@ class Game {
         this.drawStatusBars();
         this.drawSelectBox();
         this.drawMinimap();
+        this.drawResourceBars();
         this.lastDrawTime = currentTime;
+    }
 
+    private drawResourceBars() {
         let primeBar = <HTMLDivElement>document.getElementById('primeBar');
         let primeOutput = <HTMLLabelElement>document.getElementById('primeOutput');
         let primeDrain = <HTMLLabelElement>document.getElementById('primeDrain');
@@ -224,7 +240,7 @@ class Game {
 
             for (let i = 0; i < control.imgs.length; i++) {
                 layers.push({
-                    x: x, y: y, ang: 0.0, ref: control.imgs[i] + this.teamColors[this.team].name
+                    x: x, y: y, ang: 0.0, ref: this.teamColors[this.team].name + '/' + control.imgs[i]
                 });
             }
             this.buildPlacementDrawer.draw(this.camera.x, this.camera.y, this.camera.scale, layers);
@@ -232,7 +248,7 @@ class Game {
     }
 
     private drawMinimap() {
-        let layers: { x: number; y: number; teamColor: TeamColor; ref: string }[][] = new Array(10);
+        let layers: { x: number; y: number; ang: number; ref: string }[][] = new Array(10);
 
         for (let i = 0; i < layers.length; i++) {
             layers[i] = new Array();
@@ -247,7 +263,7 @@ class Game {
             }
         }
 
-        let flattened: { x: number; y: number; teamColor: TeamColor; ref: string }[] = new Array();
+        let flattened: { x: number; y: number; ref: string }[] = new Array();
 
         for (let i = 0; i < layers.length; i++) {
             for (let n = 0; n < layers[i].length; n++) {
@@ -333,16 +349,16 @@ class Game {
                 if (soul.current.team === this.team) {
                     let x = soul.current.x;
                     let y = soul.current.y;
-                    let radius = soul.current.radius();
+                    let radius = soul.current.collision_radius;
                     let r = 0;
                     let g = 255;
                     let b = 100;
                     let a = 255;
-                    if (soul.current.isSelected) {
+                    if (soul.current.is_selected) {
                         onlyEnemyIsSelected = false;
                         selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
                     }
-                    else if (soul.current.isBeingSelected) {
+                    else if (soul.current.is_being_selected) {
                         onlyEnemyIsBeingSelected = false;
                         dashed.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
                     }
@@ -350,15 +366,15 @@ class Game {
                 else {
                     let x = soul.current.x;
                     let y = soul.current.y;
-                    let radius = soul.current.radius();
+                    let radius = soul.current.collision_radius;
                     let r = 255;
                     let g = 0;
                     let b = 100;
                     let a = 255;
-                    if (soul.current.isSelected && onlyEnemyIsSelected) {
+                    if (soul.current.is_selected && onlyEnemyIsSelected) {
                         enemy_selections.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
                     }
-                    else if (soul.current.isBeingSelected && onlyEnemyIsBeingSelected) {
+                    else if (soul.current.is_being_selected && onlyEnemyIsBeingSelected) {
                         enemy_dashed.push({ x: x, y: y, radius: radius * Game.TILESIZE, r: r, g: g, b: b, a: a });
                     }
                 }
@@ -387,10 +403,10 @@ class Game {
             let soul = this.souls[i];
 
             if (soul && soul.current && soul.old) {
-                let radius = soul.current.radius();
+                let radius = soul.current.collision_radius;
                 let x = soul.current.x;
                 let y = soul.current.y + radius * Game.TILESIZE;
-                let w = soul.current.radius() * Game.TILESIZE;
+                let w = soul.current.collision_radius * Game.TILESIZE;
                 let h = 1;
 
                 if (soul.old.progress < 255) {
@@ -423,7 +439,7 @@ class Game {
 
             if (soul) {
                 if (soul.current.team === this.team) {
-                    circles.push({ x: soul.current.x, y: soul.current.y, r: soul.current.sightRadius() });
+                    circles.push({ x: soul.current.x, y: soul.current.y, r: soul.current.sight_range });
                 }
             }
         }

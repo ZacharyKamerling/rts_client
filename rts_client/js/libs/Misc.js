@@ -11,7 +11,7 @@ var Misc;
     }
     Misc.normalizeAngle = normalizeAngle;
     function angularDistance(a, b) {
-        var dists = Math.abs(a - b);
+        let dists = Math.abs(a - b);
         if (dists > Math.PI) {
             return 2.0 * Math.PI - dists;
         }
@@ -21,7 +21,7 @@ var Misc;
     }
     Misc.angularDistance = angularDistance;
     function turnTowards(a, b, turn) {
-        var dist = angularDistance(a, b);
+        let dist = angularDistance(a, b);
         if (a > b) {
             if (a - b > Math.PI) {
                 return normalizeAngle(a + turn);
@@ -41,20 +41,20 @@ var Misc;
     }
     Misc.turnTowards = turnTowards;
     function rotateAroundOrigin(cx, cy, x, y, ang) {
-        var tempX = x - cx;
-        var tempY = y - cy;
-        var cos = Math.cos(ang);
-        var sin = Math.sin(ang);
-        var rotatedX = tempX * cos - tempY * sin;
-        var rotatedY = tempX * sin + tempY * cos;
+        let tempX = x - cx;
+        let tempY = y - cy;
+        let cos = Math.cos(ang);
+        let sin = Math.sin(ang);
+        let rotatedX = tempX * cos - tempY * sin;
+        let rotatedY = tempX * sin + tempY * cos;
         x = rotatedX + cx;
         y = rotatedY + cy;
         return { x: x, y: y };
     }
     Misc.rotateAroundOrigin = rotateAroundOrigin;
     function rotatePoint(x, y, angle) {
-        var cos = Math.cos(angle);
-        var sin = Math.sin(angle);
+        let cos = Math.cos(angle);
+        let sin = Math.sin(angle);
         return { x: x * cos - y * sin, y: x * sin + y * cos };
     }
     Misc.rotatePoint = rotatePoint;
