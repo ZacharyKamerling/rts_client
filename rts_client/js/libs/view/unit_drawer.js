@@ -92,21 +92,23 @@ class UnitDrawer {
         gl.disable(gl.BLEND);
     }
 }
-UnitDrawer.vertexShader = [
-    "precision highp float;",
-    "attribute vec2 a_position;",
-    "attribute vec2 a_texture_coord;",
-    "varying vec2 v_texture_coord;",
-    "void main() {",
-    "    gl_Position = vec4(a_position, 0.0, 1.0);",
-    "    v_texture_coord = a_texture_coord;",
-    "}",
-].join("\n");
-UnitDrawer.fragmentShader = [
-    "precision highp float;",
-    "varying vec2 v_texture_coord;",
-    "uniform sampler2D u_sampler;",
-    "void main() {",
-    "    gl_FragColor = texture2D(u_sampler, v_texture_coord);",
-    "}",
-].join("\n");
+UnitDrawer.vertexShader = `precision highp float;
+
+        attribute vec2 a_position;
+        attribute vec2 a_texture_coord;
+
+        varying vec2 v_texture_coord;
+
+        void main() {
+            gl_Position = vec4(a_position, 0.0, 1.0);
+            v_texture_coord = a_texture_coord;
+        }`;
+UnitDrawer.fragmentShader = `precision highp float;
+
+        varying vec2 v_texture_coord;
+
+        uniform sampler2D u_sampler;
+
+        void main() {
+            gl_FragColor = texture2D(u_sampler, v_texture_coord);
+        }`;

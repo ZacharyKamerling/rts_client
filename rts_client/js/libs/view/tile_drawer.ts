@@ -164,45 +164,43 @@ class TileDrawer {
         gl.disable(gl.BLEND);
     }
 
-    private static vertexShader = [
-        "attribute vec2 position;",
-        "attribute vec2 texture;",
+    private static vertexShader =
+       `attribute vec2 position;
+        attribute vec2 texture;
 
-        "varying vec2 pixelCoord;",
-        "varying vec2 texCoord;",
+        varying vec2 pixelCoord;
+        varying vec2 texCoord;
 
-        "uniform vec2 viewOffset;",
-        "uniform vec2 viewportSize;",
-        "uniform vec2 inverseTileTextureSize;",
-        "uniform float inverseTileSize;",
+        uniform vec2 viewOffset;
+        uniform vec2 viewportSize;
+        uniform vec2 inverseTileTextureSize;
+        uniform float inverseTileSize;
 
-        "void main(void) {",
-        "   pixelCoord = (texture * viewportSize) + viewOffset;",
-        "   texCoord = pixelCoord * inverseTileTextureSize * inverseTileSize;",
-        "   gl_Position = vec4(position, 0.0, 1.0);",
-        "}"
-    ].join("\n");
+        void main(void) {
+           pixelCoord = (texture * viewportSize) + viewOffset;
+           texCoord = pixelCoord * inverseTileTextureSize * inverseTileSize;
+           gl_Position = vec4(position, 0.0, 1.0);
+        }`
 
-    private static fragmentShader = [
-        "precision highp float;",
+    private static fragmentShader =
+       `precision highp float;
 
-        "varying vec2 pixelCoord;",
-        "varying vec2 texCoord;",
+        varying vec2 pixelCoord;
+        varying vec2 texCoord;
 
-        "uniform sampler2D tiles;",
-        "uniform sampler2D sprites;",
+        uniform sampler2D tiles;
+        uniform sampler2D sprites;
 
-        "uniform vec2 inverseTileTextureSize;",
-        "uniform vec2 inverseSpriteTextureSize;",
-        "uniform float tileSize;",
+        uniform vec2 inverseTileTextureSize;
+        uniform vec2 inverseSpriteTextureSize;
+        uniform float tileSize;
 
-        "void main(void) {",
-        "   if(texCoord.x < 0.0 || texCoord.x > 1.0 || texCoord.y < 0.0 || texCoord.y > 1.0) { discard; }",
-        "   vec4 tile = texture2D(tiles, texCoord);",
-        "   if(tile.x == 1.0 && tile.y == 1.0) { discard; }",
-        "   vec2 spriteOffset = floor(tile.xy * 256.0) * tileSize;",
-        "   vec2 spriteCoord = mod(pixelCoord, tileSize);",
-        "   gl_FragColor = texture2D(sprites, (spriteOffset + spriteCoord) * inverseSpriteTextureSize);",
-        "}"
-    ].join("\n");
+        void main(void) {
+           if(texCoord.x < 0.0 || texCoord.x > 1.0 || texCoord.y < 0.0 || texCoord.y > 1.0) { discard; }
+           vec4 tile = texture2D(tiles, texCoord);
+           if(tile.x == 1.0 && tile.y == 1.0) { discard; }
+           vec2 spriteOffset = floor(tile.xy * 256.0) * tileSize;
+           vec2 spriteCoord = mod(pixelCoord, tileSize);
+           gl_FragColor = texture2D(sprites, (spriteOffset + spriteCoord) * inverseSpriteTextureSize);
+        }`
 }

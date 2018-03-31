@@ -61,7 +61,6 @@ var Decoding;
                     break msg_switch;
                 case ClientMessage.UnitDeath:
                     let unit_ID = data.getU16();
-                    let dmg_type = data.getU8();
                     if (game.souls[unit_ID]) {
                         game.souls[unit_ID].current.is_dead = true;
                     }
@@ -100,11 +99,11 @@ var Decoding;
                     game.mapWidth = width;
                     game.mapHeight = height;
                     let canvas = document.createElement('canvas');
-                    let mmCanvas = document.createElement('canvas');
+                    let minimap = document.createElement('canvas');
                     canvas.width = width;
                     canvas.height = height;
-                    mmCanvas.width = width;
-                    mmCanvas.height = height;
+                    minimap.width = width;
+                    minimap.height = height;
                     let ctx = canvas.getContext('2d');
                     let imgData = ctx.getImageData(0, 0, width, height);
                     let quads = imgData.data;

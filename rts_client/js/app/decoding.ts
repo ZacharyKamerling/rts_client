@@ -44,12 +44,9 @@
             let msg_type = data.getU8();
             msg_switch:
             switch (msg_type) {
-
-                // Unit
                 case ClientMessage.UnitMove:
                     Unit.decodeUnit(game, data, currentTime, logicFrame);
                     break msg_switch;
-                // Missile
                 case ClientMessage.MissileMove:
                 case ClientMessage.MissileExplode:
                     let exploding = msg_type === ClientMessage.MissileExplode;
@@ -69,22 +66,18 @@
                         }
                     }
                     break msg_switch;
-                // Unit death
                 case ClientMessage.UnitDeath:
                     let unit_ID = data.getU16();
-                    let dmg_type = data.getU8();
                     if (game.souls[unit_ID]) {
                         game.souls[unit_ID].current.is_dead = true;
                     }
                     break msg_switch;
-                // Player Info
                 case ClientMessage.TeamInfo:
                     game.team = data.getU8();
                     game.maxPrime = data.getU32();
                     game.prime = data.getU32();
                     game.primeOutput = data.getF64();
                     game.primeDrain = data.getF64();
-
                     game.maxEnergy = data.getU32();
                     game.energy = data.getU32();
                     game.energyOutput = data.getF64();
@@ -113,11 +106,11 @@
                     game.mapWidth = width;
                     game.mapHeight = height;
                     let canvas = document.createElement('canvas');
-                    let mmCanvas = document.createElement('canvas'); //minimap
+                    let minimap = document.createElement('canvas'); //minimap
                     canvas.width = width;
                     canvas.height = height;
-                    mmCanvas.width = width;
-                    mmCanvas.height = height;
+                    minimap.width = width;
+                    minimap.height = height;
                     let ctx = canvas.getContext('2d');
                     let imgData = ctx.getImageData(0, 0, width, height);
                     let quads = imgData.data;
