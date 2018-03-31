@@ -52,7 +52,8 @@
     <TypeScriptCompile Include="js\app\interaction\move_order.ts" />
     <TypeScriptCompile Include="js\app\interaction\moving_camera.ts" />
     <TypeScriptCompile Include="js\app\interaction\selecting_units.ts" />
-    <TypeScriptCompile Include="js\app\missile.ts" />
+    <TypeScriptCompile Include="js\app\missile_proto.ts" />
+    <TypeScriptCompile Include="js\app\sprite_graphic.ts" />
     <TypeScriptCompile Include="js\app\unit_proto.ts" />
     <TypeScriptCompile Include="js\libs\cereal.ts" />
     <TypeScriptCompile Include="js\libs\chef.ts" />
@@ -73,7 +74,6 @@
     <TypeScriptCompile Include="js\libs\view\tile_drawer.ts" />
     <TypeScriptCompile Include="js\app\main.ts" />
     <TypeScriptCompile Include="js\libs\view\unit_drawer.ts" />
-    <TypeScriptCompile Include="js\missiles\basic_missile.ts" />
   </ItemGroup>
   <ItemGroup>
     <None Include="File System.pubxml" />

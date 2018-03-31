@@ -20,6 +20,7 @@ class Game {
     public camera: Camera = new Camera(0, 0, 1);
     public connection: WebSocket = null;
     public unitPrototypes: Unit[] = new Array();
+    public missilePrototypes: Missile[] = new Array();
     public souls: { old: Unit, current: Unit, new: Unit }[] = null;
     public missileSouls: { old: Missile, current: Missile, new: Missile }[] = null;
     public logicFrame: number = 0;
@@ -182,7 +183,7 @@ class Game {
         for (let i = 0; i < this.missileSouls.length; i++) {
             var soul = this.missileSouls[i];
             if (soul && soul.current && soul.old && soul.new) {
-                soul.current.step(Game.FPS, timeDelta, soul.old, soul.new);
+                soul.current.step(timeDelta, soul.old, soul.new);
             }
         }
     }
@@ -313,7 +314,7 @@ class Game {
 
             if (soul) {
                 if (soul.current.exploding) {
-                    soul.current.renderExplosion(this, layers);
+                    //soul.current.renderExplosion(this, layers);
                     this.missileSouls[i] = null;
                 }
                 else {

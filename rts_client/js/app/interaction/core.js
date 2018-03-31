@@ -11,6 +11,7 @@ var Interaction;
             ServerMessage[ServerMessage["Assist"] = 5] = "Assist";
             ServerMessage[ServerMessage["MapInfoRequest"] = 6] = "MapInfoRequest";
             ServerMessage[ServerMessage["UnitInfoRequest"] = 7] = "UnitInfoRequest";
+            ServerMessage[ServerMessage["MissileInfoRequest"] = 8] = "MissileInfoRequest";
         })(Core.ServerMessage || (Core.ServerMessage = {}));
         var ServerMessage = Core.ServerMessage;
         (function (QueueOrder) {

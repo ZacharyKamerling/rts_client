@@ -78,6 +78,10 @@ function main() {
             chef.putU32(game.orderID++);
             conn.send(chef.done());
 
+            chef.putU8(Interaction.Core.ServerMessage.MissileInfoRequest);
+            chef.putU32(game.orderID++);
+            conn.send(chef.done());
+
             game.connected = true;
             game.inputState.addListener(minimapCanvas, Interaction.Minimap.interact(game));
             game.inputState.addListener(ctrlDiv, Interaction.Core.interact(game));

@@ -1,35 +1,4 @@
-﻿class SpriteGraphic {
-    facing: number;
-    x_offset: number;
-    y_offset: number;
-    layer: number;
-    img_ref: string;
-    private rotation_rate: number;
-
-    rotate(elapsed: number) {
-        if (this.rotation_rate) {
-            this.facing += this.rotation_rate * elapsed;
-
-            while (this.facing > Math.PI * 2) {
-                this.facing -= Math.PI * 2;
-            }
-        }
-    }
-
-    clone(): SpriteGraphic {
-        let sg = new SpriteGraphic();
-        sg.facing = this.facing;
-        sg.x_offset = this.x_offset;
-        sg.y_offset = this.y_offset;
-        sg.layer = this.layer;
-        sg.img_ref = this.img_ref;
-        sg.rotation_rate = this.rotation_rate;
-
-        return sg;
-    }
-}
-
-class Unit {
+﻿class Unit {
     sprite_graphics: SpriteGraphic[] = new Array();
     weapons: SpriteGraphic[] = new Array();
     build_roster: string[] = new Array();
@@ -39,8 +8,8 @@ class Unit {
     name: string;
     icon_src: string;
     tooltip: string;
+    id: number;
     type_id: number;
-    unit_id: number;
     anim_id: number;
     team: number;
     x: number;
@@ -87,7 +56,7 @@ class Unit {
         a.icon_src = this.icon_src;
         a.tooltip = this.tooltip;
         a.type_id = this.type_id;
-        a.unit_id = this.unit_id;
+        a.id = this.id;
         a.anim_id = this.anim_id;
         a.team = this.team;
         a.x = this.x;

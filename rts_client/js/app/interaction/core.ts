@@ -9,6 +9,7 @@
         Assist,
         MapInfoRequest,
         UnitInfoRequest,
+        MissileInfoRequest,
     }
 
     export enum QueueOrder {

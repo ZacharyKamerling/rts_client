@@ -45,19 +45,7 @@ var Decoding;
                 case ClientMessage.MissileMove:
                 case ClientMessage.MissileExplode:
                     let exploding = msg_type === ClientMessage.MissileExplode;
-                    let new_misl = Missile.decodeMissile(data, currentTime, logicFrame, exploding);
-                    if (new_misl) {
-                        let soul = game.missileSouls[new_misl.misl_ID];
-                        if (soul) {
-                            soul.old = soul.current.clone();
-                            soul.old.timeCreated = soul.new.frameCreated;
-                            soul.new = new_misl;
-                        }
-                        else {
-                            let cur = new_misl.clone();
-                            game.missileSouls[new_misl.misl_ID] = { old: null, current: cur, new: new_misl };
-                        }
-                    }
+                    Missile.decodeMissile(game, data, currentTime, logicFrame, exploding);
                     break msg_switch;
                 case ClientMessage.UnitDeath:
                     let unit_ID = data.getU16();
@@ -85,11 +73,17 @@ var Decoding;
                     let orderID = data.getU16();
                     break msg_switch;
                 case ClientMessage.UnitInfo:
-                    let json = data.getString();
+                    let unit_json = data.getString();
                     let unit_proto = new Unit();
-                    unit_proto.jsonConfig(json);
+                    unit_proto.jsonConfig(unit_json);
                     game.unitPrototypes.push(unit_proto.clone());
                     game.commandPanel.addCommand("build_" + unit_proto.name, { src: unit_proto.icon_src, tooltip: unit_proto.tooltip });
+                    break msg_switch;
+                case ClientMessage.MissileInfo:
+                    let misl_json = data.getString();
+                    let misl_proto = new Missile();
+                    misl_proto.jsonConfig(misl_json);
+                    game.missilePrototypes.push(misl_proto.clone());
                     break msg_switch;
                 case ClientMessage.MapInfo:
                     let team = data.getU8();

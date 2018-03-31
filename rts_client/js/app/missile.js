@@ -4,7 +4,7 @@ var MissileType;
     MissileType[MissileType["TestUnit"] = 1] = "TestUnit";
     MissileType[MissileType["TestStructure"] = 2] = "TestStructure";
 })(MissileType || (MissileType = {}));
-class Missile {
+class Misl {
     constructor(c, time, frame, exploding) {
         if (c) {
             this.frameCreated = frame;

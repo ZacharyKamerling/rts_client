@@ -18,6 +18,7 @@ class Game {
         this.camera = new Camera(0, 0, 1);
         this.connection = null;
         this.unitPrototypes = new Array();
+        this.missilePrototypes = new Array();
         this.souls = null;
         this.missileSouls = null;
         this.logicFrame = 0;
@@ -161,7 +162,7 @@ class Game {
         for (let i = 0; i < this.missileSouls.length; i++) {
             var soul = this.missileSouls[i];
             if (soul && soul.current && soul.old && soul.new) {
-                soul.current.step(Game.FPS, timeDelta, soul.old, soul.new);
+                soul.current.step(timeDelta, soul.old, soul.new);
             }
         }
     }
@@ -269,7 +270,6 @@ class Game {
             let soul = this.missileSouls[i];
             if (soul) {
                 if (soul.current.exploding) {
-                    soul.current.renderExplosion(this, layers);
                     this.missileSouls[i] = null;
                 }
                 else {
