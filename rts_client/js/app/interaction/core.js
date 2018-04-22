@@ -9,15 +9,17 @@ var Interaction;
             ServerMessage[ServerMessage["Build"] = 3] = "Build";
             ServerMessage[ServerMessage["Train"] = 4] = "Train";
             ServerMessage[ServerMessage["Assist"] = 5] = "Assist";
-            ServerMessage[ServerMessage["MapInfoRequest"] = 6] = "MapInfoRequest";
-            ServerMessage[ServerMessage["UnitInfoRequest"] = 7] = "UnitInfoRequest";
-            ServerMessage[ServerMessage["MissileInfoRequest"] = 8] = "MissileInfoRequest";
+            ServerMessage[ServerMessage["Stop"] = 6] = "Stop";
+            ServerMessage[ServerMessage["MapInfoRequest"] = 7] = "MapInfoRequest";
+            ServerMessage[ServerMessage["UnitInfoRequest"] = 8] = "UnitInfoRequest";
+            ServerMessage[ServerMessage["MissileInfoRequest"] = 9] = "MissileInfoRequest";
         })(Core.ServerMessage || (Core.ServerMessage = {}));
         var ServerMessage = Core.ServerMessage;
         (function (QueueOrder) {
             QueueOrder[QueueOrder["Prepend"] = 0] = "Prepend";
             QueueOrder[QueueOrder["Append"] = 1] = "Append";
             QueueOrder[QueueOrder["Replace"] = 2] = "Replace";
+            QueueOrder[QueueOrder["Clear"] = 3] = "Clear";
         })(Core.QueueOrder || (Core.QueueOrder = {}));
         var QueueOrder = Core.QueueOrder;
         class DoingNothing {
@@ -58,12 +60,21 @@ var Interaction;
                     }
                     else if (event === UserInput.InputEvent.KeyDown) {
                         const A = 65;
+                        const B = 66;
                         const M = 77;
+                        const S = 83;
                         if (state.lastKeyPressed() === A) {
                             game.control = new Interaction.AttackMoveOrder.BeingIssued();
                         }
+                        else if (state.lastKeyPressed() === B) {
+                            game.control = new Interaction.BuildSelection.BeingIssued();
+                            Interaction.BuildSelection.configureCommandCard(game);
+                        }
                         else if (state.lastKeyPressed() === M) {
                             game.control = new Interaction.MoveOrder.BeingIssued();
+                        }
+                        else if (state.lastKeyPressed() === S) {
+                            Interaction.StopOrder.issue(game);
                         }
                     }
                     else if (event === UserInput.InputEvent.MouseWheel) {
@@ -122,10 +133,18 @@ var Interaction;
                         Interaction.BuildOrder.issue(game, control.type);
                         if (!state.shiftDown()) {
                             game.control = new DoingNothing();
+                            Interaction.SelectingUnits.configureCommandCard(game);
                         }
                     }
                     else if (event === UserInput.InputEvent.MouseRightDown) {
                         game.control = new DoingNothing();
+                        Interaction.SelectingUnits.configureCommandCard(game);
+                    }
+                }
+                else if (control instanceof Interaction.BuildSelection.BeingIssued) {
+                    if (event === UserInput.InputEvent.MouseLeftDown || event === UserInput.InputEvent.MouseRightDown) {
+                        game.control = new DoingNothing();
+                        Interaction.SelectingUnits.configureCommandCard(game);
                     }
                 }
             };

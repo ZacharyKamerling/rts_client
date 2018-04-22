@@ -8,7 +8,7 @@
         let width = game.unitDrawer.width();
         let height = game.unitDrawer.height();
 
-        game.chef.put8(Interaction.Core.ServerMessage.Move);
+        game.chef.putU8(Interaction.Core.ServerMessage.Move);
         game.chef.putU32(game.orderID++);
 
         let xy = game.gameXY();
@@ -16,14 +16,14 @@
         game.chef.putF64(xy.y);
 
         if (input.shiftDown()) {
-            game.chef.put8(Interaction.Core.QueueOrder.Append);
+            game.chef.putU8(Interaction.Core.QueueOrder.Append);
         }
         else {
-            game.chef.put8(Interaction.Core.QueueOrder.Replace);
+            game.chef.putU8(Interaction.Core.QueueOrder.Replace);
         }
 
         for (let i = 0; i < selected.length; i++) {
-            game.chef.put16(selected[i]);
+            game.chef.putU16(selected[i]);
         }
         game.connection.send(game.chef.done());
     }

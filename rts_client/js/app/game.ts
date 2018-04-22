@@ -101,6 +101,9 @@ class Game {
                 case "attack":
                     game.control = new Interaction.AttackMoveOrder.BeingIssued();
                     break;
+                case "stop":
+                    Interaction.StopOrder.issue(game);
+                    break;
                 default:
                     if (name.startsWith("build_")) {
                         game.buildOrderHandler(name.slice("build_".length));
@@ -118,11 +121,16 @@ class Game {
         for (let i = 0; i < this.unitPrototypes.length; i++) {
             let proto = this.unitPrototypes[i];
             if (proto.name === name) {
-                let imgs = new Array();
-                for (let img of proto.sprite_graphics) {
-                    imgs.push(img.img_ref);
+                if (proto.is_structure) {
+                    let imgs = new Array();
+                    for (let img of proto.sprite_graphics) {
+                        imgs.push(img.img_ref);
+                    }
+                    this.control = new Interaction.BuildOrder.BeingIssued(proto.width_and_height.w, proto.width_and_height.h, i, imgs);
                 }
-                this.control = new Interaction.BuildOrder.BeingIssued(proto.width_and_height.w, proto.width_and_height.h, i, imgs);
+                else {
+                    Interaction.TrainOrder.issue(this, proto);
+                }
             }
         }
     }

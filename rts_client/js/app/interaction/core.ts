@@ -7,6 +7,7 @@
         Build,
         Train,
         Assist,
+        Stop,
         MapInfoRequest,
         UnitInfoRequest,
         MissileInfoRequest,
@@ -16,6 +17,7 @@
         Prepend,
         Append,
         Replace,
+        Clear,
     }
 
     export interface Control { }
@@ -60,13 +62,22 @@
                 }
                 else if (event === UserInput.InputEvent.KeyDown) {
                     const A = 65;
+                    const B = 66;
                     const M = 77;
+                    const S = 83;
 
                     if (state.lastKeyPressed() === A) {
                         game.control = new Interaction.AttackMoveOrder.BeingIssued();
                     }
+                    else if (state.lastKeyPressed() === B) {
+                        game.control = new Interaction.BuildSelection.BeingIssued();
+                        Interaction.BuildSelection.configureCommandCard(game);
+                    }
                     else if (state.lastKeyPressed() === M) {
                         game.control = new Interaction.MoveOrder.BeingIssued();
+                    }
+                    else if (state.lastKeyPressed() === S) {
+                        Interaction.StopOrder.issue(game);
                     }
                 }
                 else if (event === UserInput.InputEvent.MouseWheel) {
@@ -128,10 +139,18 @@
 
                     if (!state.shiftDown()) {
                         game.control = new DoingNothing();
+                        Interaction.SelectingUnits.configureCommandCard(game);
                     }
                 }
                 else if (event === UserInput.InputEvent.MouseRightDown) {
                     game.control = new DoingNothing();
+                    Interaction.SelectingUnits.configureCommandCard(game);
+                }
+            }
+            else if (control instanceof Interaction.BuildSelection.BeingIssued) {
+                if (event === UserInput.InputEvent.MouseLeftDown || event === UserInput.InputEvent.MouseRightDown) {
+                    game.control = new DoingNothing();
+                    Interaction.SelectingUnits.configureCommandCard(game);
                 }
             }
         }

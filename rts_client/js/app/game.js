@@ -86,6 +86,9 @@ class Game {
                 case "attack":
                     game.control = new Interaction.AttackMoveOrder.BeingIssued();
                     break;
+                case "stop":
+                    Interaction.StopOrder.issue(game);
+                    break;
                 default:
                     if (name.startsWith("build_")) {
                         game.buildOrderHandler(name.slice("build_".length));

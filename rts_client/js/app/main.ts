@@ -14,7 +14,6 @@ function main() {
     let minimapCanvas = <HTMLCanvasElement>document.getElementById('minimapCanvas');
     let ctrlDiv = <HTMLElement>document.getElementById('controlDiv');
     
-    
     game.chef = chef;
     game.inputState = new UserInput.InputState();
     game.tileDrawer = new TileDrawer(drawCanvas, 'img/tileset.png', 'img/lttp-all.png');

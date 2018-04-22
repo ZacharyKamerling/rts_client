@@ -28,8 +28,7 @@
     }
 
     export function selectUnits(game: Game) {
-        let control = game.control;
-        if (control instanceof Interaction.SelectingUnits.CurrentAction) {
+        if (game.control instanceof Interaction.SelectingUnits.CurrentAction) {
             for (let i = 0; i < game.souls.length; i++) {
                 let soul = game.souls[i];
 
@@ -44,21 +43,20 @@
             }
         }
 
+        configureCommandCard(game);
+    }
+
+    export function configureCommandCard(game: Game) {
         // Configure command card
         let cmdSet: { [index: string]: void } = {};
-        let bldSet: { [index: string]: void } = {};
 
         for (let i = 0; i < game.souls.length; i++) {
             let soul = game.souls[i];
 
             if (soul && soul.current.is_selected) {
-                for (let bld of soul.current.build_roster) {
-                    bldSet[bld] = null;
-                }
-
                 for (let cmd of soul.current.command_roster) {
                     cmdSet[cmd] = null;
-                    
+
                 }
             }
         }
@@ -70,17 +68,9 @@
             }
         }
 
-        let blds: string[] = [];
-        for (let bld in bldSet) {
-            if (bldSet.hasOwnProperty(bld)) {
-                blds.push("build_" + bld);
-            }
-        }
-
         cmds.sort();
-        blds.sort();
 
-        game.commandPanel.renderCommands(cmds.concat(blds));
+        game.commandPanel.renderCommands(cmds);
     }
 
     export function configUnitSelections(game: Game) {

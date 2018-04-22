@@ -17,6 +17,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
@@ -43,6 +44,9 @@
   <ItemGroup>
     <TypeScriptCompile Include="js\app\decoding.ts" />
     <TypeScriptCompile Include="js\app\game.ts" />
+    <TypeScriptCompile Include="js\app\interaction\build_selection.ts" />
+    <TypeScriptCompile Include="js\app\interaction\train_order.ts" />
+    <TypeScriptCompile Include="js\app\interaction\stop_order.ts" />
     <TypeScriptCompile Include="js\app\interaction\attack_target_order.ts" />
     <TypeScriptCompile Include="js\app\interaction\attack_move_order.ts" />
     <TypeScriptCompile Include="js\app\interaction\build_order.ts" />
@@ -130,9 +134,9 @@
     <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
-    <TypeScriptSourceMap>false</TypeScriptSourceMap>
-    <TypeScriptTarget>ES6</TypeScriptTarget>
+    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>False</TypeScriptSourceMap>
+    <TypeScriptTarget>ES2016</TypeScriptTarget>
     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>

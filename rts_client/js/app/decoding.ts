@@ -4,6 +4,7 @@
         UnitMove,
         UnitDeath,
         OrderCompleted,
+        TrainingCompleted,
         MeleeSmack,
         MissileMove,
         MissileExplode,
@@ -48,17 +49,19 @@
                     Unit.decodeUnit(game, data, currentTime, logicFrame);
                     break msg_switch;
                 case ClientMessage.MissileMove:
-                case ClientMessage.MissileExplode:
+                case ClientMessage.MissileExplode: {
                     let exploding = msg_type === ClientMessage.MissileExplode;
                     Missile.decodeMissile(game, data, currentTime, logicFrame, exploding);
                     break msg_switch;
-                case ClientMessage.UnitDeath:
+                }
+                case ClientMessage.UnitDeath: {
                     let unit_ID = data.getU16();
                     if (game.souls[unit_ID]) {
                         game.souls[unit_ID].current.is_dead = true;
                     }
                     break msg_switch;
-                case ClientMessage.TeamInfo:
+                }
+                case ClientMessage.TeamInfo: {
                     game.team = data.getU8();
                     game.maxPrime = data.getU32();
                     game.prime = data.getU32();
@@ -69,28 +72,38 @@
                     game.energyOutput = data.getF64();
                     game.energyDrain = data.getF64();
                     break msg_switch;
-                case ClientMessage.Construction:
+                }
+                case ClientMessage.Construction: {
                     let builder = data.getU16();
                     let buildee = data.getU16();
                     break msg_switch;
-                case ClientMessage.OrderCompleted:
+                }
+                case ClientMessage.OrderCompleted: {
                     let unitID = data.getU16();
                     let orderID = data.getU16();
                     break msg_switch;
-                case ClientMessage.UnitInfo:
+                }
+                case ClientMessage.TrainingCompleted: {
+                    let unitID = data.getU16();
+                    let orderID = data.getU16();
+                    break msg_switch;
+                }
+                case ClientMessage.UnitInfo: {
                     let unit_json = data.getString();
                     let unit_proto = new Unit();
                     unit_proto.jsonConfig(unit_json);
                     game.unitPrototypes.push(unit_proto.clone());
                     game.commandPanel.addCommand("build_" + unit_proto.name, { src: unit_proto.icon_src, tooltip: unit_proto.tooltip });
                     break msg_switch;
-                case ClientMessage.MissileInfo:
+                }
+                case ClientMessage.MissileInfo: {
                     let misl_json = data.getString();
                     let misl_proto = new Missile();
                     misl_proto.jsonConfig(misl_json);
                     game.missilePrototypes.push(misl_proto.clone());
                     break msg_switch;
-                case ClientMessage.MapInfo:
+                }
+                case ClientMessage.MapInfo: {
                     let team = data.getU8();
                     let width = data.getU16();
                     let height = data.getU16();
@@ -135,7 +148,6 @@
                         if (n === team) {
                             game.camera.x = x * Game.TILESIZE;
                             game.camera.y = (height - y) * Game.TILESIZE;
-                            console.log("Set Map X & Y: " + x + ":" + y);
                         }
                     }
 
@@ -146,7 +158,6 @@
                         let x = data.getU16();
                         let y = data.getU16();
                         prime_nodes.push({ x: (x + Game.PRIME_NODE_WIDTH / 2) * Game.TILESIZE, y: (height - y - Game.PRIME_NODE_WIDTH / 2) * Game.TILESIZE });
-                        console.log("Node X & Y: " + x + ":" + y);
                     }
 
                     game.primeNodes = prime_nodes;
@@ -164,9 +175,11 @@
                     };
 
                     break msg_switch;
-                default:
+                }
+                default: {
                     console.log("No message of type " + msg_type + " exists.");
                     return;
+                }
             }
         }
     }

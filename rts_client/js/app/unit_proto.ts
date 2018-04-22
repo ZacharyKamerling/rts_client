@@ -2,10 +2,12 @@
     sprite_graphics: SpriteGraphic[] = new Array();
     weapons: SpriteGraphic[] = new Array();
     build_roster: string[] = new Array();
+    train_roster: string[] = new Array();
     command_roster: string[] = new Array();
     passengers: number[] = new Array();
 
     name: string;
+    is_structure: boolean;
     icon_src: string;
     tooltip: string;
     id: number;
@@ -40,19 +42,12 @@
             a.weapons.push(wpn.clone());
         }
 
-        for (let bld of this.build_roster) {
-            a.build_roster.push(bld);
-        }
-
-        for (let cmd of this.command_roster) {
-            a.command_roster.push(cmd);
-        }
-
-        for (let psg of this.passengers) {
-            a.passengers.push(psg);
-        }
-
+        a.passengers = this.passengers;
+        a.build_roster = this.build_roster;
+        a.command_roster = this.command_roster;
+        a.train_roster = this.train_roster;
         a.name = this.name;
+        a.is_structure = this.is_structure;
         a.icon_src = this.icon_src;
         a.tooltip = this.tooltip;
         a.type_id = this.type_id;
@@ -101,6 +96,12 @@
             }
         }
 
+        if (o.train_roster) {
+            for (let train of o.train_roster) {
+                this.train_roster.push(train);
+            }
+        }
+
         if (o.command_roster) {
             for (let cmd of o.command_roster) {
                 this.command_roster.push(cmd);
@@ -109,6 +110,7 @@
 
         this.name = o.name;
         this.icon_src = o.icon_src;
+        this.is_structure = o.is_structure;
         this.tooltip = o.tooltip;
         this.width_and_height = o.width_and_height;
         this.collision_radius = o.collision_radius;

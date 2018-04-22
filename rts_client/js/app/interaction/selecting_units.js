@@ -23,8 +23,7 @@ var Interaction;
         }
         SelectingUnits.selectedUnitIDs = selectedUnitIDs;
         function selectUnits(game) {
-            let control = game.control;
-            if (control instanceof Interaction.SelectingUnits.CurrentAction) {
+            if (game.control instanceof Interaction.SelectingUnits.CurrentAction) {
                 for (let i = 0; i < game.souls.length; i++) {
                     let soul = game.souls[i];
                     if (soul) {
@@ -37,14 +36,14 @@ var Interaction;
                     }
                 }
             }
+            configureCommandCard(game);
+        }
+        SelectingUnits.selectUnits = selectUnits;
+        function configureCommandCard(game) {
             let cmdSet = {};
-            let bldSet = {};
             for (let i = 0; i < game.souls.length; i++) {
                 let soul = game.souls[i];
                 if (soul && soul.current.is_selected) {
-                    for (let bld of soul.current.build_roster) {
-                        bldSet[bld] = null;
-                    }
                     for (let cmd of soul.current.command_roster) {
                         cmdSet[cmd] = null;
                     }
@@ -56,17 +55,10 @@ var Interaction;
                     cmds.push(cmd);
                 }
             }
-            let blds = [];
-            for (let bld in bldSet) {
-                if (bldSet.hasOwnProperty(bld)) {
-                    blds.push("build_" + bld);
-                }
-            }
             cmds.sort();
-            blds.sort();
-            game.commandPanel.renderCommands(cmds.concat(blds));
+            game.commandPanel.renderCommands(cmds);
         }
-        SelectingUnits.selectUnits = selectUnits;
+        SelectingUnits.configureCommandCard = configureCommandCard;
         function configUnitSelections(game) {
             let control = game.control;
             if (control instanceof Interaction.SelectingUnits.CurrentAction) {

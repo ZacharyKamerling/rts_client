@@ -64,6 +64,7 @@ class Unit {
         if (o.build_roster) {
             for (let bld of o.build_roster) {
                 this.build_roster.push(bld);
+                console.log(bld);
             }
         }
         if (o.command_roster) {
