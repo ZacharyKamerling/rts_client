@@ -98,6 +98,7 @@ function commands(game) {
     cmds.addCommand("attack", { src: "img/attack.png", tooltip: "[A] Attack" });
     cmds.addCommand("move", { src: "img/move.png", tooltip: "[M] Move" });
     cmds.addCommand("stop", { src: "img/stop.png", tooltip: "[S] Stop" });
+    cmds.addCommand("build", { src: "img/build.png", tooltip: "[B] Build" });
     return cmds;
 }
 function spriteRefs(colors) {

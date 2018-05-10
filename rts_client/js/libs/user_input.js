@@ -1,5 +1,6 @@
 var UserInput;
 (function (UserInput) {
+    let InputEvent;
     (function (InputEvent) {
         InputEvent[InputEvent["MouseMove"] = 0] = "MouseMove";
         InputEvent[InputEvent["MouseLeftDown"] = 1] = "MouseLeftDown";
@@ -11,8 +12,7 @@ var UserInput;
         InputEvent[InputEvent["MouseWheel"] = 7] = "MouseWheel";
         InputEvent[InputEvent["KeyDown"] = 8] = "KeyDown";
         InputEvent[InputEvent["KeyUp"] = 9] = "KeyUp";
-    })(UserInput.InputEvent || (UserInput.InputEvent = {}));
-    var InputEvent = UserInput.InputEvent;
+    })(InputEvent = UserInput.InputEvent || (UserInput.InputEvent = {}));
     class InputState {
         constructor() {
             this._elements = new Array();

@@ -104,6 +104,10 @@ class Game {
                 case "stop":
                     Interaction.StopOrder.issue(game);
                     break;
+                case "build":
+                    game.control = new Interaction.BuildSelection.BeingIssued();
+                    Interaction.BuildSelection.configureCommandCard(game);
+                    break;
                 default:
                     if (name.startsWith("build_")) {
                         game.buildOrderHandler(name.slice("build_".length));

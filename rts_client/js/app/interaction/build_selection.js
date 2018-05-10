@@ -3,8 +3,7 @@ var Interaction;
     var BuildSelection;
     (function (BuildSelection) {
         class BeingIssued {
-            constructor() {
-            }
+            constructor() { }
         }
         BuildSelection.BeingIssued = BeingIssued;
         function configureCommandCard(game) {
@@ -25,7 +24,6 @@ var Interaction;
             }
             blds.sort();
             game.commandPanel.renderCommands(blds);
-            console.log(blds);
         }
         BuildSelection.configureCommandCard = configureCommandCard;
     })(BuildSelection = Interaction.BuildSelection || (Interaction.BuildSelection = {}));

@@ -2,6 +2,7 @@ var Interaction;
 (function (Interaction) {
     var Core;
     (function (Core) {
+        let ServerMessage;
         (function (ServerMessage) {
             ServerMessage[ServerMessage["Move"] = 0] = "Move";
             ServerMessage[ServerMessage["AttackMove"] = 1] = "AttackMove";
@@ -13,15 +14,14 @@ var Interaction;
             ServerMessage[ServerMessage["MapInfoRequest"] = 7] = "MapInfoRequest";
             ServerMessage[ServerMessage["UnitInfoRequest"] = 8] = "UnitInfoRequest";
             ServerMessage[ServerMessage["MissileInfoRequest"] = 9] = "MissileInfoRequest";
-        })(Core.ServerMessage || (Core.ServerMessage = {}));
-        var ServerMessage = Core.ServerMessage;
+        })(ServerMessage = Core.ServerMessage || (Core.ServerMessage = {}));
+        let QueueOrder;
         (function (QueueOrder) {
             QueueOrder[QueueOrder["Prepend"] = 0] = "Prepend";
             QueueOrder[QueueOrder["Append"] = 1] = "Append";
             QueueOrder[QueueOrder["Replace"] = 2] = "Replace";
             QueueOrder[QueueOrder["Clear"] = 3] = "Clear";
-        })(Core.QueueOrder || (Core.QueueOrder = {}));
-        var QueueOrder = Core.QueueOrder;
+        })(QueueOrder = Core.QueueOrder || (Core.QueueOrder = {}));
         class DoingNothing {
         }
         Core.DoingNothing = DoingNothing;

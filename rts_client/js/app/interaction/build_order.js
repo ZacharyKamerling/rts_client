@@ -18,7 +18,7 @@ var Interaction;
             let height = game.unitDrawer.height();
             game.chef.put8(Interaction.Core.ServerMessage.Build);
             game.chef.putU32(game.orderID++);
-            game.chef.put16(build_type);
+            game.chef.putU16(build_type);
             let xy = game.gameXY();
             game.chef.putF64(xy.x);
             game.chef.putF64(xy.y);
@@ -29,7 +29,7 @@ var Interaction;
                 game.chef.put8(Interaction.Core.QueueOrder.Replace);
             }
             for (let i = 0; i < selected.length; i++) {
-                game.chef.put16(selected[i]);
+                game.chef.putU16(selected[i]);
             }
             game.connection.send(game.chef.done());
         }
