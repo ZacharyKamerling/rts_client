@@ -41,11 +41,15 @@ var Interaction;
         SelectingUnits.selectUnits = selectUnits;
         function configureCommandCard(game) {
             let cmdSet = {};
+            let trainSet = {};
             for (let i = 0; i < game.souls.length; i++) {
                 let soul = game.souls[i];
                 if (soul && soul.current.is_selected) {
                     for (let cmd of soul.current.command_roster) {
                         cmdSet[cmd] = null;
+                    }
+                    for (let trn of soul.current.train_roster) {
+                        trainSet[trn] = null;
                     }
                 }
             }
@@ -56,6 +60,11 @@ var Interaction;
                 }
             }
             cmds.sort();
+            for (let trainee in trainSet) {
+                if (trainSet.hasOwnProperty(trainee)) {
+                    cmds.push("train_" + trainee);
+                }
+            }
             game.commandPanel.renderCommands(cmds);
         }
         SelectingUnits.configureCommandCard = configureCommandCard;

@@ -6,6 +6,7 @@ class Unit {
         this.train_roster = new Array();
         this.command_roster = new Array();
         this.passengers = new Array();
+        this.train_queue = new Array();
     }
     clone() {
         let a = new Unit();
@@ -35,6 +36,8 @@ class Unit {
         a.progress = this.progress;
         a.collision_radius = this.collision_radius;
         a.sight_range = this.sight_range;
+        a.train_rate = this.train_rate;
+        a.train_progress = this.train_progress;
         a.frame_created = this.frame_created;
         a.time_created = this.time_created;
         a.is_dead = this.is_dead;
@@ -80,6 +83,7 @@ class Unit {
         this.width_and_height = o.width_and_height;
         this.collision_radius = o.collision_radius;
         this.sight_range = o.sight_range;
+        this.train_rate = o.train_rate;
     }
     decode(c, time, frame) {
         this.frame_created = frame;
@@ -100,6 +104,9 @@ class Unit {
             for (; passengerCount > 0; passengerCount--) {
                 this.passengers.push(c.getU16());
             }
+        }
+        if (this.train_rate > 0) {
+            this.train_progress = c.getU8();
         }
     }
     render(game, layers) {

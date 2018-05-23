@@ -6,6 +6,9 @@
     command_roster: string[] = new Array();
     passengers: number[] = new Array();
 
+    // ORDER QUEUES
+    train_queue: Interaction.TrainOrder.Training[] = new Array();
+
     name: string;
     is_structure: boolean;
     icon_src: string;
@@ -23,6 +26,8 @@
     progress: number;
     collision_radius: number;
     sight_range: number;
+    train_rate: number;
+    train_progress: number;
 
     frame_created: number;
     time_created: number;
@@ -62,6 +67,8 @@
         a.progress = this.progress;
         a.collision_radius = this.collision_radius;
         a.sight_range = this.sight_range;
+        a.train_rate = this.train_rate;
+        a.train_progress = this.train_progress
         a.frame_created = this.frame_created;
         a.time_created = this.time_created;
         a.is_dead = this.is_dead;
@@ -115,6 +122,7 @@
         this.width_and_height = o.width_and_height;
         this.collision_radius = o.collision_radius;
         this.sight_range = o.sight_range;
+        this.train_rate = o.train_rate;
     }
 
     decode(c: Cereal, time: number, frame: number) {
@@ -139,6 +147,10 @@
             for (;passengerCount > 0; passengerCount--) {
                 this.passengers.push(c.getU16());
             }
+        }
+
+        if (this.train_rate > 0) {
+            this.train_progress = c.getU8();
         }
     }
 

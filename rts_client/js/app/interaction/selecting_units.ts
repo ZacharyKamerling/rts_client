@@ -49,6 +49,7 @@
     export function configureCommandCard(game: Game) {
         // Configure command card
         let cmdSet: { [index: string]: void } = {};
+        let trainSet: { [index: string]: void } = {};
 
         for (let i = 0; i < game.souls.length; i++) {
             let soul = game.souls[i];
@@ -57,6 +58,10 @@
                 for (let cmd of soul.current.command_roster) {
                     cmdSet[cmd] = null;
 
+                }
+
+                for (let trn of soul.current.train_roster) {
+                    trainSet[trn] = null;
                 }
             }
         }
@@ -69,6 +74,12 @@
         }
 
         cmds.sort();
+
+        for (let trainee in trainSet) {
+            if (trainSet.hasOwnProperty(trainee)) {
+                cmds.push("train_" + trainee)
+            }
+        }
 
         game.commandPanel.renderCommands(cmds);
     }

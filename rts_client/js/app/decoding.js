@@ -68,27 +68,37 @@ var Decoding;
                     game.energyDrain = data.getF64();
                     break msg_switch;
                 }
+                case ClientMessage.OrderCompleted: {
+                    let unitID = data.getU16();
+                    let orderID = data.getU32();
+                    break msg_switch;
+                }
                 case ClientMessage.Construction: {
                     let builder = data.getU16();
                     let buildee = data.getU16();
                     break msg_switch;
                 }
-                case ClientMessage.OrderCompleted: {
-                    let unitID = data.getU16();
-                    let orderID = data.getU16();
-                    break msg_switch;
-                }
                 case ClientMessage.TrainingCompleted: {
-                    let unitID = data.getU16();
-                    let orderID = data.getU16();
+                    let trainer = data.getU16();
+                    let trainee = data.getU16();
+                    let orderID = data.getU32();
+                    let tq = game.souls[trainer].current.train_queue;
+                    let ord = tq.find(function (t) { return t.orderID === orderID; });
+                    tq.filter(function (t) { return t.orderID !== orderID; });
+                    if (ord && ord.repeat) {
+                        tq.push(ord);
+                    }
                     break msg_switch;
                 }
                 case ClientMessage.UnitInfo: {
                     let unit_json = data.getString();
                     let unit_proto = new Unit();
+                    let type_id = game.unitPrototypes.length;
+                    unit_proto.type_id = type_id;
                     unit_proto.jsonConfig(unit_json);
                     game.unitPrototypes.push(unit_proto.clone());
                     game.commandPanel.addCommand("build_" + unit_proto.name, { src: unit_proto.icon_src, tooltip: unit_proto.tooltip });
+                    game.commandPanel.addCommand("train_" + unit_proto.name, { src: unit_proto.icon_src, tooltip: unit_proto.tooltip });
                     break msg_switch;
                 }
                 case ClientMessage.MissileInfo: {
