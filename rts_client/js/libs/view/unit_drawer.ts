@@ -8,7 +8,7 @@
     constructor(canvas: HTMLCanvasElement, spritemap: SpriteMap) {
         let self = this;
         this.canvas = canvas;
-        let gl = <WebGLRenderingContext>this.canvas.getContext('webgl');
+        let gl = <WebGLRenderingContext>this.canvas.getContext("webgl", { alpha: false });
         this.program = new MetaProgram(gl, createProgram(gl, UnitDrawer.vertexShader, UnitDrawer.fragmentShader));
         this.spriteTex = gl.createTexture();
         this.spriteMap = spritemap;

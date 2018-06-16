@@ -48,11 +48,16 @@ class SpriteMap {
                                 let imgData = ctx.getImageData(x, y, w, h);
                                 let data = imgData.data;
                                 for (var i = 0; i < data.length; i += 4) {
-                                    if (data[i] === 255 && data[i + 3] !== 0) {
+                                    if (data[i] === 255) {
                                         let intensity = data[i + 1];
                                         data[i + 0] = color.red * intensity;
                                         data[i + 1] = color.green * intensity;
                                         data[i + 2] = color.blue * intensity;
+                                    }
+                                    else if (data[i + 3] === 0) {
+                                        data[i + 0] = 255;
+                                        data[i + 1] = 0;
+                                        data[i + 2] = 0;
                                     }
                                 }
                                 ctx.putImageData(imgData, x, y);

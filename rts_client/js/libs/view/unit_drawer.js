@@ -2,7 +2,7 @@ class UnitDrawer {
     constructor(canvas, spritemap) {
         let self = this;
         this.canvas = canvas;
-        let gl = this.canvas.getContext('webgl');
+        let gl = this.canvas.getContext("webgl", { alpha: false });
         this.program = new MetaProgram(gl, createProgram(gl, UnitDrawer.vertexShader, UnitDrawer.fragmentShader));
         this.spriteTex = gl.createTexture();
         this.spriteMap = spritemap;
