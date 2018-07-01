@@ -65,9 +65,8 @@ function main() {
             console.log('Connection open.');
             mainMenu.hidden = true;
             content.hidden = false;
-            chef.putString(nameFieldValue);
-            chef.putString(passFieldValue);
-            conn.send(chef.done());
+            conn.send(nameFieldValue);
+            conn.send(passFieldValue);
             
             chef.putU8(Interaction.Core.ServerMessage.MapInfoRequest);
             chef.putU32(game.orderID++);
