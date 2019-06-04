@@ -39,7 +39,6 @@
     <Content Include="img\move.png" />
     <Content Include="img\wall0.png" />
     <Content Include="index.html" />
-    <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="js\app\decoding.ts" />
@@ -78,15 +77,6 @@
     <TypeScriptCompile Include="js\libs\view\tile_drawer.ts" />
     <TypeScriptCompile Include="js\app\main.ts" />
     <TypeScriptCompile Include="js\libs\view\unit_drawer.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="File System.pubxml" />
-    <None Include="web.Debug.config">
-      <DependentUpon>web.config</DependentUpon>
-    </None>
-    <None Include="web.Release.config">
-      <DependentUpon>web.config</DependentUpon>
-    </None>
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
