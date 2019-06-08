@@ -1,4 +1,5 @@
 "use strict";
+// Consumes binary data
 class Cereal {
     constructor(dv) {
         this.offset = 0;
@@ -63,3 +64,4 @@ class Cereal {
     }
     ;
 }
+//# sourceMappingURL=cereal.js.map

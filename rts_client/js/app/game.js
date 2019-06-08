@@ -186,6 +186,7 @@ class Game {
     }
     drawPrimeNodes() {
         let nodes = new Array();
+        // Draw prime nodes
         for (let i = 0; i < this.primeNodes.length; i++) {
             let node = this.primeNodes[i];
             let x = node.x;
@@ -241,6 +242,7 @@ class Game {
         for (let i = 0; i < layers.length; i++) {
             layers[i] = new Array();
         }
+        // Render units
         for (let i = 0; i < this.souls.length; i++) {
             let soul = this.souls[i];
             if (soul) {
@@ -278,16 +280,19 @@ class Game {
         for (let i = 0; i < layers.length; i++) {
             layers[i] = new Array();
         }
+        // Render units
         for (let i = 0; i < this.souls.length; i++) {
             let soul = this.souls[i];
             if (soul) {
                 soul.current.render(this, layers);
             }
         }
+        // Render missiles
         for (let i = 0; i < this.missileSouls.length; i++) {
             let soul = this.missileSouls[i];
             if (soul) {
                 if (soul.current.exploding) {
+                    //soul.current.renderExplosion(this, layers);
                     this.missileSouls[i] = null;
                 }
                 else {
@@ -310,6 +315,7 @@ class Game {
         let enemy_dashed = new Array();
         let onlyEnemyIsBeingSelected = true;
         let onlyEnemyIsSelected = true;
+        // Render units
         for (let i = 0; i < this.souls.length; i++) {
             let soul = this.souls[i];
             if (soul) {
@@ -362,6 +368,7 @@ class Game {
     }
     drawStatusBars() {
         let bars = new Array();
+        // Render units
         for (let i = 0; i < this.souls.length; i++) {
             let soul = this.souls[i];
             if (soul && soul.current && soul.old) {
@@ -414,3 +421,4 @@ class Camera {
         this.scale = scale;
     }
 }
+//# sourceMappingURL=game.js.map

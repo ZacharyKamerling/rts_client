@@ -35,12 +35,15 @@ class UnitDrawer {
         for (let i = 0, n = 0; n < sprites.length; n++) {
             let sprite = sprites[n];
             let xywh = this.spriteMap.coords(sprite.ref);
-            let hw = xywh.w * scale;
-            let hh = xywh.h * scale;
+            let hw = xywh.w * scale; // Half width
+            let hh = xywh.h * scale; // Half height
             sprite.x *= scale;
             sprite.y *= scale;
+            // Normalize X & Y
+            // ScrnX = ((x - ScrnL) / ScrnW) * 2 - 1
             let normX = ((sprite.x - (x - this.canvas.width / 2)) / this.canvas.width) * 2 - 1;
             let normY = ((sprite.y - (y - this.canvas.height / 2)) / this.canvas.height) * 2 - 1;
+            // Coordinates of each corner on the sprite
             let east = normX + hw;
             let north = normY + hh;
             let west = normX - hw;
@@ -49,6 +52,7 @@ class UnitDrawer {
             let sw = Misc.rotateAroundOrigin(normX, normY, west, south, sprite.ang);
             let nw = Misc.rotateAroundOrigin(normX, normY, west, north, sprite.ang);
             let se = Misc.rotateAroundOrigin(normX, normY, east, south, sprite.ang);
+            // Fill array with scaled vertices
             drawData[i++] = normX - (normX - sw.x) * xm;
             drawData[i++] = normY - (normY - sw.y) * ym;
             drawData[i++] = xywh.x;
@@ -112,3 +116,4 @@ UnitDrawer.fragmentShader = `precision highp float;
         void main() {
             gl_FragColor = texture2D(u_sampler, v_texture_coord);
         }`;
+//# sourceMappingURL=unit_drawer.js.map

@@ -86,3 +86,4 @@ class SpriteMap {
 }
 SpriteMap.WIDTH = 4096;
 SpriteMap.HEIGHT = 4096;
+//# sourceMappingURL=sprite_map.js.map

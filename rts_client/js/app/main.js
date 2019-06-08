@@ -136,3 +136,4 @@ function spriteRefs(colors) {
     return list;
 }
 main();
+//# sourceMappingURL=main.js.map

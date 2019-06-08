@@ -28,3 +28,4 @@ var Interaction;
         BuildSelection.configureCommandCard = configureCommandCard;
     })(BuildSelection = Interaction.BuildSelection || (Interaction.BuildSelection = {}));
 })(Interaction || (Interaction = {}));
+//# sourceMappingURL=build_selection.js.map

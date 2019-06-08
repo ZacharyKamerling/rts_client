@@ -4,9 +4,11 @@
 class Cereal {
     dv: DataView;
     offset: number = 0;
+
     constructor(dv: DataView) {
         this.dv = dv;
     }
+
     get8(): number {
         let val = this.dv.getInt8(this.offset);
         this.offset = this.offset + 1;

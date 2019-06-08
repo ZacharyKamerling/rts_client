@@ -129,6 +129,37 @@ var UserInput;
                 handler(self, InputEvent.KeyUp);
                 pauseEvent(e);
             });
+            /*
+            parent.addEventListener("touchstart", function (e: TouchEvent) {
+                that.addTouches(e.touches);
+                handler(that);
+                pauseEvent(e);
+            });
+    
+            parent.addEventListener("touchend", function (e: TouchEvent) {
+                that.addTouches(e.touches);
+                handler(that);
+                pauseEvent(e);
+            });
+    
+            parent.addEventListener("touchcancel", function (e: TouchEvent) {
+                that.addTouches(e.touches);
+                handler(that);
+                pauseEvent(e);
+            });
+    
+            parent.addEventListener("touchleave", function (e: TouchEvent) {
+                that.addTouches(e.touches);
+                handler(that);
+                pauseEvent(e);
+            });
+    
+            parent.addEventListener("touchmove", function (e: TouchEvent) {
+                that.addTouches(e.touches);
+                handler(that);
+                pauseEvent(e);
+            });
+            */
         }
     }
     UserInput.InputState = InputState;
@@ -143,3 +174,4 @@ var UserInput;
         return false;
     }
 })(UserInput || (UserInput = {}));
+//# sourceMappingURL=user_input.js.map

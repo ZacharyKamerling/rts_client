@@ -10,3 +10,4 @@ var Interaction;
     }
     Interaction.MovingCamera = MovingCamera;
 })(Interaction || (Interaction = {}));
+//# sourceMappingURL=moving_camera.js.map

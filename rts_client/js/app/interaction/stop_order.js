@@ -19,3 +19,4 @@ var Interaction;
         StopOrder.issue = issue;
     })(StopOrder = Interaction.StopOrder || (Interaction.StopOrder = {}));
 })(Interaction || (Interaction = {}));
+//# sourceMappingURL=stop_order.js.map

@@ -23,14 +23,20 @@ class SelectionDrawer {
             let circle = circles[n];
             circle.x *= scale;
             circle.y *= scale;
+            // GL Coords go from -1 to 1
+            // If they went from 0 to 1 we wouldn't need to double the radius
             circle.radius *= 2 * scale;
+            // Normalize X & Y
+            // ScrnX = ((x - ScrnL) / ScrnW) * 2 - 1
             let normX = ((circle.x - (x - this.canvas.width / 2)) / this.canvas.width) * 2 - 1;
             let normY = ((circle.y - (y - this.canvas.height / 2)) / this.canvas.height) * 2 - 1;
+            // Coordinates of each corner on the sprite
             let east = normX + circle.radius * xm;
             let north = normY + circle.radius * ym;
             let west = normX - circle.radius * xm;
             let south = normY - circle.radius * ym;
             let radius = circle.radius * xm;
+            // Fill array with scaled vertices
             let vertFloatOff = n * 6 * BYTES_PER_VERTEX / 4;
             let vertUInt8Off = n * 6 * BYTES_PER_VERTEX + 20;
             let floatOff = vertFloatOff + BYTES_PER_VERTEX / 4 * 0;
@@ -189,3 +195,4 @@ SelectionDrawer.fragmentShaderDashed = [
     "    }",
     "}",
 ].join("\n");
+//# sourceMappingURL=selection_drawer.js.map

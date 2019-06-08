@@ -78,7 +78,15 @@
     <TypeScriptCompile Include="js\app\main.ts" />
     <TypeScriptCompile Include="js\libs\view\unit_drawer.ts" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="web.config" />
+    <None Include="web.Debug.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+    <None Include="web.Release.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
   </PropertyGroup>
@@ -106,9 +114,9 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
-    <TypeScriptSourceMap>true</TypeScriptSourceMap>
-    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptTarget>ES2019</TypeScriptTarget>
     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>

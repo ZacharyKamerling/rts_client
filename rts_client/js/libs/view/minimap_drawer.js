@@ -14,6 +14,9 @@ class MinimapDrawer {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
     }
+    // (x,y) = minimap location on screen
+    // (w,h) = size of minimap on screen
+    // sprites = list of coords and spritemap ref { x: [0.0,1.0], y: [0.0,1.0], ref: 'wee_little_icon' }
     draw(sprites) {
         if (this.canvas.width !== this.canvas.offsetWidth || this.canvas.height !== this.canvas.offsetHeight) {
             this.canvas.width = this.canvas.offsetWidth;
@@ -27,14 +30,18 @@ class MinimapDrawer {
         for (let i = 0, n = 0; n < sprites.length; n++) {
             let sprite = sprites[n];
             let xywh = this.spriteMap.coords(sprite.ref);
-            let hw = xywh.w;
-            let hh = xywh.h;
+            let hw = xywh.w; // Half width
+            let hh = xywh.h; // Half height
+            // Normalize X & Y
+            // ScrnX = x * 2 - 1
             let normX = sprite.x * 2 - 1;
             let normY = sprite.y * 2 - 1;
+            // Coordinates of each corner on the sprite
             let east = normX + hw;
             let north = normY + hh;
             let west = normX - hw;
             let south = normY - hh;
+            // Fill array with scaled vertices
             drawData[i++] = normX - (normX - west) * xm;
             drawData[i++] = normY - (normY - south) * ym;
             drawData[i++] = xywh.x;
@@ -98,3 +105,4 @@ MinimapDrawer.fragmentShader = [
     "    gl_FragColor = texture2D(u_sampler, v_texture_coord);",
     "}",
 ].join("\n");
+//# sourceMappingURL=minimap_drawer.js.map

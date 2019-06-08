@@ -22,10 +22,10 @@ var Interaction;
             game.chef.putU32(orderID);
             game.chef.putU16(proto.type_id);
             if (repeat) {
-                game.chef.putU8(1);
+                game.chef.putU8(1 /* repeat */);
             }
             else {
-                game.chef.putU8(0);
+                game.chef.putU8(0 /* no-repeat */);
             }
             if (order) {
                 game.chef.putU8(Interaction.Core.QueueOrder.Prepend);
@@ -54,3 +54,4 @@ var Interaction;
         TrainOrder.issue = issue;
     })(TrainOrder = Interaction.TrainOrder || (Interaction.TrainOrder = {}));
 })(Interaction || (Interaction = {}));
+//# sourceMappingURL=train_order.js.map

@@ -21,6 +21,7 @@ class SelectionBoxDrawer {
         let east = Math.max(x, x2);
         let south = Math.min(y, y2);
         let north = Math.max(y, y2);
+        // Fill array with vertices
         drawData[0] = west;
         drawData[1] = south;
         drawData[2] = west;
@@ -52,3 +53,4 @@ SelectionBoxDrawer.fragmentShader = [
     "    gl_FragColor = vec4(0, 1, 0, 1);",
     "}",
 ].join("\n");
+//# sourceMappingURL=select_box_drawer.js.map

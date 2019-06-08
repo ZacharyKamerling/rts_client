@@ -19,16 +19,23 @@ class FOWDrawer {
         let ym = Game.TILESIZE / this.canvas.height;
         for (let i = 0, n = 0; n < circles.length; n++) {
             let circle = circles[n];
+            // Scale all coords to 1/4th their size (to match small canvas)
+            // GL Coords go from -1 to 1
+            // If they went from 0 to 1 we wouldn't need to double the radius
             circle.r = (circle.r * QUALITY) * 2 * scale;
             circle.x = circle.x * QUALITY * scale;
             circle.y = circle.y * QUALITY * scale;
+            // Normalize X & Y
+            // ScrnX = ((x - ScrnL) / ScrnW) * 2 - 1
             let normX = ((circle.x - (x - this.canvas.width / 2)) / this.canvas.width) * 2 - 1;
             let normY = ((circle.y - (y - this.canvas.height / 2)) / this.canvas.height) * 2 - 1;
+            // Coordinates of each corner on the sprite
             let east = normX + circle.r * xm;
             let north = normY + circle.r * ym;
             let west = normX - circle.r * xm;
             let south = normY - circle.r * ym;
             let radius = circle.r * xm;
+            // Fill array with scaled vertices
             drawData[i + 0] = west;
             drawData[i + 1] = south;
             drawData[i + 2] = normX;
@@ -111,3 +118,4 @@ FOWDrawer.fragmentShader = [
     "    }",
     "}",
 ].join("\n");
+//# sourceMappingURL=fow_drawer.js.map

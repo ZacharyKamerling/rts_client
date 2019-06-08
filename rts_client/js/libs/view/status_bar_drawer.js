@@ -22,15 +22,21 @@ class StatusBarDrawer {
             let bar = bars[n];
             bar.x *= scale;
             bar.y *= scale;
+            // GL Coords go from -1 to 1
+            // If they went from 0 to 1 we wouldn't need to double the width/height
             bar.w *= scale * 2;
             bar.h *= scale * 2;
+            // Normalize X & Y
+            // ScrnX = ((x - ScrnL) / ScrnW) * 2 - 1
             let normX = ((bar.x - (x - this.canvas.width / 2)) / this.canvas.width) * 2 - 1;
             let normY = ((bar.y - (y - this.canvas.height / 2)) / this.canvas.height) * 2 - 1;
+            // Coordinates of each corner on the sprite
             let east = normX + bar.w * xm;
             let north = normY + bar.h * ym;
             let west = normX - bar.w * xm;
             let south = normY - bar.h * ym;
             let value = west + (east - west) * bar.v;
+            // Fill array with scaled vertices
             let vertFloatOff = n * 6 * BYTES_PER_VERTEX / 4;
             let vertUInt8Off = n * 6 * BYTES_PER_VERTEX + 12;
             let floatOff = vertFloatOff + BYTES_PER_VERTEX / 4 * 0;
@@ -130,3 +136,4 @@ StatusBarDrawer.fragmentShader = [
     "    }",
     "}",
 ].join("\n");
+//# sourceMappingURL=status_bar_drawer.js.map
