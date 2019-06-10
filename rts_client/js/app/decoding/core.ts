@@ -1,4 +1,4 @@
-﻿module Decoding {
+﻿module Decoding.Core {
 
     enum ClientMessage {
         UnitMove,

@@ -58,7 +58,7 @@ function main() {
         }
 
         conn.onmessage = function (event) {
-            Decoding.processPacket(game, new Cereal(new DataView(event.data)));
+            Decoding.Core.processPacket(game, new Cereal(new DataView(event.data)));
         }
 
         conn.onopen = function () {

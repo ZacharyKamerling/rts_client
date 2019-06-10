@@ -50,7 +50,7 @@ function main() {
             game.reset();
         };
         conn.onmessage = function (event) {
-            Decoding.processPacket(game, new Cereal(new DataView(event.data)));
+            Decoding.Core.processPacket(game, new Cereal(new DataView(event.data)));
         };
         conn.onopen = function () {
             console.log('Connection open.');

@@ -41,7 +41,8 @@
     <Content Include="index.html" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="js\app\decoding.ts" />
+    <TypeScriptCompile Include="js\app\decoding\core.ts" />
+    <TypeScriptCompile Include="js\app\decoding\decode_unit.ts" />
     <TypeScriptCompile Include="js\app\game.ts" />
     <TypeScriptCompile Include="js\app\interaction\build_selection.ts" />
     <TypeScriptCompile Include="js\app\interaction\train_order.ts" />
@@ -87,6 +88,7 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
   </PropertyGroup>
