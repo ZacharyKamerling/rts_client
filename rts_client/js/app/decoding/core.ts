@@ -1,13 +1,15 @@
 ﻿module Decoding.Core {
 
     enum ClientMessage {
-        UnitMove,
+        UnitUpdate,
         UnitDeath,
+        RadarUpdate,
         OrderCompleted,
         TrainingCompleted,
         MeleeSmack,
         MissileMove,
         MissileExplode,
+        MissileOutOfSight,
         Construction,
         TeamInfo,
         MapInfo,
@@ -45,7 +47,7 @@
             let msg_type = data.getU8();
             msg_switch:
             switch (msg_type) {
-                case ClientMessage.UnitMove:
+                case ClientMessage.UnitUpdate:
                     Unit.decodeUnit(game, data, currentTime, logicFrame);
                     break msg_switch;
                 case ClientMessage.MissileMove:
