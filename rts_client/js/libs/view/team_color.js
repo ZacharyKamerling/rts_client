@@ -8,3 +8,4 @@ class TeamColor {
         return tc;
     }
 }
+//# sourceMappingURL=team_color.js.map

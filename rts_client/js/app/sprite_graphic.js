@@ -18,3 +18,4 @@ class SpriteGraphic {
         return sg;
     }
 }
+//# sourceMappingURL=sprite_graphic.js.map

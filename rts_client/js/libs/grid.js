@@ -19,3 +19,4 @@ class Grid {
         return x >= 0 && y >= 0 && x < this.w && y < this.h;
     }
 }
+//# sourceMappingURL=grid.js.map

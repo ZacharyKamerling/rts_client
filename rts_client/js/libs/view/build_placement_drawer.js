@@ -33,12 +33,15 @@ class BuildPlacementDrawer {
                 console.log(sprite.ref);
                 return;
             }
-            let hw = xywh.w * scale;
-            let hh = xywh.h * scale;
+            let hw = xywh.w * scale; // Half width
+            let hh = xywh.h * scale; // Half height
             sprite.x *= scale;
             sprite.y *= scale;
+            // Normalize X & Y
+            // ScrnX = ((x - ScrnL) / ScrnW) * 2 - 1
             let normX = ((sprite.x - (x - this.canvas.width / 2)) / this.canvas.width) * 2 - 1;
             let normY = ((sprite.y - (y - this.canvas.height / 2)) / this.canvas.height) * 2 - 1;
+            // Coordinates of each corner on the sprite
             let east = normX + hw;
             let north = normY + hh;
             let west = normX - hw;
@@ -47,6 +50,7 @@ class BuildPlacementDrawer {
             let sw = Misc.rotateAroundOrigin(normX, normY, west, south, sprite.ang);
             let nw = Misc.rotateAroundOrigin(normX, normY, west, north, sprite.ang);
             let se = Misc.rotateAroundOrigin(normX, normY, east, south, sprite.ang);
+            // Fill array with scaled vertices
             drawData[i++] = normX - (normX - sw.x) * xm;
             drawData[i++] = normY - (normY - sw.y) * ym;
             drawData[i++] = xywh.x;
@@ -109,3 +113,4 @@ BuildPlacementDrawer.fragmentShader = [
     "    gl_FragColor = (sample + vec4(0.0,0.0,1.0,0.0)) / 1.5;",
     "}",
 ].join("\n");
+//# sourceMappingURL=build_placement_drawer.js.map

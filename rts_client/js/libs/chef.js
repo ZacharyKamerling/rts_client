@@ -1,3 +1,4 @@
+// Cooks up binary data
 class Chef {
     constructor() {
         this.ab = new ArrayBuffer(4096);
@@ -15,6 +16,7 @@ class Chef {
             this.ab = newAB;
         }
     }
+    // Trim empty space and get array buffer
     done() {
         let newAB = new ArrayBuffer(this.offset);
         let newDV = new DataView(newAB);
@@ -85,8 +87,12 @@ class Chef {
             else if (charcode < 0xd800 || charcode >= 0xe000) {
                 utf8.push(0xe0 | (charcode >> 12), 0x80 | ((charcode >> 6) & 0x3f), 0x80 | (charcode & 0x3f));
             }
+            // surrogate pair
             else {
                 i++;
+                // UTF-16 encodes 0x10000-0x10FFFF by
+                // subtracting 0x10000 and splitting the
+                // 20 bits of 0x0-0xFFFFF into two halves
                 charcode = 0x10000 + (((charcode & 0x3ff) << 10)
                     | (str.charCodeAt(i) & 0x3ff));
                 utf8.push(0xf0 | (charcode >> 18), 0x80 | ((charcode >> 12) & 0x3f), 0x80 | ((charcode >> 6) & 0x3f), 0x80 | (charcode & 0x3f));
@@ -95,3 +101,4 @@ class Chef {
         return utf8;
     }
 }
+//# sourceMappingURL=chef.js.map

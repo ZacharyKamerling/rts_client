@@ -40,6 +40,7 @@ var Interaction;
         }
         SelectingUnits.selectUnits = selectUnits;
         function configureCommandCard(game) {
+            // Configure command card
             let cmdSet = {};
             let trainSet = {};
             for (let i = 0; i < game.souls.length; i++) {
@@ -121,9 +122,11 @@ var Interaction;
                         }
                     }
                     else if (x > maxX) {
+                        // Northeast
                         if (y > maxY && (nDif * nDif + eDif * eDif) <= rSqrd) {
                             soul.current.is_being_selected = true;
                         }
+                        // Southeast
                         else if (y < minY && (sDif * sDif + eDif * eDif) <= rSqrd) {
                             soul.current.is_being_selected = true;
                         }
@@ -132,9 +135,11 @@ var Interaction;
                         }
                     }
                     else if (x < minX) {
+                        // Northwest
                         if (y > maxY && (nDif * nDif + wDif * wDif) <= rSqrd) {
                             soul.current.is_being_selected = true;
                         }
+                        // Southwest
                         else if (y < minY && (sDif * sDif + wDif * wDif) <= rSqrd) {
                             soul.current.is_being_selected = true;
                         }
@@ -168,3 +173,4 @@ var Interaction;
         SelectingUnits.begin = begin;
     })(SelectingUnits = Interaction.SelectingUnits || (Interaction.SelectingUnits = {}));
 })(Interaction || (Interaction = {}));
+//# sourceMappingURL=selecting_units.js.map

@@ -6,6 +6,7 @@ class Unit {
         this.train_roster = new Array();
         this.command_roster = new Array();
         this.passengers = new Array();
+        // ORDER QUEUES
         this.train_queue = new Array();
     }
     clone() {
@@ -163,3 +164,4 @@ class Unit {
         }
     }
 }
+//# sourceMappingURL=unit_proto.js.map
